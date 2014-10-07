@@ -1,0 +1,2 @@
+deb http://debian.aegirproject.org/ stable main
+deb-src http://debian.aegirproject.org/ stable main

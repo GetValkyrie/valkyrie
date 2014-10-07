@@ -1,0 +1,31 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+base_boxes = {
+  'wheezy64' => 'http://dl.dropbox.com/u/937870/VMs/wheezy64.box',
+  'raring64' => 'http://cloud-images.ubuntu.com/raring/current/raring-server-cloudimg-vagrant-amd64-disk1.box',
+}
+
+Vagrant::Config.run do |config|
+  config.vm.box = ENV['aegir_box']
+  config.vm.box_url = base_boxes[ENV['aegir_box']]
+
+  config.vm.host_name = "aegir.test"
+
+  config.vm.provision :puppet do |puppet|
+    puppet.manifests_path = "tests/functional_tests/matrix.deb"
+    puppet.manifest_file = "nodes.pp"
+    puppet.module_path = [ "tests/functional_tests/matrix.deb/modules" ]
+    puppet.facter = {
+        'aegir_api'        => ENV['aegir_api'],
+        'drush_api'        => ENV['drush_api'],
+        'aegir_dist'       => ENV['aegir_dist'],
+        'aegir_web_server' => ENV['aegir_web_server'],
+    }
+  end
+
+  # We can speed up subsequent rebuilds by caching the apt cache directories
+  # on the host machine.
+  config.vm.share_folder("apt_cache", "/var/cache/apt/archives", "tmp/apt/cache", :create => true)
+
+end

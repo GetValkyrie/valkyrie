@@ -1,0 +1,32 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant::Config.run do |config|
+  config.vm.box = "wheezy64"
+  config.vm.box_url = "http://dl.dropbox.com/u/937870/VMs/wheezy64.box"
+
+  config.vm.host_name = "aegir2-dev.test"
+
+  config.vm.provision :puppet do |puppet|
+    puppet.manifests_path = "tests/functional_tests/aegir2-dev"
+    puppet.manifest_file = "nodes.pp"
+    puppet.module_path = [ "tests/functional_tests/aegir2-dev/modules" ]
+    puppet.facter = {
+      'fqdn' => 'aegir2-dev.test'
+    }
+
+  end
+
+  # We can speed up subsequent rebuilds by caching the apt cache directories
+  # on the host machine.
+  config.vm.share_folder("apt_cache", "/var/cache/apt/archives", "tmp/apt/cache", :create => true)
+
+  # Setup host machine cache for /var/aegir/.drush/cache.
+  # The aegir user does not exist on vm creation, so using the vagrant user and 777 permissions.
+  config.vm.share_folder("drush_cache", "/var/aegir/.drush/cache", "tmp/drush/cache",
+      owner: "vagrant",
+      group: "vagrant",
+      mount_options: ["dmode=0777","fmode=0777"],
+      create: true)
+
+end
