@@ -1,0 +1,164 @@
+AEGIR PUPPET MODULE
+===================
+
+This module manages the Aegir Hosting System.
+
+It can install and upgrade Aegir from Debian packages, perform a 'manual'
+installation of Aegir from source, preserving the .git repos for easy access
+to an Aegir development environment (see http://drupal.org/project/aegir-up
+for more details). It can also manage a number of extensions for Aegir that
+greatly enhances its usability and scalability. Finally, it provides methods
+for automating the building and importing of Drupal platforms.
+
+
+DEPENDENCIES
+------------
+
+The Aegir module depends on the Drush Puppet Module, which can be downloaded
+from: http://drupal.org/project/puppet-drush.
+
+
+REQUIREMENTS
+------------
+
+The Aegir Puppet module is designed to work on Debian GNU/Linux systems and
+derivatives. It provides rudimentary support for apt-get, which can be
+disabled by setting the 'dist' parameter to false on the 'aegir' class. As
+such, it should work with other *nix systems, assuming Aegir is available for
+install in the OS's packaging system, or Aegir is installed from source using
+the provided 'aegir::dev' class.
+
+INSTALLATION
+------------
+
+To use this module, follow these directions:
+
+1. Your modules directory will need all the files included in this repository
+   placed under a directory called "aegir". Likewise, you'll need the puppet-
+   drush module installed under a directory called "drush".
+
+2. To install Aegir from the official releases, add one of these entries to
+   your manifests:
+
+       include aegir
+
+   or
+
+       class {'aegir':
+         ensure => latest,
+       }
+
+  The following parameters are available:
+
+    frontend_url: The URL at which to install the Aegir frontend site.
+    db_host: The hostname of the database server on which to host the Aegir
+        frontend site.
+    db_user: The username for the database in which to install the Aegir
+        frontend site.
+    db_password: The password for the database in which to install the Aegir
+        frontend site.
+    admin_email: The email address of the administrator user.
+    makefile: The makefile to use in building the hostmaster platform.
+    db_server: The database server type to install. Currently only support
+        'mysql'. If you don't want this module to install a database server,
+        set this to: false
+    web_server: The web server type to install. Currently supports 'apache2'
+        and 'nginx'. Defaults to 'apache2'. If you don't want this module to
+        install a web server, set this to: false
+    api: The major version of Aegir to install. Currently supports '1' or '2'.
+    dist: The Debian distribution from which to install via apt-get. Defaults
+        to 'stable'.
+    ensure: What state the package should be in. Valid values are 'present'
+        (also called 'installed'), 'absent', 'purged', 'held', of 'latest'.
+        Values can match /./.
+
+2a. To install Aegir from source, add one of these entries to your manifests:
+
+       include aegir::dev
+
+   or
+
+       class {'aegir::dev':
+         git_branch => '6.x-2.x',
+         update     => true,
+       }
+
+
+  The following optional parameters are available:
+
+    frontend_url: The URL at which to install the Aegir frontend site.
+    db_host: The hostname of the database server on which to host the Aegir
+        frontend site.
+    db_port: The port that the database server is running on. If you are setting
+        this parameter, you will need to install and configure your database
+        server manually before running this module, because it does not contain
+        code to automatically configure the port during database server
+        installation.
+    db_user: The username for the database in which to install the Aegir
+        frontend site.
+    db_password: The password for the database in which to install the Aegir
+        frontend site.
+    admin_email: The email address of the administrator user/client.
+    admin_name: The username and client name of the administrator user/client.
+    makefile: The makefile to use in building the hostmaster platform.
+    db_server: The database server type to install and configure. Currently only
+        supports 'mysql'. If you don't want this module to install and configure
+        a database server, set this to: false
+    web_server: The web server type to install and configure. Currently supports
+        'apache2' (default) and 'nginx'. If you don't want this module to
+        install and configure a web server, set this to: false
+    web_port: The port that the web server is running on. If you are setting
+        this parameter, you will need to install and configure your web server
+        manually before running this module, because it does not contain code
+        to automatically configure the port during web server installation.
+    apt:  Whether to install dependencies via apt-get. Defaults to 'true'.
+    aegir_user: The name of the system user to run Aegir under. Defaults to
+        'aegir'.
+    aegir_root: The system path to set as the root of the Aegir install.
+        Defaults to '/var/aegir'.
+    web_group: The name of the web server's system user's group. Defaults to
+        'www-data'.
+    update: Whether to update to the latest code with each Puppet run.
+        Defaults to false.
+    drush_make_version: (deprecated) Only for use with Aegir 1.x, in which
+        case, it should be set to 2.3. Defaults to false.
+    hostmaster_repo: The git repo from which to clone the hostmaster profile.
+        Defaults to 'http://git.drupal.org/project/hostmaster.git'.
+    hostmaster_branch: The git branch to use when cloning the hostmaster
+        profile. Defaults to '7.x-3.x'.
+    provision_repo: The git repo from which to clone the provision extension.
+        Defaults to 'http://git.drupal.org/project/provision.git'.
+    provision_branch: The git branch to use when cloning the provision
+        extension. Defaults to '7.x-3.x'.
+    install_dependencies: Set this to false if you don't want any dependency
+        packages to be installed. This includes the web and database server,
+        drush, php, postfix, sudo, rsync, git, and unzip.
+
+
+INSTRUCTIONS
+------------
+
+To use this module, follow these directions:
+
+1. Install as per the instructions above.
+
+2. To install Hosting Queue Runner, add the following line to your manifests:
+
+       include aegir::queue_runner
+
+   Note that the queue daemon is installed automatically by the aegir2 .deb. So
+   the aegir::queue_runner class is un-necessary when using 'api = 2'.
+
+3. To build platforms and import them into the Aegir front-end, add the lines
+    such as the following to your manifests:
+
+       aegir::platform {'Open_Atrium':
+         makefile => 'http://drupalcode.org/project/openatria_makefiles.git/blob_plain/refs/heads/master:/stub-openatrium.make',
+       }
+
+
+--------------------------------------------------------------------------------
+Original authors: Christopher Gervais (mailto:chris@koumbit.org)
+                  Antoine Beaupré (mailto:anarcat@koumbit.org)
+Copyright:: Copyright (c) 2011-2013 Réseau Koumbit Networks
+License::   GPLv2 or later
