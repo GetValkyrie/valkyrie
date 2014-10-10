@@ -42,6 +42,8 @@ function drush_valkyrie_new($name) {
   };
 
   if(!drush_mkdir("$name/profiles/$name")) {
+    // TODO: Move this to recursively create a file's path if it doesn't
+    // already exist, in valkyrie_template().
     return;
   };
 
