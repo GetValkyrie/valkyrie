@@ -41,12 +41,19 @@ function drush_valkyrie_new($name) {
     return;
   };
 
+  if(!drush_mkdir("$name/profiles/$name")) {
+    return;
+  };
+
   $templates_dir = dirname(__FILE__) . '/templates';
 
-  $templates = array_diff(scandir($templates_dir), array('..', '.'));
+  $templates = array(
+    'platform.info' => "$name/profiles/$name/$name.info",
+    'platform.make' => "$name/platform.make",
+  );
 
-  foreach ($templates as $template) {
-    valkyrie_template($templates_dir . '/' . $template, $name . '/' . $template, array('name' => $name));
+  foreach ($templates as $template => $dest_path) {
+    valkyrie_template($templates_dir . '/' . $template, $dest_path, array('name' => $name));
   }
 
 }
