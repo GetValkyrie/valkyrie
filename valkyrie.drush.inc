@@ -43,10 +43,17 @@ function drush_valkyrie_new($name) {
   $templates = array(
     'platform.info' => "$name/profiles/$name/$name.info",
     'platform.make' => "$name/platform.make",
+    'gitignore' => "$name/.gitignore",
   );
 
   foreach ($templates as $template => $dest_path) {
-    valkyrie_template($templates_dir . '/' . $template, $dest_path, array('name' => $name));
+    valkyrie_template($templates_dir . '/' . $template, $dest_path, array('name' => $name), TRUE);
+  }
+
+  if (drush_get_option('commit', TRUE)) {
+    drush_shell_cd_and_exec($name, 'git init');
+    drush_shell_cd_and_exec($name, 'git add .');
+    drush_shell_cd_and_exec($name, 'git commit -m"Initialize new Valkyrie project."');
   }
 
 }
@@ -54,12 +61,12 @@ function drush_valkyrie_new($name) {
 /**
  * Write a file based on a template.
  */
-function valkyrie_template($template_path, $dest_path, $variables = array()) {
+function valkyrie_template($template_path, $dest_path, $variables = array(), $overwrite = FALSE) {
   $contents = _valkyrie_render_template(_valkyrie_load_template($template_path), $variables);
   if (!file_exists(dirname($dest_path))) {
     drush_mkdir(dirname($dest_path));
   }
-  if (!file_exists($dest_path)) {
+  if ($overwrite || !file_exists($dest_path)) {
     file_put_contents($dest_path, $contents);
     return;
   }

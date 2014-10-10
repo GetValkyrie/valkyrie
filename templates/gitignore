@@ -1,0 +1,3 @@
+# Ignore site specific files, only keep all
+sites/*
+!sites/all
