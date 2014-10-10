@@ -1,0 +1,23 @@
+name = Camden
+description = Camden Distribution
+
+core = 7.x
+
+; Core
+dependencies[] = block
+dependencies[] = contextual
+dependencies[] = help
+dependencies[] = image
+dependencies[] = list
+dependencies[] = menu
+dependencies[] = number
+dependencies[] = options
+dependencies[] = path
+dependencies[] = taxonomy
+dependencies[] = dblog
+dependencies[] = search
+dependencies[] = overlay
+dependencies[] = field_ui
+dependencies[] = file
+
+; Custom

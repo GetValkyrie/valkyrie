@@ -33,6 +33,18 @@ function valkyrie_drush_command() {
  * Command callback for the 'valkyrie-new' command.
  */
 function drush_valkyrie_new($name) {
+  if (!drush_confirm(dt('Create platform "'. $name . '"?'))) {
+    return drush_user_abort();
+  }
 
+  if(!drush_mkdir($name)) {
+    return;
+  };
 
+  $templates = dirname(__FILE__) . '/templates';
+
+  //copy()
+
+  drush_print($templates);
+  drush_print(drush_cwd());
 }
