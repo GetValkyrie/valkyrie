@@ -16,7 +16,6 @@ function valkyrie_drush_command() {
       'name' => 'The name of the new project',
     ),
     'options' => array(
-      'build' => 'Build the resulting platform. Defaults to true.',
       'commit' => 'Commit the project into a new git repo. Defaults to true.',
     ),
     'examples' => array(
@@ -37,17 +36,9 @@ function drush_valkyrie_new($name) {
     return drush_user_abort();
   }
 
-  if(!drush_mkdir($name)) {
-    return;
-  };
-
-  if(!drush_mkdir("$name/profiles/$name")) {
-    // TODO: Move this to recursively create a file's path if it doesn't
-    // already exist, in valkyrie_template().
-    return;
-  };
-
   $templates_dir = dirname(__FILE__) . '/templates';
+
+  drush_invoke('make', array("$templates_dir/platform.make", $name));
 
   $templates = array(
     'platform.info' => "$name/profiles/$name/$name.info",
@@ -65,6 +56,9 @@ function drush_valkyrie_new($name) {
  */
 function valkyrie_template($template_path, $dest_path, $variables = array()) {
   $contents = _valkyrie_render_template(_valkyrie_load_template($template_path), $variables);
+  if (!file_exists(dirname($dest_path))) {
+    drush_mkdir(dirname($dest_path));
+  }
   if (!file_exists($dest_path)) {
     file_put_contents($dest_path, $contents);
     return;
