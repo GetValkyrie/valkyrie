@@ -27,6 +27,15 @@ function valkyrie_drush_command() {
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap at all.
   );
 
+  $items['valkyrie-rebuild'] = array(
+    'description' => "Rebuild an existing Valkyrie project.",
+    'arguments' => array(
+      'path' => 'The path of the project. Defaults to the current directory.',
+    ),
+    'aliases' => array('vre'),
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap at all.
+  );
+
   return $items;
 }
 
@@ -57,5 +66,17 @@ function drush_valkyrie_new($name) {
     drush_shell_cd_and_exec($name, 'git add .');
     drush_shell_cd_and_exec($name, 'git commit -m"Initialize new Valkyrie project."');
   }
+
+}
+
+/**
+ * Command callback for the 'valkyrie-rebuild' command.
+ */
+function drush_valkyrie_rebuild($name = FALSE) {
+  if (!$name && !drush_confirm(dt('Rebuild the platform in the current directory?'))) {
+    return drush_user_abort();
+  }
+
+  echo "rebuilding";
 
 }
