@@ -9,7 +9,7 @@
  */
 function valkyrie_template($template_path, $dest_path, $variables = array(), $overwrite = FALSE) {
   $contents = _valkyrie_render_template(_valkyrie_load_template($template_path), $variables);
-  if (!file_exists(dirname($dest_path))) {
+  if (!is_dir(dirname($dest_path))) {
     drush_mkdir(dirname($dest_path));
   }
   if ($overwrite || !file_exists($dest_path)) {
