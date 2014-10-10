@@ -1,5 +1,5 @@
-name = Camden
-description = Camden Distribution
+name = <?php print ucfirst($name) . "\n" ?>
+description = <?php print ucfirst($name) ?> distribution
 
 core = 7.x
 

@@ -46,7 +46,7 @@ function drush_valkyrie_new($name) {
   $templates = array_diff(scandir($templates_dir), array('..', '.'));
 
   foreach ($templates as $template) {
-    valkyrie_template($templates_dir . '/' . $template, $name . '/' . $template);
+    valkyrie_template($templates_dir . '/' . $template, $name . '/' . $template, array('name' => $name));
   }
 
 }

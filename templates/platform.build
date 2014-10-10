@@ -1,8 +1,0 @@
-api = 2
-core = 7.x
-
-projects[drupal] = 7.31
-
-projects[camden][type] = profile
-projects[camden][download][type] = git
-projects[camden][download][url] = git@git.poeticsystems.com:camden/platform.git
