@@ -276,26 +276,38 @@ class aegir::dev (
     command     => "\
 echo '*******************************************************************************'\n
 echo '* Open the link below to access your new Aegir site:'\n
-echo '*' `env HOME=/var/aegir drush @hostmaster uli`\n
+echo '*' `env HOME=${aegir_root} drush @hostmaster uli`\n
 echo '*******************************************************************************'\n
 ",
     loglevel    => 'alert',
     logoutput   => true,
-    user        => 'aegir',
-    environment => 'HOME=/var/aegir',
+    user        => $aegir_user,
+    environment => "HOME=${aegir_root}",
     path        => ['/bin', '/usr/bin'],
     require     => Drush::Run['hostmaster-install'],
   }
 
   if $update {
-    $hostmaster_dir = "${aegir_root}/hostmaster-${hostmaster_ref}/profiles/hostmaster"
-    $hosting_dir    = "${hostmaster_dir}/modules/hosting"
-    $eldir_dir      = "${hostmaster_dir}/themes/eldir"
+    $provision_dir     = "${aegir_root}/.drush/provision"
+    $provision_git_dir = "${aegir_root}/.drush/provision_git"
+    $hostmaster_dir    = "${aegir_root}/hostmaster-${hostmaster_ref}/profiles/hostmaster"
+    $hosting_dir       = "${hostmaster_dir}/modules/hosting"
+    $hosting_git_dir   = "${hostmaster_dir}/modules/hosting_git"
+    $eldir_dir         = "${hostmaster_dir}/themes/eldir"
+    exec { 'update provision':
+      command => "cd ${provision_dir} && git pull -r",
+    }
+    exec { 'update provision_git':
+      command => "cd ${provision_git_dir} && git pull -r",
+    }
     exec { 'update hostmaster':
       command => "cd ${hostmaster_dir} && git pull -r",
     }
     exec { 'update hosting':
       command => "cd ${hosting_dir} && git pull -r",
+    }
+    exec { 'update hosting_git':
+      command => "cd ${hosting_git_dir} && git pull -r",
     }
     exec { 'update eldir':
       command => "cd ${eldir_dir} && git pull -r",
