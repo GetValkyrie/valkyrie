@@ -2,8 +2,8 @@
 # vi: set ft=ruby :
 
 Vagrant.configure(2) do |config|
-
-  first_run = !File.file?('.first_run')
+  project_root = File.expand_path(File.dirname(__FILE__))
+  first_run = !File.file?("#{project_root}/.first_run")
 
   hostname = "aegir3.local"
 
