@@ -50,4 +50,16 @@ node default {
 
   include avahi
 
+  drush::en {['hosting_git', 'hosting_platform_pathauto']:
+    site_alias => '@hm',
+    drush_home => $aegir_root,
+  }
+
+  include valkyrie::deploy_keys
+
+#  drush::git {'http://git.poeticsystems.com/camden/valkyrie.git':
+#    path => '/var/aegir/.drush/valkyrie',
+#    user => $aegir_user,
+#  }
+
 }

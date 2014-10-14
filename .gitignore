@@ -3,3 +3,4 @@ modules/puppet-*
 platforms/
 .first_run
 authorized_keys
+keys/
