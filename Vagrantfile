@@ -32,7 +32,7 @@ Vagrant.configure(2) do |config|
       config.ssh.private_key_path = '~/.ssh/id_rsa'
       #TODO: investigate why we need to restart this manually
       vm1.vm.provision "shell",
-        inline: "service hosting-queued start"
+        inline: "sudo service hosting-queued start"
     end
 
     vm1.vm.provision "puppet" do |puppet|
