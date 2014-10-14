@@ -16,6 +16,8 @@ node default {
   if $first_run {
     file {"$aegir_root/.ssh":
       ensure  => directory,
+      owner   => $aegir_user,
+      group   => $aegir_user,
       require => User[$aegir_user],
     }
     file {"$aegir_root/.ssh/authorized_keys":
