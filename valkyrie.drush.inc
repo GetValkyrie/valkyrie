@@ -58,6 +58,8 @@ function drush_valkyrie_new($name) {
     'platform.info' => "$name/profiles/$name/$name.info",
     MAKEFILE_NAME => $name. '/' . MAKEFILE_NAME,
     'gitignore' => "$name/.gitignore",
+    'platform.profile' => "$name/profiles/$name/$name.profile",
+    'platform.install' => "$name/profiles/$name/$name.install",
   );
   foreach ($templates as $template => $dest_path) {
     valkyrie_template($templates_dir . '/' . $template, $dest_path, array('name' => $name), TRUE);

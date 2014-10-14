@@ -1,0 +1,12 @@
+<?php print "<?php\n" ?>
+
+/**
+ * @file Install hooks for the <?php print ucfirst($name) ?> installation profile.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function <?php print $name ?>_install() {
+  // Add any custom install steps here.
+}
