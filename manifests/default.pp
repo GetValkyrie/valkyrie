@@ -50,9 +50,10 @@ node default {
 
   include avahi
 
-  drush::en {['hosting_git', 'hosting_platform_pathauto']:
+  drush::en {['hosting_git', 'hosting_platform_pathauto', 'hosting_git_pull']:
     site_alias => '@hm',
     drush_home => $aegir_root,
+    require    => Class['aegir::dev'],
   }
 
   include valkyrie::deploy_keys
