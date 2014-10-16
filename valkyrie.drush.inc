@@ -110,12 +110,12 @@ function drush_valkyrie_rebuild($path = FALSE) {
   rename("$path/.gitignore", $tempdir . '/gitignore');
 
   drush_log('Removing old platform');
-  drush_delete_dir($path);
+  drush_delete_dir_contents($path);
 
   drush_log('Building new platform');
   $drush_affirmative = drush_get_context('DRUSH_AFFIRMATIVE');
   drush_set_context('DRUSH_AFFIRMATIVE', FALSE);
-  drush_invoke('make', array($tempdir . '/' . MAKEFILE_NAME, $path));
+  drush_invoke('make', array($tempdir . '/' . MAKEFILE_NAME));
   drush_set_context('DRUSH_AFFIRMATIVE', $drush_affirmative);
 
   drush_log('Restoring sites');
