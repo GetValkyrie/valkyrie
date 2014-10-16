@@ -91,7 +91,7 @@ function drush_valkyrie_rebuild($path = FALSE) {
   drush_log('Beginning platform rebuild.', 'ok');
   $tempdir = drush_tempdir();
 
-  drush_log('Preserving sites');
+  drush_log('Preserving sites directory.');
   $sites_dir = $path . '/sites';
   $tmp_sites_dir = $tempdir . '/sites';
   if (!is_dir($sites_dir)) {
@@ -103,13 +103,21 @@ function drush_valkyrie_rebuild($path = FALSE) {
   drush_delete_dir("$tmp_sites_dir/all");
   drush_delete_dir("$tmp_sites_dir/default");
 
+  drush_log('Preserving .git directory.');
+  $git_dir = $path . '/.git';
+  $tmp_git_dir = $tempdir . '/.git';
+  if (!is_dir($git_dir)) {
+    drush_set_error('VALKYRIE_REBUILD_NO_GIT_PATH',"The .git directory in the specified platform ('$git_dir') does not exist.");
+  }
+  drush_move_dir($git_dir, $tmp_git_dir);
+
   drush_log('Preserving makefile.');
   rename($path . '/' . MAKEFILE_NAME, $tempdir . '/' . MAKEFILE_NAME);
 
-  drush_log('Preserving .gitignore');
+  drush_log('Preserving .gitignore.');
   rename("$path/.gitignore", $tempdir . '/gitignore');
 
-  drush_log('Removing old platform');
+  drush_log('Removing old platform.');
   drush_delete_dir_contents($path);
 
   drush_log('Building new platform');
@@ -118,15 +126,17 @@ function drush_valkyrie_rebuild($path = FALSE) {
   drush_invoke('make', array($tempdir . '/' . MAKEFILE_NAME));
   drush_set_context('DRUSH_AFFIRMATIVE', $drush_affirmative);
 
-  drush_log('Restoring sites');
+  drush_log('Restoring sites directory.');
   drush_copy_dir($tmp_sites_dir, $sites_dir, TRUE);
 
-  drush_log('Restoring .gitignore');
+  drush_log('Restoring .git directory.');
+  drush_copy_dir($tmp_git_dir, $git_dir, TRUE);
+
+  drush_log('Restoring .gitignore.');
   rename($tempdir . '/gitignore', "$path/.gitignore");
 
-  drush_log('Restoring makefile');
+  drush_log('Restoring makefile.');
   rename($tempdir . '/' . MAKEFILE_NAME, $path . '/' . MAKEFILE_NAME);
 
-  drush_log('Platform rebuild complete', 'ok');
-
+  drush_log('Platform rebuild complete.', 'ok');
 }
