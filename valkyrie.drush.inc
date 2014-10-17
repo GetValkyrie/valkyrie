@@ -139,9 +139,9 @@ function drush_valkyrie_rebuild($path = FALSE) {
   drush_set_context('DRUSH_AFFIRMATIVE', $drush_affirmative);
 
   drush_log('Restoring sites directory.');
-  // We copy and delete, rather than move, so as not to overwrite sites/all.
-  drush_copy_dir($tmp_sites_dir, $sites_dir, TRUE);
-  drush_delete_dir($tmp_sites_dir, TRUE);
+  drush_move_dir("$sites_dir/all", "$tmp_sites_dir/all");
+  drush_move_dir("$sites_dir/default", "$tmp_sites_dir/default");
+  drush_move_dir($tmp_sites_dir, $sites_dir, TRUE);
 
   drush_log('Restoring .git directory.');
   drush_move_dir($tmp_git_dir, $git_dir, TRUE);
