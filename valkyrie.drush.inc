@@ -89,7 +89,10 @@ function drush_valkyrie_rebuild($path = FALSE) {
   }
 
   drush_log('Beginning platform rebuild.', 'ok');
-  $tempdir = drush_tempdir();
+
+  drush_log('Creating temporary directory.');
+  $tempdir = dirname($path) . '/tmp-' . time();
+  mkdir($tempdir);
 
   drush_log('Preserving sites directory.');
   $sites_dir = $path . '/sites';
@@ -111,6 +114,15 @@ function drush_valkyrie_rebuild($path = FALSE) {
   }
   drush_move_dir($git_dir, $tmp_git_dir);
 
+  $profile_name = basename($path);
+  drush_log('Preserving ' . $profile_name . ' directory.');
+  $profile_dir = $path . '/profiles/' . $profile_name;
+  $tmp_profile_dir = $tempdir . '/profile';
+  if (!is_dir($profile_dir)) {
+    drush_set_error('VALKYRIE_REBUILD_NO_PROFILE_PATH',"The profile directory ('$profile_dir') does not exist.");
+  }
+  drush_move_dir($profile_dir, $tmp_profile_dir);
+
   drush_log('Preserving makefile.');
   rename($path . '/' . MAKEFILE_NAME, $tempdir . '/' . MAKEFILE_NAME);
 
@@ -122,21 +134,29 @@ function drush_valkyrie_rebuild($path = FALSE) {
 
   drush_log('Building new platform');
   $drush_affirmative = drush_get_context('DRUSH_AFFIRMATIVE');
-  drush_set_context('DRUSH_AFFIRMATIVE', FALSE);
+  drush_set_context('DRUSH_AFFIRMATIVE', TRUE);
   drush_invoke('make', array($tempdir . '/' . MAKEFILE_NAME));
   drush_set_context('DRUSH_AFFIRMATIVE', $drush_affirmative);
 
   drush_log('Restoring sites directory.');
+  // We copy and delete, rather than move, so as not to overwrite sites/all.
   drush_copy_dir($tmp_sites_dir, $sites_dir, TRUE);
+  drush_delete_dir($tmp_sites_dir, TRUE);
 
   drush_log('Restoring .git directory.');
-  drush_copy_dir($tmp_git_dir, $git_dir, TRUE);
+  drush_move_dir($tmp_git_dir, $git_dir, TRUE);
+
+  drush_log("Restoring '$profile_name' profile directory.");
+  drush_move_dir($tmp_profile_dir, $profile_dir, TRUE);
 
   drush_log('Restoring .gitignore.');
   rename($tempdir . '/gitignore', "$path/.gitignore");
 
   drush_log('Restoring makefile.');
   rename($tempdir . '/' . MAKEFILE_NAME, $path . '/' . MAKEFILE_NAME);
+
+  drush_log('Removing temporary directory');
+  rmdir($tempdir);
 
   drush_log('Platform rebuild complete.', 'ok');
 }
