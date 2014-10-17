@@ -263,13 +263,13 @@ class aegir::dev (
     require => Drush::Run['hostmaster-install'],
   }
   drush::en { 'hosting_queued':
-    refreshonly => true,
-    subscribe   => File['queue daemon init script'],
-    before      => Service['hosting-queued'],
+    site_alias => '@hostmaster',
+    require    => File['queue daemon init script'],
+    before     => Service['hosting-queued'],
   }
   service { 'hosting-queued':
     ensure  => running,
-    subscribe => File['queue daemon init script'],
+    require => File['queue daemon init script'],
   }
 
   exec {'aegir-dev login':

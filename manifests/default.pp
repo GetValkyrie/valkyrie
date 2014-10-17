@@ -13,25 +13,23 @@ node default {
     shell   => '/bin/bash',
   }
 
-  if $first_run {
-    file {"$aegir_root/.ssh":
-      ensure  => directory,
-      owner   => $aegir_user,
-      group   => $aegir_user,
-      require => User[$aegir_user],
-    }
-    file {"$aegir_root/.ssh/authorized_keys":
-      ensure  => present,
-      source  => '/vagrant/authorized_keys',
-      mode    => 600,
-      owner   => $aegir_user,
-      group   => $aegir_user,
-      require => File["$aegir_root/.ssh"],
-    }
-    file {'/vagrant/.first_run':
-      ensure  => present,
-      require => File["$aegir_root/.ssh/authorized_keys"],
-    }
+  file {"$aegir_root/.ssh":
+    ensure  => directory,
+    owner   => $aegir_user,
+    group   => $aegir_user,
+    require => User[$aegir_user],
+  }
+  file {"$aegir_root/.ssh/authorized_keys":
+    ensure  => present,
+    source  => '/vagrant/authorized_keys',
+    mode    => 600,
+    owner   => $aegir_user,
+    group   => $aegir_user,
+    require => File["$aegir_root/.ssh"],
+  }
+  file {'/vagrant/.first_run_complete':
+    ensure  => present,
+    require => File["$aegir_root/.ssh/authorized_keys"],
   }
 
   class {'drush::git::drush':

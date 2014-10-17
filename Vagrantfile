@@ -3,7 +3,7 @@
 
 Vagrant.configure(2) do |config|
   project_root = File.expand_path(File.dirname(__FILE__))
-  first_run = !File.file?("#{project_root}/.first_run")
+  first_run = !File.file?("#{project_root}/.first_run_complete")
 
   hostname = "aegir3.local"
 
@@ -16,36 +16,33 @@ Vagrant.configure(2) do |config|
 
     vm1.vm.hostname = hostname
 
+    vm1.vm.provider "virtualbox" do |vbox|
+      vbox.memory = "1024"
+    end
+
+    #vm1.vm.box = "ubuntu/trusty64"
     vm1.vm.box = "hashicorp/precise64"
 
     vm1.vm.network "private_network", ip: "10.42.0.10"
 
-    if first_run
-      vm1.vm.provision "file", source: "~/.ssh/id_rsa.pub",
-        destination: "/vagrant/authorized_keys"
-    else
+    if !first_run
       # Mount platforms via SSHFS
       config.sshfs.paths = { "/var/aegir/platforms" => "./platforms" }
       config.sshfs.username = "aegir"
       # SSH as the 'aegir' user
       config.ssh.username = 'aegir'
       config.ssh.private_key_path = '~/.ssh/id_rsa'
-      #TODO: investigate why we need to restart this manually
-      vm1.vm.provision "shell",
-        inline: "sudo service hosting-queued start"
     end
 
-    vm1.vm.provision "puppet" do |puppet|
-      puppet.module_path = "modules"
-      puppet.facter = {
-        "first_run" => first_run,
-        "fqdn"      => hostname
-      }
-    end
+    vm1.vm.provision "file",
+      source: "~/.ssh/id_rsa.pub",
+      destination: "/vagrant/authorized_keys",
+      run: "always"
 
-    config.vm.provider "virtualbox" do |v|
-      v.memory = 1024
-    end
+    vm1.vm.provision "puppet",
+      module_path: "modules",
+      facter: { "fqdn" => hostname },
+      run: "always"
 
     # Copy in some user-specific files to make the environment more familiar
 #    vagrant_home = '/home/vagrant'

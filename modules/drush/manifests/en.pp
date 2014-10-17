@@ -23,4 +23,15 @@ define drush::en (
     unless      => "drush ${site_alias} pm-list --status=enabled | grep ${name}",
   }
 
+  # Drush appears to cache the enabled status of modules...
+  drush::run {"drush-cc-drush:${name}":
+    command     => 'cache-clear drush',
+    site_alias  => $site_alias,
+    drush_user  => $drush_user,
+    drush_home  => $drush_home,
+    refreshonly => $refreshonly,
+    log         => $log,
+    require     => Drush::Run["drush-en:${name}"],
+  }
+
 }

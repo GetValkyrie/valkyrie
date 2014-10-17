@@ -1,6 +1,6 @@
 .vagrant/*
 modules/puppet-*
 platforms/
-.first_run
+.first_run_complete
 authorized_keys
 keys/
