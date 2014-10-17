@@ -1,9 +1,25 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+# Check that our required plugins are installed.
+unless Vagrant.has_plugin?("vagrant-sshfs")
+  raise 'The vagrant-sshfs plugin is not installed! (HINT: run "vagrant plugin install vagrant-sshfs")'
+end
+unless Vagrant.has_plugin?("vagrant-triggers")
+  raise 'The vagrant-triggers plugin is not installed! (HINT: run "vagrant
+  plugin install vagrant-triggers")'
+end
+
 Vagrant.configure(2) do |config|
+  # Since we change the SSH user, we need to first install a public key. This
+  # is done on the initial provisioning, which needs to run as the 'vagrant'
+  # user. So, we switch based on the presence of a semaphore file, which we
+  # create on provisioning, and remove after destroy.
   project_root = File.expand_path(File.dirname(__FILE__))
   first_run = !File.file?("#{project_root}/.first_run_complete")
+  config.trigger.after [:destroy] do
+    system("rm .first_run_complete > /dev/null 2>&1; echo '==> Removing .first_run_complete'")
+  end
 
   hostname = "aegir3.local"
 
@@ -28,6 +44,7 @@ Vagrant.configure(2) do |config|
     if !first_run
       # Mount platforms via SSHFS
       config.sshfs.paths = { "/var/aegir/platforms" => "./platforms" }
+      config.sshfs.enabled = false
       config.sshfs.username = "aegir"
       # SSH as the 'aegir' user
       config.ssh.username = 'aegir'
