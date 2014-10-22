@@ -6,6 +6,7 @@
 
 define('MAKEFILE_NAME', 'platform.make');
 require_once(dirname(__FILE__) . '/includes/templates.inc');
+require_once(dirname(__FILE__) . '/includes/aegir.inc');
 
 /**
  * Implements hook_drush_command().
