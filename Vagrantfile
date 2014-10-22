@@ -49,12 +49,13 @@ Vagrant.configure(2) do |config|
       # SSH as the 'aegir' user
       config.ssh.username = 'aegir'
       config.ssh.private_key_path = '~/.ssh/id_rsa'
+    else
+      vm1.vm.provision "file",
+        source: "~/.ssh/id_rsa.pub",
+        destination: "/vagrant/authorized_keys"
+      #destination: "/vagrant/authorized_keys",
+      #run: "always"
     end
-
-    vm1.vm.provision "file",
-      source: "~/.ssh/id_rsa.pub",
-      destination: "/vagrant/authorized_keys",
-      run: "always"
 
     vm1.vm.provision "puppet",
       module_path: "modules",

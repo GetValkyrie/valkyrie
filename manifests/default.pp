@@ -56,9 +56,20 @@ node default {
 
   include valkyrie::deploy_keys
 
-#  drush::git {'http://git.poeticsystems.com/camden/valkyrie.git':
-#    path => '/var/aegir/.drush/valkyrie',
-#    user => $aegir_user,
-#  }
+  #drush::git {'http://git.poeticsystems.com/valkyrie/drush-valkyrie.git':
+  drush::git {'git@git.poeticsystems.com:valkyrie/drush-valkyrie.git':
+    path     => '/var/aegir/.drush',
+    dir_name => 'valkyrie',
+    user     => $aegir_user,
+    require => User[$aegir_user],
+  }
+
+  drush::run {"drush-cc-drush:valkyrie":
+    command     => 'cache-clear drush',
+    drush_user  => $drush_user,
+    drush_home  => $drush_home,
+    refreshonly => true,
+    subscribe   => Drush::Git['git@git.poeticsystems.com:valkyrie/drush-valkyrie.git'],
+  }
 
 }
