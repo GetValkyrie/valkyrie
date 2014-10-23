@@ -41,7 +41,11 @@ Vagrant.configure(2) do |config|
 
     vm1.vm.network "private_network", ip: "10.42.0.10"
 
-    if !first_run
+    if first_run
+      vm1.vm.provision "file",
+        source: "~/.ssh/id_rsa.pub",
+        destination: "/vagrant/authorized_keys"
+    else
       # Mount platforms via SSHFS
       config.sshfs.paths = { "/var/aegir/platforms" => "./platforms" }
       config.sshfs.enabled = false
@@ -49,33 +53,18 @@ Vagrant.configure(2) do |config|
       # SSH as the 'aegir' user
       config.ssh.username = 'aegir'
       config.ssh.private_key_path = '~/.ssh/id_rsa'
-    else
-      vm1.vm.provision "file",
-        source: "~/.ssh/id_rsa.pub",
-        destination: "/vagrant/authorized_keys"
-      #destination: "/vagrant/authorized_keys",
-      #run: "always"
+      # Copy in some user-specific files to make the environment more familiar
+      dot_files = ['.gitconfig', '.vimrc', '.bashrc']
+      dot_files.each do |dot_file|
+        vm1.vm.provision "file", source: "~/#{dot_file}",
+          destination: "/var/aegir/#{dot_file}"
+      end
     end
 
     vm1.vm.provision "puppet",
       module_path: "modules",
       facter: { "fqdn" => hostname },
       run: "always"
-
-    # Copy in some user-specific files to make the environment more familiar
-#    vagrant_home = '/home/vagrant'
-#    home_dirs = ['/root', '/var/aegir']
-#    dot_files = ['.gitconfig', '.vimrc', '.bashrc']
-#    dot_files.each do |dot_file|
-#      vm1.vm.provision "file", source: "~/#{dot_file}",
-#        destination: "#{vagrant_home}/#{dot_file}"
-#      # Since the vagrant user doesn't have write access to other users' home
-#      # directories, we need to copy them into place
-#      home_dirs.each do |home_dir|
-#        vm1.vm.provision "shell",
-#          inline: "cp #{vagrant_home}/#{dot_file} #{home_dir}/#{dot_file}"
-#      end
-#    end
 
   end
 
