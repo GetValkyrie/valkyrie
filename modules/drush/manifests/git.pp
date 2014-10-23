@@ -43,6 +43,7 @@ define drush::git (
     exec {"drush-checkout-ref:${name}":
       command => "git checkout ${git_ref}",
       cwd     => $real_path,
+      user    => $user,
       path    => $paths,
       require => Exec["drush-clone-repo:${name}"],
     }
@@ -52,6 +53,7 @@ define drush::git (
     exec {"drush-update-repo:${name}":
       command => 'git pull -r',
       cwd     => $real_path,
+      user    => $user,
       path    => $paths,
       require => Exec["drush-clone-repo:${name}"],
     }

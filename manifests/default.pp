@@ -41,6 +41,7 @@ node default {
   class { 'aegir::dev' :
     hostmaster_ref  => '7.x-3.x',
     provision_ref   => '7.x-3.x',
+    provision_git_repo => 'http://git.poeticsystems.com/valkyrie/provision_git.git',
     provision_git_ref => 'dev/2362437',
     make_aegir_platform  => true,
     makefile        => '/var/aegir/.drush/provision/aegir-dev.make',
@@ -57,12 +58,13 @@ node default {
 
   include valkyrie::deploy_keys
 
-  #drush::git {'http://git.poeticsystems.com/valkyrie/drush-valkyrie.git':
-  drush::git {'git@git.poeticsystems.com:valkyrie/drush-valkyrie.git':
+  #drush::git {'git@git.poeticsystems.com:valkyrie/drush-valkyrie.git':
+  drush::git {'http://git.poeticsystems.com/valkyrie/drush-valkyrie.git':
     path     => '/var/aegir/.drush',
     dir_name => 'valkyrie',
     user     => $aegir_user,
-    require => User[$aegir_user],
+    require  => User[$aegir_user],
+    notify   => Drush::Run['drush-cc-drush:valkyrie'],
   }
 
   drush::run {"drush-cc-drush:valkyrie":
@@ -70,7 +72,6 @@ node default {
     drush_user  => $drush_user,
     drush_home  => $drush_home,
     refreshonly => true,
-    subscribe   => Drush::Git['git@git.poeticsystems.com:valkyrie/drush-valkyrie.git'],
   }
 
   # Ensure our git code is running on our dev branch

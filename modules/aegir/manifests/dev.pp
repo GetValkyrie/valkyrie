@@ -16,13 +16,13 @@ class aegir::dev (
   $update       = false,
   $platform_path      = false,
   $drush_make_version = false,
-  $make_aegir_platform  = false,
+  $make_aegir_platform = false,
   $hostmaster_repo    = 'http://git.drupal.org/project/hostmaster.git',
   $hostmaster_ref     = '7.x-3.x',
   $provision_repo     = 'http://git.drupal.org/project/provision.git',
   $provision_ref      = '7.x-3.x',
-  $provision_git_repo     = 'http://git.drupal.org/project/provision_git.git',
-  $provision_git_ref      = '7.x-3.x',
+  $provision_git_repo = 'http://git.drupal.org/project/provision_git.git',
+  $provision_git_ref  = '7.x-3.x',
   $install_dependencies = true
   ) inherits aegir::defaults {
 
@@ -54,6 +54,7 @@ class aegir::dev (
     git_branch => $provision_ref,
     dir_name   => 'provision',
     path       => "${aegir_root}/.drush/",
+    user       => $aegir_user,
     require    => File[ $aegir_root, "${aegir_root}/.drush"],
     update     => $update,
   }
@@ -73,6 +74,7 @@ class aegir::dev (
     git_branch => $provision_git_ref,
     dir_name   => 'provision_git',
     path       => "${aegir_root}/.drush/",
+    user       => $aegir_user,
     require    => File[ $aegir_root, "${aegir_root}/.drush", "${aegir_root}/.drush/provision"],
     update     => $update,
   }
