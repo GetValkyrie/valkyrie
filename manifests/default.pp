@@ -41,6 +41,7 @@ node default {
   class { 'aegir::dev' :
     hostmaster_ref  => '7.x-3.x',
     provision_ref   => '7.x-3.x',
+    provision_git_ref => 'dev/2362437',
     make_aegir_platform  => true,
     makefile        => '/var/aegir/.drush/provision/aegir-dev.make',
     platform_path   => '/var/aegir/hostmaster-7.x-3.x',
@@ -70,6 +71,17 @@ node default {
     drush_home  => $drush_home,
     refreshonly => true,
     subscribe   => Drush::Git['git@git.poeticsystems.com:valkyrie/drush-valkyrie.git'],
+  }
+
+  # Ensure our git code is running on our dev branch
+  #drush::git {'ergonlogic@git.drupal.org:project/hosting_git.git':
+  drush::git {'http://git.drupal.org/project/hosting_git.git':
+    path       => '/var/aegir/hostmaster-7.x-3.x/profiles/hostmaster/modules',
+    dir_name   => 'hosting_git',
+    git_branch => 'dev/2362437',
+    user       => $aegir_user,
+    #update     => true,
+    require    => Class['aegir::dev'],
   }
 
 }
