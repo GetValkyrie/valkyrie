@@ -21,9 +21,9 @@ function valkyrie_provision_drupal_create_directories_alter(&$mkdir, $url) {
 }
 
 /**
- * Implements hook_provision_drupal_chgrp_directories_alter().
+ * Implements hook_provision_drupal_non_recursive_directories_alter().
  */
-function valkyrie_provision_drupal_chgrp_directories_alter(&$non_recursive, $url) {
+function valkyrie_provision_drupal_non_recursive_directories_alter(&$non_recursive, $url) {
   $non_recursive[] = "sites/$url/modules/custom";
 }
 
