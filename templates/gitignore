@@ -1,4 +1,11 @@
-# Ignore site specific files, only keep all
+# Ignore site specific files
 sites/*
+
+# Keep sites/all except drush subfolder
 !sites/all
 sites/all/drush
+
+# Keep Drupal 7 default files and folders
+!sites/default
+!sites/example.sites.php
+!sites/README.txt
