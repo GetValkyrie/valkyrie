@@ -1,9 +1,10 @@
 # Ignore site specific files
 sites/*
 
-# Keep sites/all except drush subfolder
+# Keep sites/all except drush subfolder and contribs
 !sites/all
 sites/all/drush
+sites/all/*/contrib
 
 # Keep Drupal 7 default files and folders
 !sites/default
