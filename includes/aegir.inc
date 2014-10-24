@@ -17,7 +17,7 @@ function valkyrie_provision_drupal_config($uri, $data) {
  */
 function valkyrie_provision_drupal_create_directories_alter(&$mkdir, $url) {
   drush_log("Setting the features export path (sites/$url/modules/custom) to be group-writeable.");
-  $mkdir["sites/$url/modules/custom"] = 02770;
+  $mkdir["sites/$url/modules/custom"] = 02660;
 }
 
 /**
