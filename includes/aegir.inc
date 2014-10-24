@@ -23,6 +23,13 @@ function valkyrie_provision_drupal_create_directories_alter(&$mkdir, $url) {
 /**
  * Implements hook_provision_drupal_chgrp_directories_alter().
  */
+function valkyrie_provision_drupal_chgrp_directories_alter(&$non_recursive, $url) {
+  $non_recursive[] = "sites/$url/modules/custom";
+}
+
+/**
+ * Implements hook_provision_drupal_chgrp_directories_alter().
+ */
 function valkyrie_provision_drupal_chgrp_directories_alter(&$chgrp, $url) {
   $web_group = d('@server_master')->web_group;
   drush_log("Setting the features export path (sites/$url/modules/custom) group to the web user ($web_group)");
