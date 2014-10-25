@@ -2,13 +2,7 @@
 # vi: set ft=ruby :
 
 # Check that our required plugins are installed.
-unless Vagrant.has_plugin?("vagrant-sshfs")
-  raise 'The vagrant-sshfs plugin is not installed! (HINT: run "vagrant plugin install vagrant-sshfs")'
-end
-unless Vagrant.has_plugin?("vagrant-triggers")
-  raise 'The vagrant-triggers plugin is not installed! (HINT: run "vagrant
-  plugin install vagrant-triggers")'
-end
+require './lib/plugins/plugins'
 
 Vagrant.configure(2) do |config|
   # Since we change the SSH user, we need to first install a public key. This
