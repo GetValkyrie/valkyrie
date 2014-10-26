@@ -77,7 +77,7 @@ node default {
   # Ensure our git code is running on our dev branch
   #drush::git {'ergonlogic@git.drupal.org:project/hosting_git.git':
   drush::git {'http://git.drupal.org/project/hosting_git.git':
-    path       => '/var/aegir/hostmaster-7.x-3.x/profiles/hostmaster/modules',
+    path       => '/var/aegir/hostmaster-7.x-3.x/profiles/hostmaster/modules/aegir',
     dir_name   => 'hosting_git',
     git_branch => 'dev/2362437',
     user       => $aegir_user,
