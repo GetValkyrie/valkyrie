@@ -43,8 +43,11 @@ Vagrant.configure(2) do |config|
         source: "~/.ssh/id_rsa.pub",
         destination: "/vagrant/authorized_keys"
     else
-      # Mount platforms via SSHFS
-      config.sshfs.paths = { "/var/aegir/platforms" => "./platforms" }
+      # Mount platforms and aliases via SSHFS
+      config.sshfs.paths = {
+        "/var/aegir/platforms" => "./platforms",
+        "/var/aegir/aliases" => "./aliases"
+      }
       config.sshfs.enabled = false
       config.sshfs.username = "aegir"
       # SSH as the 'aegir' user
