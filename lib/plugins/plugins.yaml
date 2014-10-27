@@ -1,5 +1,5 @@
 vagrant-sshfs:
-  source: lib/bin/vagrant-sshfs-0.0.6.qnd1.gem
+  source: lib/bin/vagrant-sshfs.gem
   local: TRUE
 vagrant-triggers:
   source: vagrant-triggers

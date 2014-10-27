@@ -69,7 +69,7 @@ module Vagrant
           if File.exist?(folder) && Dir.entries(folder).size > 2
             error("non_empty_target", target: folder)
           elsif !File.exist?(folder)
-            if ask("create_target", target: folder) == "y"
+            if ask("create_target", target: folder)[0,1].downcase == "y"
               FileUtils.mkdir_p(folder)
               info("created_target", target: folder)
             else

@@ -10,7 +10,7 @@ en:
           created_target: "Created target `%{target}`"
         ask:
           create_src: "Source folder `%{src}` does not exist, create?"
-          create_target: "Target folder `%{target}` does not exist, create?"
+          create_target: "Target folder `%{target}` does not exist, create? (y/n)"
           pass: "Password for `%{user}`:"
         error:
           base: "vagrant-sshfs failed and couldn't proceed"
