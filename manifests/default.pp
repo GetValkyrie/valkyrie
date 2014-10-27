@@ -41,8 +41,6 @@ node default {
   class { 'aegir::dev' :
     hostmaster_ref  => '7.x-3.x',
     provision_ref   => '7.x-3.x',
-    provision_git_repo => 'http://git.poeticsystems.com/valkyrie/provision_git.git',
-    provision_git_ref => 'dev/2362437',
     make_aegir_platform  => true,
     makefile        => '/var/aegir/.drush/provision/aegir-dev.make',
     platform_path   => '/var/aegir/hostmaster-7.x-3.x',
@@ -59,8 +57,7 @@ node default {
 
   include valkyrie::deploy_keys
 
-  #drush::git {'git@git.poeticsystems.com:valkyrie/drush-valkyrie.git':
-  drush::git {'http://git.poeticsystems.com/valkyrie/drush-valkyrie.git':
+  drush::git {'git@git.poeticsystems.com:valkyrie/drush-valkyrie.git':
     path     => '/var/aegir/.drush',
     dir_name => 'valkyrie',
     user     => $aegir_user,

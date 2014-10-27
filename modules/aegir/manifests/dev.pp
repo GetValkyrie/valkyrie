@@ -21,8 +21,6 @@ class aegir::dev (
   $hostmaster_ref     = '7.x-3.x',
   $provision_repo     = 'http://git.drupal.org/project/provision.git',
   $provision_ref      = '7.x-3.x',
-  $provision_git_repo = 'http://git.drupal.org/project/provision_git.git',
-  $provision_git_ref  = '7.x-3.x',
   $install_dependencies = true
   ) inherits aegir::defaults {
 
@@ -66,26 +64,6 @@ class aegir::dev (
     loglevel => 'debug',
     recurse  => true,
     require  => Drush::Git['Install provision'],
-    before   => Drush::Run['hostmaster-install'],
-  }
-
-  drush::git { 'Install provision_git':
-    git_repo   => $provision_git_repo,
-    git_branch => $provision_git_ref,
-    dir_name   => 'provision_git',
-    path       => "${aegir_root}/.drush/",
-    user       => $aegir_user,
-    require    => File[ $aegir_root, "${aegir_root}/.drush", "${aegir_root}/.drush/provision"],
-    update     => $update,
-  }
-
-  file {"${aegir_root}/.drush/provision_git":
-    ensure   => present,
-    owner    => 'aegir',
-    group    => 'aegir',
-    loglevel => 'debug',
-    recurse  => true,
-    require  => Drush::Git['Install provision_git'],
     before   => Drush::Run['hostmaster-install'],
   }
 
@@ -290,17 +268,12 @@ echo '**************************************************************************
   }
 
   if $update {
-    $provision_dir     = "${aegir_root}/.drush/provision"
-    $provision_git_dir = "${aegir_root}/.drush/provision_git"
     $hostmaster_dir    = "${aegir_root}/hostmaster-${hostmaster_ref}/profiles/hostmaster"
     $hosting_dir       = "${hostmaster_dir}/modules/hosting"
     $hosting_git_dir   = "${hostmaster_dir}/modules/hosting_git"
     $eldir_dir         = "${hostmaster_dir}/themes/eldir"
     exec { 'update provision':
       command => "cd ${provision_dir} && git pull -r",
-    }
-    exec { 'update provision_git':
-      command => "cd ${provision_git_dir} && git pull -r",
     }
     exec { 'update hostmaster':
       command => "cd ${hostmaster_dir} && git pull -r",
