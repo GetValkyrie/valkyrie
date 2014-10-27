@@ -9,13 +9,17 @@ re_run = FALSE
 plugins.each do |plugin|
   name = plugin[0]
   source = ENV["project_root"] + plugin[1]['source']
-  local = plugin[1]['local']
+  local = defined?(plugin[1]['local']) ? plugin[1]['local'] : FALSE
   # Check that our required plugins are installed.
   unless Vagrant.has_plugin?(name)
     puts "Installing the #{name} plugin."
-    %x(vagrant plugin install #{source})
-    re_run = TRUE
-    puts 'Done!'
+    result = system("vagrant plugin install #{source}")
+    if result
+      puts 'Done!'
+      re_run = TRUE
+    else
+      raise "There appears to have been an error installing the #{name} plugin."
+    end
   end
   # Check local gem for update
   if local
@@ -28,9 +32,13 @@ plugins.each do |plugin|
     available = gem_spec.version.to_s
     if available != installed
       puts "Updating #{name} gem to #{available}..."
-      %x(vagrant plugin install #{source})
-      puts "Done!"
-      re_run = TRUE
+      result = system("vagrant plugin install #{source}")
+      if result
+        puts "Done!"
+        re_run = TRUE
+      else
+        raise "There appears to have been an error installing the #{name} plugin."
+      end
     end
   end
 end
