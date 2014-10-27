@@ -1,16 +1,17 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+
 # Check that our required plugins are installed.
-require './lib/plugins/plugins'
+ENV["project_root"] = File.expand_path(File.dirname(__FILE__)) + '/'
+require ENV["project_root"] + 'lib/plugins/plugins'
 
 Vagrant.configure(2) do |config|
   # Since we change the SSH user, we need to first install a public key. This
   # is done on the initial provisioning, which needs to run as the 'vagrant'
   # user. So, we switch based on the presence of a semaphore file, which we
   # create on provisioning, and remove after destroy.
-  project_root = File.expand_path(File.dirname(__FILE__))
-  first_run = !File.file?("#{project_root}/.first_run_complete")
+  first_run = !File.file?("#{ENV["project_root"]}/.first_run_complete")
   config.trigger.after [:destroy] do
     system("rm .first_run_complete > /dev/null 2>&1; echo '==> Removing .first_run_complete'")
   end
