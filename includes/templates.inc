@@ -14,7 +14,7 @@ function valkyrie_template($template_path, $dest_path, $variables = array(), $ov
   }
   if ($overwrite || !file_exists($dest_path)) {
     file_put_contents($dest_path, $contents);
-    return;
+    return TRUE;
   }
   drush_set_error('VALKYRIE_FILE_EXISTS', 'The specified destination file already exists.');
 }
