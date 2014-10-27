@@ -15,7 +15,8 @@ module Vagrant
         end
 
         def mount(src, target)
-          `#{sshfs_bin} -p #{port} #{username}@#{host}:#{check_src!(src)} #{check_target!(target)} -o IdentityFile=#{private_key} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null `
+          extra_options = '-o reconnect -o idmap=user'
+          `#{sshfs_bin} #{extra_options} -p #{port} #{username}@#{host}:#{check_src!(src)} #{check_target!(target)} -o IdentityFile=#{private_key} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null `
         end
 
         def ssh_info
