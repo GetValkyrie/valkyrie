@@ -52,6 +52,7 @@ node default {
 
   drush::en {['hosting_git', 'hosting_platform_pathauto', 'hosting_git_pull']:
     site_alias => '@hm',
+    drush_user  => $aegir_user,
     drush_home => $aegir_root,
     require    => Class['aegir::dev'],
   }
