@@ -14,6 +14,8 @@ Vagrant.configure(2) do |config|
   first_run = !File.file?("#{ENV["project_root"]}/.first_run_complete")
   config.trigger.after [:destroy] do
     system("rm .first_run_complete > /dev/null 2>&1; echo '==> Removing .first_run_complete'")
+    system("fusermount -u ./platforms > /dev/null 2>&1; echo '==> Un-mounting platforms directory'")
+    system("rmdir ./platforms > /dev/null 2>&1; echo '==> Removing platforms directory mount-point'")
   end
 
   hostname = "aegir3.local"
