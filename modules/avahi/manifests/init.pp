@@ -19,7 +19,7 @@ class avahi inherits aegir::defaults {
   }
   supervisor::service { 'avahi-aliases':
     ensure  => 'running',
-    command => '/usr/bin/python /usr/local/bin/avahi-alias start',
+    command => '/usr/bin/python /usr/local/bin/avahi-alias',
     require => Service['avahi-aliases'],
   }
 
