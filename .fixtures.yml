@@ -1,0 +1,3 @@
+fixtures:
+  symlinks:
+    "supervisor": "#{source_dir}"

@@ -1,0 +1,12 @@
+*.swp
+*.swo
+.gems/
+.bundle/
+spec/fixtures/
+Gemfile.lock
+.rspec-local
+.rbenv*
+.idea
+*.iml
+.ruby-version
+atlassian-ide-plugin.xml
