@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#!/usr/bin/python
 import time, locale, os, sys
 import subprocess
 
@@ -113,6 +113,8 @@ class AvahiAliases:
         sys.exit(0)
 
 if __name__ == "__main__":
-    daemon_runner = runner.DaemonRunner( AvahiAliases() )
-    daemon_runner.do_action()
+#    daemon_runner = runner.DaemonRunner( AvahiAliases() )
+#    daemon_runner.do_action()
+  process = AvahiAliases()
+  process.run()
 
