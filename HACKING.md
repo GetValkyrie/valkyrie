@@ -18,7 +18,9 @@ The commands I ran to initialize this setup were:
     # Avahi Aliases
     git remote add -f avahi-aliases https://github.com/PraxisLabs/avahi-aliases.git
     git subtree add --prefix modules/avahi avahi-aliases master --squash
-
+    # Supervisor
+    git remote add -f puppet-supervisor https://github.com/GetValkyrie/puppet-module-supervisor.git
+    git subtree add --prefix modules/supervisor puppet-supervisor process_name --squash
 
 Hacking Vagrant Plugins
 =======================
@@ -62,3 +64,4 @@ it with:
 
 Assuming the modifications work as desired, commit the changed to both the
 source and the compiled gem.
+

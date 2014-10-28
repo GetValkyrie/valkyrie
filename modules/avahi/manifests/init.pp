@@ -11,6 +11,18 @@ class avahi inherits aegir::defaults {
     require => Package['python-avahi', 'python-pip', 'avahi-daemon'],
   }
 
+  # Replace upstart service with Supervisor
+  include supervisor
+  service { 'avahi-aliases':
+    ensure  => 'stopped',
+    require => Exec['avahi pip'],
+  }
+  supervisor::service { 'avahi-aliases':
+    ensure  => 'running',
+    command => '/usr/bin/python /usr/local/bin/avahi-alias start',
+    require => Service['avahi-aliases'],
+  }
+
   # Install Provision extension.
   drush::git {'provision_avahi':
     path     => '/var/aegir/.drush/',
