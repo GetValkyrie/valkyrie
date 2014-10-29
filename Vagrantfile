@@ -56,8 +56,11 @@ Vagrant.configure(2) do |config|
       # Copy in some user-specific files to make the environment more familiar
       dot_files = ['.gitconfig', '.vimrc', '.bashrc']
       dot_files.each do |dot_file|
-        vm1.vm.provision "file", source: "~/#{dot_file}",
-          destination: "/var/aegir/#{dot_file}"
+        real_dotfile = ENV['HOME']+'/'+dot_file
+        if File.file?(real_dotfile)
+          vm1.vm.provision "file", source: real_dotfile,
+            destination: "/var/aegir/#{dot_file}"
+        end
       end
     end
 
