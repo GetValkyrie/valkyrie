@@ -18,6 +18,11 @@ Vagrant.configure(2) do |config|
     system("rmdir ./platforms > /dev/null 2>&1; echo '==> Removing platforms directory mount-point'")
   end
 
+  config.trigger.before [:provision, :up, :reload] do
+    aliases_path = ENV["project_root"] + 'aliases'
+    system("drush ./lib/bin/set_alias_path.php #{aliases_path}")
+  end
+
   hostname = "aegir3.local"
 
   # Silence annoying and spurious warnings
