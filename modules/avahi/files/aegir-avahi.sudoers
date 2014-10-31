@@ -1,3 +1,0 @@
-aegir ALL=NOPASSWD: /usr/sbin/service avahi-aliases start
-aegir ALL=NOPASSWD: /usr/sbin/service avahi-aliases restart
-aegir ALL=NOPASSWD: /usr/sbin/service avahi-aliases stop
