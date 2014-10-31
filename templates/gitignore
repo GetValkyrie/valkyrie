@@ -5,6 +5,7 @@ sites/*
 !sites/all
 sites/all/drush
 sites/all/*/contrib
+sites/all/libraries
 
 # Keep Drupal 7 default files and folders
 !sites/default
