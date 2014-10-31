@@ -16,7 +16,7 @@ The commands I ran to initialize this setup were:
     git remote add -f puppet-drush ergonlogic@git.drupal.org:project/puppet-drush.git
     git subtree add --prefix modules/drush puppet-drush 1.0.x --squash
     # Avahi Aliases
-    git remote add -f avahi-aliases https://github.com/PraxisLabs/avahi-aliases.git
+    git remote add -f avahi-aliases git@git.poeticsystems.com:valkyrie/provision_avahi.git
     git subtree add --prefix modules/avahi avahi-aliases master --squash
     # Supervisor
     git remote add -f puppet-supervisor https://github.com/GetValkyrie/puppet-module-supervisor.git
