@@ -22,10 +22,13 @@ The commands I ran to initialize this setup were:
     git remote add -f puppet-supervisor https://github.com/GetValkyrie/puppet-module-supervisor.git
     git subtree add --prefix modules/supervisor puppet-supervisor process_name --squash
 
+To pull down updates to an upstream project, I ran this:
+
+    git subtree pull --prefix modules/avahi avahi-aliases master --squash
+
 To push changes back upstream, I ran the following:
 
-    git remote add -f avahi-aliases https://github.com/PraxisLabs/avahi-aliases.git
-    git subtree push --prefix=modules/avahi avahi-aliases master
+    git subtree push --prefix modules/avahi avahi-aliases master
 
 That is, I added the remote to my local repo, and pushed the changes back up to
 the remote.
