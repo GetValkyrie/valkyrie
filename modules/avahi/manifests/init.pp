@@ -14,7 +14,7 @@ class avahi inherits aegir::defaults {
     require  => $aegir_installed,
   }
 
-  file {'/etc/avahi/aliases.d':
+  file { [ '/etc/avahi', '/etc/avahi/aliases.d' ]:
     ensure => directory,
   }
 
