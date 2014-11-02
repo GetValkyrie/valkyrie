@@ -56,6 +56,7 @@ class drush::git::drush (
 
   exec {'Install Drush dependencies' :
     command     => 'php ./composer.phar install > composer.log',
+    environment => ["COMPOSER_HOME=/usr/share/drush"],
     cwd         => '/usr/share/drush',
     refreshonly => true,
     require     => Exec['Install composer'],
