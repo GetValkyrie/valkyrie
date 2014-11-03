@@ -153,12 +153,30 @@ class aegir::dev (
         require     => Package[$web_server],
         before      => Drush::Run['hostmaster-install'],
       }
-      file { '/etc/apache2/conf.d/aegir.conf':
-        ensure  => link,
-        target  => "${aegir_root}/config/apache.conf",
-        notify  => Exec['Enable mod-rewrite'],
-        require => Package[$web_server],
-        before  => Drush::Run['hostmaster-install'],
+      #if ubuntu 13.10+ or Debian 7+
+      if ($operatingsystem == 'Ubuntu' and $operatingsystemrelease >= 13.10)
+        or ($operatingsystem == 'Debian' and $operatingsystemrelease in ['jessie', 'testing', 'sid']) {
+        file { '/etc/apache2/conf-available/aegir.conf':
+          ensure  => link,
+          target  => "${aegir_root}/config/apache.conf",
+          require => Package[$web_server],
+        }
+        file { '/etc/apache2/conf-enabled/aegir.conf':
+          ensure => link,
+          target => '/etc/apache2/conf-available/aegir.conf',
+          require => File['/etc/apache2/conf-available/aegir.conf'],
+          notify  => Exec['Enable mod-rewrite'],
+          before  => Drush::Run['hostmaster-install'],
+        }
+      }
+      else {
+        file { '/etc/apache2/conf.d/aegir.conf':
+          ensure  => link,
+          target  => "${aegir_root}/config/apache.conf",
+          notify  => Exec['Enable mod-rewrite'],
+          require => Package[$web_server],
+          before  => Drush::Run['hostmaster-install'],
+        }
       }
     }
     default: {
