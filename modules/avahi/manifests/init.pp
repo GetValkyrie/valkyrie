@@ -13,21 +13,28 @@ class avahi inherits aegir::defaults {
     user     => 'aegir',
     require  => $aegir_installed,
   }
-
-  file { [ '/etc/avahi', '/etc/avahi/aliases.d' ]:
-    ensure => directory,
+  file {'/var/aegir/config/avahi-aliases':
+    ensure  => directory,
+    owner   => 'aegir',
+    group   => 'aegir',
+    require => $aegir_installed,
+  }
+  file {'/etc/avahi/aliases.d':
+    ensure  => directory,
+    require => Package['avahi-daemon'],
   }
 
   include supervisor
   supervisor::service { 'avahi-aliases':
     ensure  => 'running',
-    command => '/var/aegir/.drush/provision_avahi/publish.py --directory=/var/aegir/config/avahi-aliases',
+    command => '/var/aegir/.drush/provision_avahi/publish.py --directory=/var/aegir/config/avahi-aliases --debug',
+    user    => 'aegir',
     require => Drush::Git['provision_avahi'],
   }
 
   # Allow 'aegir' user to restart the avahi-aliases daemon.
   file {'/etc/sudoers.d/aegir-avahi':
-    source => 'puppet:///avahi/aegir-avahi.sudoers',
+    source => 'puppet:///modules/avahi/aegir-avahi.sudoers',
     mode   => '440',
     owner  => 'root',
     group  => 'root',
