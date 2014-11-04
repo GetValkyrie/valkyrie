@@ -22,6 +22,9 @@ Vagrant.configure(2) do |config|
     aliases_path = ENV["project_root"] + 'aliases'
     system("drush ./lib/bin/set_alias_path.php #{aliases_path}")
   end
+  config.trigger.after [:provision, :up, :reload] do
+    system("vagrant sshfs")
+  end
 
   hostname = "aegir3.local"
 
