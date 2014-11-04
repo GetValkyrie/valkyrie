@@ -1,7 +1,7 @@
 class avahi inherits aegir::defaults {
 
   # Install dependencies.
-  package {['python-avahi', 'python-gobject', 'avahi-daemon']:
+  package {['python-avahi', 'python-gobject', 'avahi-daemon', 'avahi-utils']:
     ensure => present,
     before => Supervisor::Service['avahi-aliases'],
   }
@@ -9,7 +9,7 @@ class avahi inherits aegir::defaults {
   # Install Provision extension.
   drush::git {'provision_avahi':
     path     => '/var/aegir/.drush/',
-    git_repo => 'git@git.poeticsystems.com:valkyrie/provision_avahi.git',
+    git_repo => 'http://git.poeticsystems.com/valkyrie/provision_avahi.git',
     user     => 'aegir',
     require  => $aegir_installed,
   }
@@ -28,7 +28,6 @@ class avahi inherits aegir::defaults {
   supervisor::service { 'avahi-aliases':
     ensure  => 'running',
     command => '/var/aegir/.drush/provision_avahi/publish.py --directory=/var/aegir/config/avahi-aliases --debug',
-    user    => 'aegir',
     require => Drush::Git['provision_avahi'],
   }
 
