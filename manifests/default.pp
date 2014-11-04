@@ -9,8 +9,16 @@ node default {
   $web_group  = 'www-data'
 
   User <| title == $aegir_user |> {
-    groups  => [$web_group, 'admin'], #Allow password-less sudo
-    shell   => '/bin/bash',
+    groups +> [$web_group, 'adm'], #Allow access to logs
+    shell  => '/bin/bash',
+  }
+
+  # Allow 'aegir' user passqord-less sudo.
+  file {'/etc/sudoers.d/aegir-sudo':
+    content => "${aegir_user} ALL=NOPASSWD:ALL",
+    mode   => '440',
+    owner  => 'root',
+    group  => 'root',
   }
 
   file {"$aegir_root/.ssh":
