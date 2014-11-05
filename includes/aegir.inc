@@ -47,6 +47,23 @@ function valkyrie_provision_drupal_chgrp_directories_alter(&$chgrp, $url) {
 }
 
 /**
+ * Allow the web user to write to custom features.
+ *
+ * WARNING: This is insecure, and *MUST ONLY BE USED IN DEVELOPMENT* 
+ */
+function _valkyrie_fix_dev_perms() {
+  // Only run on hosted sites, not the Aegir front-end.
+  if (d()->profile != 'hostmaster') {
+    $path = d()->site_path . '/modules/custom';
+    $group = d('@server_master')->web_group;
+    drush_log('Ensuring custom features can be exported directly from the site.');
+    provision_file()->chgrp($path, $group, TRUE)
+      ->succeed('Changed group ownership of <code>@path</code> to @gid')
+      ->fail('Could not change group ownership <code>@path</code> to @gid');
+  }
+}
+
+/**
  * Implements drush_hook_post_COMMAND().
  */
 function drush_valkyrie_post_provision_verify() {
@@ -55,6 +72,7 @@ function drush_valkyrie_post_provision_verify() {
     if (d()->profile == 'hostmaster') {
       _drush_valkyrie_create_alias('hm');
     }
+    _valkyrie_fix_dev_perms();
   }
 }
 
