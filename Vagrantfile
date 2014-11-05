@@ -41,6 +41,10 @@ Vagrant.configure(2) do |config|
 
   hostname = "aegir3.local"
 
+  # Setup DNS server to resolve *.val
+  config.dns.tld = "val"
+  config.dns.patterns = [/^.*\.val$/]
+
   # Silence annoying and spurious warnings
   config.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
 
