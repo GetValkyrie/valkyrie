@@ -19,8 +19,14 @@ Vagrant.configure(2) do |config|
   first_run = !File.file?("#{ENV["project_root"]}/.first_run_complete")
   config.trigger.after [:destroy] do
     system("rm .first_run_complete > /dev/null 2>&1; echo '==> Removing .first_run_complete'")
+    # Determine the correct command to unmount sshfs directories
+    if `which fusermount`.empty?
+      umount_cmd = 'umount'
+    else
+      umount_cmd = 'fusermount -u -q'
+    end
     sshfs_paths.each do |guest_path, host_path|
-      system("fusermount -u #{host_path} > /dev/null 2>&1; echo '==> Un-mounting #{host_path}'")
+      system("#{umount_cmd} #{host_path} > /dev/null 2>&1; echo '==> Un-mounting #{host_path}'")
       system("rmdir #{host_path} > /dev/null 2>&1; echo '==> Removing #{host_path} mount-point'")
     end
   end
