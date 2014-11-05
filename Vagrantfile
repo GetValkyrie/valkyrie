@@ -6,6 +6,11 @@
 ENV["project_root"] = File.expand_path(File.dirname(__FILE__)) + '/'
 require ENV["project_root"] + 'lib/plugins/plugins'
 
+sshfs_paths = {
+  "/var/aegir/platforms" => "./platforms",
+  "/var/aegir/aliases" => "./aliases"
+}
+
 Vagrant.configure(2) do |config|
   # Since we change the SSH user, we need to first install a public key. This
   # is done on the initial provisioning, which needs to run as the 'vagrant'
@@ -14,8 +19,10 @@ Vagrant.configure(2) do |config|
   first_run = !File.file?("#{ENV["project_root"]}/.first_run_complete")
   config.trigger.after [:destroy] do
     system("rm .first_run_complete > /dev/null 2>&1; echo '==> Removing .first_run_complete'")
-    system("fusermount -u ./platforms > /dev/null 2>&1; echo '==> Un-mounting platforms directory'")
-    system("rmdir ./platforms > /dev/null 2>&1; echo '==> Removing platforms directory mount-point'")
+    sshfs_paths.each do |guest_path, host_path|
+      system("fusermount -u #{host_path} > /dev/null 2>&1; echo '==> Un-mounting #{host_path}'")
+      system("rmdir #{host_path} > /dev/null 2>&1; echo '==> Removing #{host_path} mount-point'")
+    end
   end
 
   config.trigger.before [:provision, :up, :reload] do
@@ -52,10 +59,7 @@ Vagrant.configure(2) do |config|
         destination: "/vagrant/authorized_keys"
     else
       # Mount platforms and aliases via SSHFS
-      config.sshfs.paths = {
-        "/var/aegir/platforms" => "./platforms",
-        "/var/aegir/aliases" => "./aliases"
-      }
+      config.sshfs.paths = sshfs_paths
       config.sshfs.enabled = false
       config.sshfs.username = "aegir"
       # SSH as the 'aegir' user
