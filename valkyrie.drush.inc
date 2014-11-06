@@ -39,7 +39,75 @@ function valkyrie_drush_command() {
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap at all.
   );
 
+  $items['valkyrie-sql-snapshot'] = array(
+    'description' => "Cache a sql-dump for later diff'ing.",
+    'aliases' => array('vss'),
+    'bootstrap' => DRUSH_BOOTSTRAP_NONE,
+    'handle-remote-commands' => TRUE,
+  );
+  $items['valkyrie-sql-diff'] = array(
+    'description' => "Diff the current sql-dump with an earlier snapshot.",
+    'aliases' => array('vsd'),
+    'options' => array(
+      'prompt' => 'Choose from a list of previous snapshots.',
+      'diff-cmd' => "Specify the command to use for diff'ing.",
+    ),
+    'bootstrap' => DRUSH_BOOTSTRAP_NONE,
+    'handle-remote-commands' => TRUE,
+  );
+
   return $items;
+}
+
+/**
+ * Command callback for the 'valkyrie-snapshot' command.
+ */
+function drush_valkyrie_sql_snapshot() {
+  $alias = drush_get_context('DRUSH_TARGET_SITE_ALIAS');
+  // TODO: move the default snapshot location to a cache directory
+  $filename = drush_get_option('snapshot-file', "snapshot-$alias-" . date('c'));
+  return _drush_valkyrie_sql_snapshot($alias, $filename);
+}
+
+function _drush_valkyrie_sql_snapshot($alias, $filename) {
+  $options = array(
+    'skip-tables-key' => 'dev',
+    'data-only' => TRUE,
+    'ordered-dump' => TRUE,
+  );
+  $return = drush_invoke_process($alias, 'sql-dump', array(), $options, array('integrate' => FALSE));
+  if ($return === FALSE || $return['error_status']) {
+    return drush_set_error('Unable to execute SQL snapshot: ' .  $return['output']);
+  }
+  return file_put_contents($filename, $return['output']);
+}
+
+/**
+ * Command callback for the 'valkyrie-snapshot' command.
+ */
+function drush_valkyrie_sql_diff() {
+  $alias = drush_get_context('DRUSH_TARGET_SITE_ALIAS');
+  $files = array_keys(drush_scan_directory(getcwd(), '/snapshot/'));
+  if (!count($files)) {
+    return drush_set_error('No snapshot file found.');
+  }
+  sort($files);
+  if (drush_get_option('prompt', FALSE)) {
+    $choice = drush_choice($files);
+    if ($choice === FALSE) {
+      return FALSE;
+    }
+  }
+  else {
+    $choice = count($files) - 1;
+  }
+  $filename = drush_tempnam('valkyrie_tmp_sql_dump');
+  if (!_drush_valkyrie_sql_snapshot($alias, $filename)) {
+    return FALSE;
+  }
+
+  $diff_command = drush_get_option('diff-cmd', 'git diff --no-index');
+  drush_shell_proc_open("$diff_command {$files[$choice]} $filename");
 }
 
 /**
