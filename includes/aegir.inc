@@ -4,7 +4,7 @@
  * @file Hooks to modify Aegir's operations.
  */
 
-define('AEGIR_FRONTEND_URL', `hostname -f`);
+define('AEGIR_FRONTEND_URL', trim(shell_exec('hostname -f')));
 
 /**
  * Implements hook_provision_drupal_config().
@@ -86,7 +86,7 @@ function _drush_valkyrie_create_alias($aliasname = NULL) {
   $variables = array(
     'aliasname' => $aliasname,
     'options' => array(
-      'remote-host' => `hostname -f`,
+      'remote-host' => trim(shell_exec('hostname -f')),
       'remote-user' => 'aegir',
       'root' => d()->root,
       'uri' => d()->uri,
