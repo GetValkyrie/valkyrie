@@ -135,7 +135,8 @@ Vagrant.configure(2) do |config|
     end
 
     vm1.vm.provision 'puppet',
-      module_path: 'modules',
+      module_path: 'lib/puppet/modules',
+      manifests_path: 'lib/puppet/manifests',
       facter: { 'fqdn' => hostname },
       run: 'always'
 
