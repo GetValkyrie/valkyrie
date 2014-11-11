@@ -61,6 +61,13 @@ function _valkyrie_fix_dev_perms() {
     provision_file()->chgrp($path, $group, TRUE)
       ->succeed('Changed group ownership of <code>@path</code> to @gid')
       ->fail('Could not change group ownership <code>@path</code> to @gid');
+    // Sites appear to be cloned as 555, making it impossible to delete them.
+    // TODO: Move this into hosting_git? Figure out why it's happening in the
+    // first place.
+    drush_log('Ensuring proper permissions on site path.');
+    provision_file()->chmod(d()->site_path, 0755)
+      ->succeed('Changed permissions of @path to @perm')
+      ->fail('Could not change permissions of @path to @perm');
   }
 }
 
