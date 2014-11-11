@@ -4,7 +4,8 @@
  * @file Hooks to modify Aegir's operations.
  */
 
-define('AEGIR_FRONTEND_URL', trim(shell_exec('hostname -f')));
+define('AEGIR_FRONTEND_URL', provision_fqdn(d()->server->remote_host));
+define('VALKYRIE_ALIASES_PATH', '/var/aegir/config/valkyrie_aliases');
 
 /**
  * Implements hook_provision_drupal_config().
@@ -76,18 +77,20 @@ function drush_valkyrie_post_provision_verify() {
   }
 }
 
-
+/**
+ * Helper function to create aliases for use on the host.
+ */
 function _drush_valkyrie_create_alias($aliasname = NULL) {
   if (is_null($aliasname)) {
     $aliasname = d()->uri;
   }
   $template_path = dirname(dirname(__FILE__)) . '/templates/drush_alias.tpl.php';
-  $dest_path = "/var/aegir/aliases/$aliasname.alias.drushrc.php";
+  $dest_path = VALKYRIE_ALIASES_PATH . "/$aliasname.alias.drushrc.php";
   $variables = array(
     'aliasname' => $aliasname,
     'options' => array(
-      'remote-host' => trim(shell_exec('hostname -f')),
-      'remote-user' => 'aegir',
+      'remote-host' => provision_fqdn(d()->server->remote_host),
+      'remote-user' => d()->server->script_user,
       'root' => d()->root,
       'uri' => d()->uri,
     ),
