@@ -10,10 +10,10 @@ define('VALKYRIE_ALIASES_PATH', '/var/aegir/config/valkyrie_aliases');
 /**
  * Implements hook_provision_drupal_config().
  */
-function valkyrie_provision_drupal_config($uri, $data) {
+function valkyrie_provision_drupal_config($url, $data) {
   if (!in_array($url, array('all', AEGIR_FRONTEND_URL))) {
     drush_log('Setting default features export path.');
-    return "\$conf['features_default_export_path'] = 'sites/$uri/modules/custom';";
+    return "\$conf['features_default_export_path'] = 'sites/$url/modules/custom';";
   }
 }
 
