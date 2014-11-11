@@ -110,3 +110,29 @@ function drush_valkyrie_post_provision_install() {
   // Sites are not verified on install, so run our hook here.
   drush_valkyrie_post_provision_verify();
 }
+
+/**
+ * Implements drush_hook_post_COMMAND().
+ */
+function drush_valkyrie_post_provision_delete() {
+  // Remove the alias we generated.
+  _drush_valkyrie_delete_alias();
+}
+
+/**
+ * Helper function to delete aliases generated for use on the host.
+ */
+function _drush_valkyrie_delete_alias() {
+  $alias_path = VALKYRIE_ALIASES_PATH . '/' . d()->uri . '.alias.drushrc.php';
+  if (file_exists($alias_path)) {
+    if (unlink($alias_path)) {
+      drush_log('Deleted Drush alias for Valkyrie.', 'ok');
+    }
+    else {
+      drush_log('Failed to delete Drush alias for Valkyrie.', 'warning');
+    }
+  }
+  else {
+    drush_log('Failed to find a Drush alias for Valkyrie to delete.', 'warning');
+  }
+}
