@@ -6,7 +6,10 @@
 
 define('MAKEFILE_NAME', 'platform.make');
 require_once(dirname(__FILE__) . '/includes/templates.inc');
-require_once(dirname(__FILE__) . '/includes/aegir.inc');
+// Only include Aegir hooks when on an Aegir server.
+if (function_exists('provision_fqdn')) {
+  require_once(dirname(__FILE__) . '/includes/aegir.inc');
+}
 
 /**
  * Implements hook_drush_command().
