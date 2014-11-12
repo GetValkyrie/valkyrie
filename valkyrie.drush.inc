@@ -45,6 +45,10 @@ function valkyrie_drush_command() {
   $items['valkyrie-sql-snapshot'] = array(
     'description' => "Cache a sql-dump for later diff'ing.",
     'aliases' => array('vss'),
+    'options' => array(
+      'snapshot-file' => 'Specify the file to which to write the snapshot.',
+      'snapshot-dir' => 'Specify the directory to which to write snapshots.',
+    ),
     'bootstrap' => DRUSH_BOOTSTRAP_NONE,
     'handle-remote-commands' => TRUE,
   );
@@ -54,6 +58,8 @@ function valkyrie_drush_command() {
     'options' => array(
       'prompt' => 'Choose from a list of previous snapshots.',
       'diff-cmd' => "Specify the command to use for diff'ing.",
+      'snapshot-file' => 'Specify the file containing the snapshot to compare.',
+      'snapshot-dir' => 'Specify the directory to search for snapshots.',
     ),
     'bootstrap' => DRUSH_BOOTSTRAP_NONE,
     'handle-remote-commands' => TRUE,
@@ -68,7 +74,11 @@ function valkyrie_drush_command() {
 function drush_valkyrie_sql_snapshot() {
   $alias = drush_get_context('DRUSH_TARGET_SITE_ALIAS');
   // TODO: move the default snapshot location to a cache directory
-  $filename = drush_get_option('snapshot-file', "snapshot-$alias-" . date('c'));
+  $dir = drush_get_option('snapshot-dir', getcwd() . '/.valkyrie/sql-snapshots');
+  if (!is_dir($dir)) {
+    drush_mkdir($dir);
+  }
+  $filename = drush_get_option('snapshot-file', "$dir/snapshot-$alias-" . date('c'));
   return _drush_valkyrie_sql_snapshot($alias, $filename);
 }
 
@@ -90,27 +100,33 @@ function _drush_valkyrie_sql_snapshot($alias, $filename) {
  */
 function drush_valkyrie_sql_diff() {
   $alias = drush_get_context('DRUSH_TARGET_SITE_ALIAS');
-  $files = array_keys(drush_scan_directory(getcwd(), '/snapshot/'));
-  if (!count($files)) {
-    return drush_set_error('No snapshot file found.');
+  if (drush_get_option('snapshot-file', FALSE)) {
+    $snapshot = drush_get_option('snapshot-file');
   }
-  sort($files);
-  if (drush_get_option('prompt', FALSE)) {
-    $choice = drush_choice($files);
-    if ($choice === FALSE) {
+  else {
+    $dir = drush_get_option('snapshot-dir', getcwd() . '/.valkyrie/sql-snapshots');
+    $files = array_keys(drush_scan_directory($dir, '/snapshot/'));
+    if (!count($files)) {
+      return drush_set_error('No snapshot file found.');
+    }
+    sort($files);
+    if (drush_get_option('prompt', FALSE)) {
+      $choice = drush_choice($files);
+      if ($choice === FALSE) {
+        return FALSE;
+      }
+    }
+    else {
+      $choice = count($files) - 1;
+    }
+    $snapshot = $files[$choice];
+    $filename = drush_tempnam('valkyrie_tmp_sql_dump');
+    if (!_drush_valkyrie_sql_snapshot($alias, $filename)) {
       return FALSE;
     }
   }
-  else {
-    $choice = count($files) - 1;
-  }
-  $filename = drush_tempnam('valkyrie_tmp_sql_dump');
-  if (!_drush_valkyrie_sql_snapshot($alias, $filename)) {
-    return FALSE;
-  }
-
-  $diff_command = drush_get_option('diff-cmd', 'git diff --no-index');
-  drush_shell_proc_open("$diff_command {$files[$choice]} $filename");
+  $diff_command = drush_get_option('diff-cmd', 'git diff --no-index -U0 --no-prefix');
+  drush_shell_proc_open("$diff_command $snapshot $filename");
 }
 
 /**
