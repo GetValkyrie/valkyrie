@@ -81,6 +81,7 @@ function drush_valkyrie_post_provision_verify() {
       _drush_valkyrie_create_alias('hm');
     }
     _valkyrie_fix_dev_perms();
+    _valkyrie_add_default_drushrc();
   }
 }
 
@@ -141,5 +142,24 @@ function _drush_valkyrie_delete_alias() {
   }
   else {
     drush_log('Failed to find a Drush alias for Valkyrie to delete.', 'warning');
+  }
+}
+
+/**
+ * Helper function to create local.drushrc.php for site.
+ */
+function _valkyrie_add_default_drushrc() {
+  $dest_path = d()->site_path . '/local.drushrc.php';
+  if (file_exists($dest_path)) {
+    drush_log('Local Drushrc file already exists at: ' . $dest_path, 'ok');
+  }
+  else {
+    $template_path = dirname(dirname(__FILE__)) . '/templates/drushrc.tpl.php';
+    if (valkyrie_template($template_path, $dest_path)) {
+      drush_log('Created local Drushrc file for Valkyrie.', 'ok');
+    }
+    else {
+      drush_log('Failed to create Drush alias for Valkyrie.', 'warning');
+    }
   }
 }
