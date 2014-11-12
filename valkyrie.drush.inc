@@ -105,7 +105,7 @@ function drush_valkyrie_sql_diff() {
   }
   else {
     $dir = drush_get_option('snapshot-dir', getcwd() . '/.valkyrie/sql-snapshots');
-    $files = array_keys(drush_scan_directory($dir, '/snapshot/'));
+    $files = array_keys(drush_scan_directory($dir, "/$alias/"));
     if (!count($files)) {
       return drush_set_error('No snapshot file found.');
     }
