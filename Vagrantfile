@@ -14,7 +14,7 @@ ENV['project_root'] = File.expand_path(File.dirname(__FILE__))
 
 sshfs_paths = {
   '/var/aegir/platforms' => "#{ENV['project_root']}/platforms",
-  '/var/aegir/aliases' => "#{ENV['project_root']}/aliases"
+  '/var/aegir/config/valkyrie_aliases' => "#{ENV['project_root']}/aliases"
 }
 
 def umount_sshfs_paths(sshfs_paths)
