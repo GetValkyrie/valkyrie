@@ -2,6 +2,7 @@ class valkyrie::deploy_keys (
   $ssh_user       = 'aegir',
   $comment        = 'Valkyrie deploy key',
   $key_dir        = '/var/aegir/.ssh',
+  $host_key_dir   = '/vagrant/.valkyrie/ssh',
   $key_name       = 'id_rsa',
   $ssh_host_alias = 'gitlab',
   $ssh_hostname   = 'git.poeticsystems.com'){
@@ -43,7 +44,7 @@ Host ${ssh_host_alias}
 
   # Use existing keys, if they exist.
   file { 'Restore keys script' :
-    content => 'if [ -e /vagrant/keys/$1 ]; then /bin/cp /vagrant/keys/$1* . ; fi',
+    content => "if [ -e ${host_key_dir}/\$1 ]; then /bin/cp ${host_key_dir}/\$1* . ; fi",
     path    => '/usr/local/sbin/restore_ssh_keys.sh',
     mode    => 755,
   }
@@ -60,13 +61,13 @@ Host ${ssh_host_alias}
   }
 
   # Store backups of keys.
-  file { '/vagrant/keys' :
+  file { ${host_key_dir}:
     ensure => directory,
-    owner  => 'vagrant',
-    group  => 'vagrant',
+    #owner  => 'vagrant',
+    #group  => 'vagrant',
   }
   file { 'Backup keys script' :
-    content => 'if ! [ -e /vagrant/keys/$1 ]; then /bin/cp ./$1* /vagrant/keys/; fi',
+    content => "if ! [ -e ${host_key_dir}/\$1 ]; then /bin/cp ./\$1* ${host_key_dir}/; fi",
     path    => '/usr/local/sbin/backup_ssh_keys.sh',
     owner   => 'root',
     group   => 'root',
@@ -77,12 +78,12 @@ Host ${ssh_host_alias}
     cwd      => $key_dir,
     provider => 'shell',
     creates  => [
-      "/vagrant/keys/${key_name}",
-      "/vagrant/keys/${key_name}.pub",
+      "${host_key_dir}/${key_name}",
+      "${host_key_dir}/${key_name}.pub",
     ],
     require  => [
       Exec["Generate '${key_name}' keypair"],
-      File['/vagrant/keys'],
+      File[${host_key_dir}],
       File['Backup keys script'],
     ],
   }
@@ -102,7 +103,7 @@ echo '**************************************************************************
 #    path        => ['/bin', '/usr/bin'],
     require  => [
       Exec["Generate '${key_name}' keypair"],
-      File['/vagrant/keys'],
+      File[${host_key_dir}],
       File['Backup keys script'],
     ],
   }

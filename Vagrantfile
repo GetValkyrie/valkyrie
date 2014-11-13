@@ -11,11 +11,15 @@ end
 ENV['project_root'] = File.expand_path(File.dirname(__FILE__))
 #require ENV['project_root'] + '/lib/plugins/plugins'
 
+require 'yaml'
+# Load default config
+conf = YAML.load_file(ENV["project_root"] + 'lib/config.yaml')
+# Merge in any custom settings
+if File.exist?(ENV["project_root"] + '/config.yaml')
+  conf.merge!(YAML.load_file(ENV["project_root"] + '/config.yaml'))
+end
 
-sshfs_paths = {
-  '/var/aegir/platforms' => "#{ENV['project_root']}/platforms",
-  '/var/aegir/config/valkyrie_aliases' => "#{ENV['project_root']}/aliases"
-}
+semaphore = "#{ENV["project_root"]}/.valkyrie/cache/first_run_complete"
 
 def umount_sshfs_paths(sshfs_paths)
   # Determine the correct command to unmount sshfs directories
@@ -36,12 +40,12 @@ Vagrant.configure(2) do |config|
   # is done on the initial provisioning, which needs to run as the 'vagrant'
   # user. So, we switch based on the presence of a semaphore file, which we
   # create on provisioning, and remove after destroy.
-  first_run = !File.file?("#{ENV['project_root']}/.first_run_complete")
+  first_run = !File.file?(semaphore)
 
   config.trigger.before [:up, :reload, :resume] do
     # Setup drush aliases if the system has drush installed
     unless `which drush`.empty?
-      aliases_path = ENV['project_root'] + '/aliases'
+      aliases_path = ENV["project_root"] + '.valkyrie/.cache/aliases'
       system "drush ./lib/bin/set_alias_path.php #{aliases_path}"
     end
   end
@@ -70,7 +74,7 @@ Vagrant.configure(2) do |config|
 
   config.trigger.after [:destroy] do
     # Remove semaphore file
-    system 'rm .first_run_complete > /dev/null 2>&1; echo "==> Removing .first_run_complete"'
+    system "rm #{semaphore} > /dev/null 2>&1; echo '==> Removed semaphore file: #{semaphore}'"
 
     # Unmount SSHFS paths
     if Vagrant.has_plugin? 'vagrant-sshfs'
@@ -112,10 +116,10 @@ Vagrant.configure(2) do |config|
     if first_run
       vm1.vm.provision 'file',
         source: '~/.ssh/id_rsa.pub',
-        destination: '/vagrant/authorized_keys'
+        destination: '/vagrant/.valkyrie/ssh/authorized_keys'
     else
       # Mount platforms and aliases via SSHFS
-      config.sshfs.paths = sshfs_paths
+      config.sshfs.paths = conf['sshfs_paths']
       config.sshfs.enabled = false
       config.sshfs.username = 'aegir'
 
@@ -124,8 +128,7 @@ Vagrant.configure(2) do |config|
       config.ssh.private_key_path = '~/.ssh/id_rsa'
 
       # Copy in some user-specific files to make the environment more familiar
-      dot_files = ['.gitconfig', '.vimrc', '.bashrc']
-      dot_files.each do |dot_file|
+      conf['dot_files'].each do |dot_file|
         real_dotfile = ENV['HOME']+'/'+dot_file
         if File.file?(real_dotfile)
           vm1.vm.provision 'file', source: real_dotfile,

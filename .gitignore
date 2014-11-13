@@ -1,7 +1,4 @@
 .vagrant/*
 modules/puppet-*
 platforms/
-aliases/
-.first_run_complete
-authorized_keys
-keys/
+.valkyrie/*

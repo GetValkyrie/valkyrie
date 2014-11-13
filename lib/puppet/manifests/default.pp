@@ -29,14 +29,15 @@ node default {
   }
   file {"$aegir_root/.ssh/authorized_keys":
     ensure  => present,
-    source  => '/vagrant/authorized_keys',
+    source  => '/vagrant/.valkyrie/ssh/authorized_keys',
     mode    => 600,
     owner   => $aegir_user,
     group   => $aegir_user,
     require => File["$aegir_root/.ssh"],
   }
-  file {'/vagrant/.first_run_complete':
+  file {'/vagrant/.valkyrie/cache/first_run_complete':
     ensure  => present,
+    content => generate('/bin/date', '+%Y%d%m_%H:%M:%S'),
     require => File["$aegir_root/.ssh/authorized_keys"],
   }
 
