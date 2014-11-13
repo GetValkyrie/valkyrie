@@ -3,7 +3,7 @@
 
 $drushrc_path = getenv("HOME") . '/.drushrc.php';
 $alias_path = drush_shift();
-$alias_path_line = "\$options['alias-path'] = '$alias_path';";
+$alias_path_line = "\$options['alias-path'][] = '$alias_path';";
 
 if (file_exists($drushrc_path)) {
   $drushrc = file($drushrc_path, FILE_IGNORE_NEW_LINES);
