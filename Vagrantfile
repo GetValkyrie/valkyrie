@@ -13,7 +13,7 @@ ENV['project_root'] = File.expand_path(File.dirname(__FILE__))
 
 require 'yaml'
 # Load default config
-conf = YAML.load_file(ENV["project_root"] + 'lib/config.yaml')
+conf = YAML.load_file(ENV["project_root"] + '/lib/config.yaml')
 # Merge in any custom settings
 if File.exist?(ENV["project_root"] + '/config.yaml')
   conf.merge!(YAML.load_file(ENV["project_root"] + '/config.yaml'))
@@ -65,11 +65,13 @@ Vagrant.configure(2) do |config|
   config.trigger.before [:halt, :suspend] do
       # Unmount SSHFS paths
       if Vagrant.has_plugin? 'vagrant-sshfs'
-        umount_sshfs_paths(sshfs_paths)
+        umount_sshfs_paths(conf['sshfs_paths'])
       end
 
       # Stop DNS server
-      system 'vagrant dns --stop'
+      if Vagrant.has_plugin? 'vagrant-dns'
+        system 'vagrant dns --stop'
+      end
   end
 
   config.trigger.after [:destroy] do
@@ -78,7 +80,7 @@ Vagrant.configure(2) do |config|
 
     # Unmount SSHFS paths
     if Vagrant.has_plugin? 'vagrant-sshfs'
-      umount_sshfs_paths(sshfs_paths)
+      umount_sshfs_paths(conf['sshfs_paths'])
     end
 
     # Remove vagrant-dns TLDs
