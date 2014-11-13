@@ -78,6 +78,7 @@ function drush_valkyrie_sql_snapshot() {
   if (!is_dir($dir)) {
     drush_mkdir($dir);
   }
+  date_default_timezone_set("UTC");
   $filename = drush_get_option('snapshot-file', "$dir/snapshot-$alias-" . date('c'));
   return _drush_valkyrie_sql_snapshot($alias, $filename);
 }
