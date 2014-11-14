@@ -45,7 +45,7 @@ Vagrant.configure(2) do |config|
   config.trigger.before [:up, :reload, :resume] do
     # Setup drush aliases if the system has drush installed
     unless `which drush`.empty?
-      aliases_path = ENV["project_root"] + '.valkyrie/.cache/aliases'
+      aliases_path = ENV["project_root"] + '/.valkyrie/cache/aliases'
       system "drush ./lib/bin/set_alias_path.php #{aliases_path}"
     end
   end
