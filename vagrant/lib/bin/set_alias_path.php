@@ -14,13 +14,11 @@ if (file_exists($drushrc_path)) {
     }
   }
   drush_log('==> A drushrc file was found at: ' . $drushrc_path, 'ok');
+  if (!drush_confirm('Add an \'alias-path\' option, and use the aliases in this project?')) {
+    return;   # The user refused; nothing more to do.
+  }
   else {
-    if (!drush_confirm('Add an \'alias-path\' option, and use the aliases in this project?')) {
-      return;   # The user refused; nothing more to do.
-    }
-    else {
-      $drushrc[] = $alias_path_line;
-    }
+    $drushrc[] = $alias_path_line;
   }
 }
 else {
