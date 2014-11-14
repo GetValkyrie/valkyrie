@@ -89,8 +89,13 @@ Vagrant.configure(2) do |config|
       system 'vagrant dns --purge'
       system 'vagrant dns --stop'
     end
-  end
 
+    # Remove drush aliases
+    unless `which drush`.empty?
+      aliases_path = ENV["project_root"] + '/.valkyrie/cache/aliases'
+      system "drush ./lib/bin/unset_alias_path.php #{aliases_path}"
+    end
+  end
 
   if Vagrant.has_plugin? 'vagrant-dns'
     # Setup DNS server to resolve *.val

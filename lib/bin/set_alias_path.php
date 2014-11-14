@@ -12,21 +12,8 @@ if (file_exists($drushrc_path)) {
     if (strpos($line, $alias_path_line) !== FALSE) {
       return;   # The line exists; nothing more to do.
     }
-    if (strpos($line, 'alias-path') !== FALSE) {
-      $alias_path_exists = $index;
-    }
   }
   drush_log('==> A drushrc file was found at: ' . $drushrc_path, 'ok');
-  if ($alias_path_exists !== FALSE) {
-    drush_log('==> An \'alias-path\' option already appears to exist in the following line:', 'warning');
-    drush_log('==>    "' . $drushrc[$alias_path_exists] . '"', 'warning');
-    if (!drush_confirm('Replace this line, and use the aliases in this project?')) {
-      return;   # The user refused; nothing more to do.
-    }
-    else {
-      $drushrc[$alias_path_exists] = $alias_path_line;
-    }
-  }
   else {
     if (!drush_confirm('Add an \'alias-path\' option, and use the aliases in this project?')) {
       return;   # The user refused; nothing more to do.
@@ -38,7 +25,7 @@ if (file_exists($drushrc_path)) {
 }
 else {
   drush_log('No drushrc file was found at: ' . $drushrc_path, 'ok');
-  if (!drush_confirm('Create this file and use the aliases in this project?')) {
+  if (!drush_confirm('Create this file and use the Drush aliases in this project?')) {
     return;   # The user refused; nothing more to do.
   }
   $drushrc = array(
