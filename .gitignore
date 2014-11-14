@@ -1,4 +1,5 @@
 .vagrant/*
 modules/puppet-*
+aliases/
 platforms/
 .valkyrie/*
