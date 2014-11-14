@@ -35,10 +35,16 @@ node default {
     group   => $aegir_user,
     require => File["$aegir_root/.ssh"],
   }
+
+  file {'/vagrant/.valkyrie/cache':
+    ensure => directory,
+    require => File["$aegir_root/.ssh/authorized_keys"],
+  }
+
   file {'/vagrant/.valkyrie/cache/first_run_complete':
     ensure  => present,
     content => generate('/bin/date', '+%Y%d%m_%H:%M:%S'),
-    require => File["$aegir_root/.ssh/authorized_keys"],
+    require => File['/vagrant/.valkyrie/cache'],
   }
 
   class {'drush::git::drush':
