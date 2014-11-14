@@ -17,6 +17,26 @@ if (function_exists('provision_fqdn')) {
 function valkyrie_drush_command() {
   $items = array();
 
+  $items['valkyrie-initialize'] = array(
+    'description' => "Initialize a new Valkyrie project.",
+    'arguments' => array(
+      'path' => 'The path to the new project (defaults to the current directory)',
+    ),
+    'options' => array(
+      'commit' => 'Commit the project into a new git repo. Defaults to true.',
+    ),
+    'examples' => array(
+      'drush vinit my_new_project' => 'Create a new project at ./my_new_project.',
+    ),
+    'aliases' => array('vinit'),
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap at all.
+  );
+
+  $items['valkyrie-update'] = array(
+    'description' => "Update the Valkyrie code that is cached in a project.",
+    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap at all.
+  );
+
   $items['valkyrie-new'] = array(
     'description' => "Initialize a new Valkyrie project.",
     'arguments' => array(
@@ -66,6 +86,72 @@ function valkyrie_drush_command() {
   );
 
   return $items;
+}
+
+/**
+ * Command callback for the 'valkyrie-initialize' command.
+ */
+function drush_valkyrie_initialize($path = FALSE) {
+  if ($path === FALSE) {
+    $prompt = dt('Initialize a new Valkyrie project in the current directory?');
+    if (drush_confirm($prompt)) {
+      $path = getcwd();
+    }
+    else {
+      drush_user_abort();
+      return;
+    }
+  }
+  else {
+    drush_log(dt('Creating project directory.'));
+    drush_mkdir($path);
+  }
+
+  drush_log(dt('Copying Valkyrie code into project.'));
+  drush_mkdir($path . '/.valkyrie');
+  $src = dirname(__FILE__);
+  $lib_path = $path . '/.valkyrie/valkyrie';
+  drush_copy_dir($src, $lib_path);
+
+  $old_path = getcwd();
+  chdir($path);
+  drush_log(dt('Symlinking .gitignore.'));
+  symlink('.valkyrie/valkyrie/vagrant/.gitignore', '.gitignore');
+  drush_log(dt('Symlinking Vagrantfile.'));
+  symlink('.valkyrie/valkyrie/vagrant/Vagrantfile', 'Vagrantfile');
+  chdir($old_path);
+
+  if (drush_get_option('commit', TRUE)) {
+  drush_log(dt('Initializing git repo, and committing new platform.'));
+    drush_shell_cd_and_exec($path, 'git init');
+    drush_shell_cd_and_exec($path, 'git add .');
+    drush_shell_cd_and_exec($path, 'git commit -m"Initialize new Valkyrie project."');
+  }
+
+  drush_log(dt('Valkyrie project initialized at: :path', array(':path' => $path)), 'ok');
+}
+
+/**
+ * Command callback for the 'valkyrie-snapshot' command.
+ */
+function drush_valkyrie_update() {
+  $lib_path = getcwd() . '/.valkyrie/valkyrie';
+  if (!is_dir($lib_path)) {
+    drush_set_error('VALKYRIE_NOT_VALKYRIE_PROJECT', 'This does not appear to be a Valkyrie project.');
+    return FALSE;
+  }
+  $src = dirname(__FILE__);
+  $prompt = dt('Update the Valkyrie code in this project (at \'.valkyrie/valkyrie\') with the latest from :src?', array(':src' => $src));
+  if (drush_confirm($prompt)) {
+    drush_log(dt('Removing existing Valkyrie code.'));
+    drush_delete_dir($lib_path, TRUE);
+    drush_copy_dir($src, $lib_path);
+    drush_log(dt('Valkyrie code updated.'), 'ok');
+  }
+  else {
+    drush_user_abort();
+    return;
+  }
 }
 
 /**
