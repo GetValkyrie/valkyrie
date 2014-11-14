@@ -112,6 +112,7 @@ function drush_valkyrie_initialize($path = FALSE) {
   $src = dirname(__FILE__);
   $lib_path = $path . '/.valkyrie/valkyrie';
   drush_copy_dir($src, $lib_path);
+  drush_delete_dir($lib_path . '/.git', TRUE);
 
   $old_path = getcwd();
   chdir($path);
@@ -146,6 +147,7 @@ function drush_valkyrie_update() {
     drush_log(dt('Removing existing Valkyrie code.'));
     drush_delete_dir($lib_path, TRUE);
     drush_copy_dir($src, $lib_path);
+    drush_delete_dir($lib_path . '/.git', TRUE);
     drush_log(dt('Valkyrie code updated.'), 'ok');
   }
   else {

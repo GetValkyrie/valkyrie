@@ -2,3 +2,4 @@
 modules/puppet-*
 platforms/
 .valkyrie/*
+!.valkyrie/valkyrie
