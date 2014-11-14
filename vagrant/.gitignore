@@ -1,0 +1,4 @@
+.vagrant/*
+modules/puppet-*
+platforms/
+.valkyrie/*
