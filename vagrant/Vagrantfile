@@ -1,10 +1,11 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+name = File.basename(File.dirname(__FILE__))
 if Vagrant.has_plugin? 'vagrant-dns'
-  hostname = 'valkyrie.val'
+  hostname = "#{name}.val"
 else
-  hostname = 'valkyrie.local'
+  hostname = "#{name}.local"
 end
 
 # Check that our required plugins are installed.
