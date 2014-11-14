@@ -61,7 +61,7 @@ Host ${ssh_host_alias}
   }
 
   # Store backups of keys.
-  file { "${host_key_dir}":
+  file { $host_key_dir:
     ensure => directory,
     #owner  => 'vagrant',
     #group  => 'vagrant',
@@ -84,7 +84,7 @@ Host ${ssh_host_alias}
     ],
     require  => [
       Exec["Generate '${key_name}' keypair"],
-      File["${host_key_dir}"],
+      File[$host_key_dir],
       File['Backup keys script'],
     ],
   }
@@ -104,7 +104,7 @@ echo '**************************************************************************
 #    path        => ['/bin', '/usr/bin'],
     require  => [
       Exec["Generate '${key_name}' keypair"],
-      File["${host_key_dir}"],
+      File[$host_key_dir],
       File['Backup keys script'],
     ],
   }

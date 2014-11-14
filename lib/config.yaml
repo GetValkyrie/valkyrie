@@ -1,6 +1,6 @@
 sshfs_paths:
   /var/aegir/platforms: ./platforms
-  /var/aegir/config/valkyrie_aliases: ./aliases
+  /var/aegir/config/valkyrie_aliases: ./.valkyrie/cache/aliases
 dot_files:
   - .gitconfig
   - .vimrc

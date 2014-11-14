@@ -16,9 +16,9 @@ node default {
   # Allow 'aegir' user passqord-less sudo.
   file {'/etc/sudoers.d/aegir-sudo':
     content => "${aegir_user} ALL=NOPASSWD:ALL",
-    mode   => '440',
-    owner  => 'root',
-    group  => 'root',
+    mode    => '440',
+    owner   => 'root',
+    group   => 'root',
   }
 
   file {"$aegir_root/.ssh":
@@ -35,16 +35,16 @@ node default {
     group   => $aegir_user,
     require => File["$aegir_root/.ssh"],
   }
-
   file {'/vagrant/.valkyrie/cache':
     ensure => directory,
-    require => File["$aegir_root/.ssh/authorized_keys"],
   }
-
   file {'/vagrant/.valkyrie/cache/first_run_complete':
     ensure  => present,
     content => generate('/bin/date', '+%Y%d%m_%H:%M:%S'),
-    require => File['/vagrant/.valkyrie/cache'],
+    require => [
+      File["$aegir_root/.ssh/authorized_keys"],
+      File['/vagrant/.valkyrie/cache'],
+    ]
   }
 
   class {'drush::git::drush':
@@ -65,7 +65,7 @@ node default {
 
   drush::en {['hosting_git', 'hosting_platform_pathauto', 'hosting_git_pull']:
     site_alias => '@hm',
-    drush_user  => $aegir_user,
+    drush_user => $aegir_user,
     drush_home => $aegir_root,
     require    => Class['aegir::dev'],
   }
