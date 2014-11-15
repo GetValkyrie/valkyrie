@@ -5,3 +5,4 @@ dot_files:
   - .gitconfig
   - .vimrc
   - .bashrc
+ip: 10.42.0.10
