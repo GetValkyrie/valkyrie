@@ -78,5 +78,10 @@ Vagrant.configure(2) do |config|
       manifests_path: "#{valkyrie_root}/lib/puppet/manifests",
       facter: { 'fqdn' => config.vm.hostname }
 
+    config.trigger.after [:up] do
+      # Run our file provisioning on the first run
+      system "vagrant provision --provision-with=file"
+    end
+
   end
 end
