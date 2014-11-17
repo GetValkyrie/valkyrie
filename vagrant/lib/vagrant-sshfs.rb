@@ -4,6 +4,11 @@
 # +config+:: The Vagrant config object.
 # +conf+:: A Valkyrie project configuration array.
 def configure_vagrant_sshfs(config, conf)
+
+  config.sshfs.paths = conf['sshfs_paths']
+  config.sshfs.enabled = false
+  config.sshfs.username = 'aegir'
+
   config.trigger.before [:up, :reload, :resume] do
     # Create local sshfs paths. This avoids superfluous prompts.
     create_sshfs_paths(conf['sshfs_paths'])
