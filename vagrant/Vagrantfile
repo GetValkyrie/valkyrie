@@ -1,16 +1,9 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-name = File.basename(File.dirname(__FILE__))
-if Vagrant.has_plugin? 'vagrant-dns'
-  hostname = "#{name}.val"
-else
-  hostname = "#{name}.local"
-end
-
-# Check that our required plugins are installed.
 ENV['project_root'] = project_root = File.expand_path(File.dirname(__FILE__))
 ENV['valkyrie_root'] = valkyrie_root = "#{project_root}/.valkyrie/valkyrie/vagrant"
+# Check that our required plugins are installed.
 #require "#{valkyrie_root}/lib/plugins/plugins"
 
 require 'yaml'
@@ -60,23 +53,12 @@ Vagrant.configure(2) do |config|
     if Vagrant.has_plugin? 'vagrant-sshfs'
       system 'vagrant sshfs'
     end
-
-    if Vagrant.has_plugin? 'vagrant-dns'
-      puts 'Installing DNS resolver...'
-      system 'vagrant dns --install'
-      system 'vagrant dns --start'
-    end
   end
 
   config.trigger.before [:halt, :suspend] do
       # Unmount SSHFS paths
       if Vagrant.has_plugin? 'vagrant-sshfs'
         umount_sshfs_paths(conf['sshfs_paths'])
-      end
-
-      # Stop DNS server
-      if Vagrant.has_plugin? 'vagrant-dns'
-        system 'vagrant dns --stop'
       end
   end
 
@@ -89,13 +71,6 @@ Vagrant.configure(2) do |config|
       umount_sshfs_paths(conf['sshfs_paths'])
     end
 
-    # Remove vagrant-dns TLDs
-    if Vagrant.has_plugin? 'vagrant-dns'
-      puts 'Removing DNS resolver files...'
-      system 'vagrant dns --purge'
-      system 'vagrant dns --stop'
-    end
-
     # Remove drush aliases
     unless `which drush`.empty?
       aliases_path = "#{project_root}/.valkyrie/cache/aliases"
@@ -103,10 +78,12 @@ Vagrant.configure(2) do |config|
     end
   end
 
+  require "#{valkyrie_root}/lib/vagrant-dns"
   if Vagrant.has_plugin? 'vagrant-dns'
-    # Setup DNS server to resolve *.val
-    config.dns.tld = 'val'
-    config.dns.patterns = [/^.*\.val$/]
+    configure_vagrant_dns(config, conf)
+  else
+    install_vagrant_dns(config, conf)
+    avahi_fallback(config, conf)
   end
 
   # Silence annoying and spurious warnings
@@ -115,8 +92,6 @@ Vagrant.configure(2) do |config|
   config.ssh.forward_agent = true
 
   config.vm.define 'default' do |vm1|
-
-    vm1.vm.hostname = hostname
 
     vm1.vm.provider 'virtualbox' do |vbox|
       vbox.memory = '1024'
@@ -153,7 +128,7 @@ Vagrant.configure(2) do |config|
     vm1.vm.provision 'puppet',
       module_path: "#{valkyrie_root}/lib/puppet/modules",
       manifests_path: "#{valkyrie_root}/lib/puppet/manifests",
-      facter: { 'fqdn' => hostname }
+      facter: { 'fqdn' => config.vm.hostname }
 
   end
 end

@@ -6,3 +6,5 @@ dot_files:
   - .vimrc
   - .bashrc
 ip: 10.42.0.10
+tld: val
+name: valkyrie
