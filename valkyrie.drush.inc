@@ -114,6 +114,16 @@ function valkyrie_drush_command() {
     'handle-remote-commands' => TRUE,
   );
 
+  $items['valkyrie-logs'] = array(
+    'description' => 'Tail the Apache error log.',
+    'aliases' => array('vlog'),
+    'options' => array(
+      'log-file' => 'Log file to tail (defaults to /var/log/apache2/error.log).'
+    ),
+    'bootstrap' => DRUSH_BOOTSTRAP_NONE,
+    'handle-remote-commands' => TRUE,
+  );
+
   return $items;
 }
 
@@ -259,6 +269,33 @@ function drush_valkyrie_sql_diff() {
   }
   $diff_command = drush_get_option('diff-cmd', 'git diff --no-index -U0 --no-prefix');
   drush_shell_proc_open("$diff_command $snapshot $filename");
+}
+
+/**
+ * Command callback for the 'valkyrie-logs' command.
+ */
+function drush_valkyrie_logs($log_path = '/var/log/apache2/error.log') {
+  if (!$alias = drush_get_context('DRUSH_TARGET_SITE_ALIAS')) {
+    return drush_set_error('VALKYRIE_LOGS_MISSING_TARGET_ALIAS', 'A remote site alias is required. The way you call valkyrie-logs is: `drush @alias vlog`.');
+  }
+  $site = drush_sitealias_get_record($alias);
+  // We only accept remote aliases.
+  if (empty($site['remote-host'])) {
+    drush_set_error('VALKYRIE_LOGS_REMOTE_ALIAS_REQUIRED', dt('@alias does not specify a remote-host.', array('@alias' => $alias)));
+    return;
+  }
+
+  $command = "tail -f $log_path";
+  $cmd = drush_shell_proc_build($site, $command, NULL, FALSE);
+  $status = drush_shell_proc_open($cmd);
+  if ($status != 0) {
+    return drush_set_error('DRUSH_SITE_SSH_ERROR', dt('An error @code occurred while running the command `@command`',
+      array(
+        '@command' => $cmd,
+        '@code' => $status
+      )
+    ));
+  }
 }
 
 /**
