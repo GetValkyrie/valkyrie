@@ -20,8 +20,8 @@ if (function_exists('provision_fqdn')) {
 function valkyrie_drush_command() {
   $items = array();
 
-  $items['valkyrie-init'] = array(
-    'description' => 'Initialize a new Valkyrie project.',
+  $items['valkyrie-new'] = array(
+    'description' => 'Create a new project.',
     'arguments' => array(
       'path' => 'Path to the new project (defaults to the current directory).',
     ),
@@ -29,20 +29,20 @@ function valkyrie_drush_command() {
       'commit' => 'Commit the project into a new git repo (defaults to true).',
     ),
     'examples' => array(
-      'drush vinit my_new_project' => 'Create a new project at ./my_new_project.',
+      'drush vnew my_new_project' => 'Create a new project at ./my_new_project.',
     ),
-    'aliases' => array('vinit'),
+    'aliases' => array('vnew'),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap at all.
   );
 
   $items['valkyrie-update'] = array(
-    'description' => 'Update the Valkyrie project.',
+    'description' => 'Update a project.',
     'aliases' => array('vup'),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap at all.
   );
 
   $items['valkyrie-new-platform'] = array(
-    'description' => 'Initialize a new Valkyrie platform.',
+    'description' => 'Create a new platform.',
     'arguments' => array(
       'name' => 'Name of the platform.',
     ),
