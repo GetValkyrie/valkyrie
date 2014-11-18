@@ -4,7 +4,7 @@ def drush_aliases(config)
   valkyrie_root = ENV['valkyrie_root']
   aliases_path = "#{project_root}/.valkyrie/cache/aliases"
 
-  config.trigger.before [:up, :reload, :resume] do
+  config.trigger.after [:up, :reload, :resume] do
     # Set up drush aliases
     system "drush #{valkyrie_root}/lib/bin/set_alias_path.php #{aliases_path}"
   end

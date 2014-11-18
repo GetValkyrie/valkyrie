@@ -36,7 +36,7 @@ end
 # Params:
 # +config+:: The Vagrant config object.
 # +conf+:: A Valkyrie project configuration array.
-def install_vagrant_dns(config, conf)
+def install_vagrant_dns(conf)
   if (/darwin/ =~ RUBY_PLATFORM) != nil and conf['use_vagrant_dns']
     puts 'The vagrant-dns plugin does not appear to be installed.'
     puts 'To install it, run the following command:'
@@ -46,7 +46,8 @@ def install_vagrant_dns(config, conf)
     puts 'This error can be suppressed by adding the following line to config.yml at'
     puts 'the root of your project:'
     puts
-    puts 'use_vagrant_dns: false'
+    puts '    use_vagrant_dns: false'
+    puts
     abort()
   end
 end
