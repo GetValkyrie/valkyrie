@@ -21,15 +21,15 @@ function valkyrie_drush_command() {
   $items = array();
 
   $items['valkyrie-new'] = array(
-    'description' => 'Create a new project.',
+    'description' => 'Create a project.',
     'arguments' => array(
-      'path' => 'Path to the new project (defaults to the current directory).',
+      'path' => 'Path to the project (defaults to the current directory).',
     ),
     'options' => array(
       'commit' => 'Commit the project into a new git repo (defaults to true).',
     ),
     'examples' => array(
-      'drush vnew my_new_project' => 'Create a new project at ./my_new_project.',
+      'drush vnew my_project' => 'Create a project at ./my_new_project.',
     ),
     'aliases' => array('vnew'),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap at all.
@@ -41,8 +41,8 @@ function valkyrie_drush_command() {
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap at all.
   );
 
-  $items['valkyrie-new-platform'] = array(
-    'description' => 'Create a new platform.',
+  $items['valkyrie-generate-platform'] = array(
+    'description' => 'Generate a platform.',
     'arguments' => array(
       'name' => 'Name of the platform.',
     ),
@@ -51,9 +51,9 @@ function valkyrie_drush_command() {
       'commit' => 'Commit the platform into a new git repo (defaults to true).',
     ),
     'examples' => array(
-      'drush vnp my_new_project --build=false' => 'Create a new project but don\'t build a platform from the makefile.',
+      'drush vgp my_platform --build=false' => 'Create a platform but don\'t build it from the makefile.',
     ),
-    'aliases' => array('vnp'),
+    'aliases' => array('vgp'),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap at all.
   );
 
