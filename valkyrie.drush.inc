@@ -15,6 +15,29 @@ if (function_exists('provision_fqdn')) {
 }
 
 /**
+ * Implements hook_drush_init().
+ */
+function valkyrie_drush_init() {
+  $command = drush_get_command();
+  if (isset($command['requires_vagrant'])) {
+    // Load our cached data
+    $cache = drush_cache_get('vagrant_path', 'valkyrie');
+    // Check if Vagrant is installed
+    if (!$cache) {
+      $vagrant_path = drush_shell_exec_output(drush_shell_exec('which vagrant'));
+      if (!count($vagrant_path)) {
+        drush_set_error('VALKYRIE_VAGRANT_MISSING', dt("You have installed Valkyrie, which depends on Vagrant.\nBut Vagrant does not appear to be installed.\nPlease install Vagrant (http://vagrantup.com/) before continuing."));
+      }
+      else {
+        drush_cache_set('vagrant_path', $vagrant_path[0], 'valkyrie', DRUSH_CACHE_PERMANENT);
+      }
+    }
+  }
+}
+
+
+
+/**
  * Implements hook_drush_command().
  */
 function valkyrie_drush_command() {
@@ -32,6 +55,7 @@ function valkyrie_drush_command() {
       'drush vnew my_project' => 'Create a project at ./my_new_project.',
     ),
     'aliases' => array('vnew'),
+    'requires_vagrant' => TRUE,
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap at all.
   );
 
