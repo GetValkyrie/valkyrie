@@ -63,6 +63,10 @@ Vagrant.configure(2) do |config|
       config.ssh.username = 'aegir'
       config.ssh.private_key_path = '~/.ssh/id_rsa'
 
+      config.sshfs.paths = conf['sshfs_paths']
+      config.sshfs.enabled = false
+      config.sshfs.username = 'aegir'
+
       # Copy in some user-specific files to make the environment more familiar
       conf['dot_files'].each do |dot_file|
         real_dotfile = ENV['HOME']+'/'+dot_file
