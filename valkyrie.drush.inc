@@ -94,11 +94,11 @@ function valkyrie_drush_command() {
 }
 
 /**
- * Command callback for the 'valkyrie-initialize' command.
+ * Command callback for the 'valkyrie-new' command.
  */
-function drush_valkyrie_initialize($path = FALSE) {
+function drush_valkyrie_new($path = FALSE) {
   if ($path === FALSE) {
-    $prompt = dt('Initialize a new Valkyrie project in the current directory?');
+    $prompt = dt('Create a new Valkyrie project in the current directory?');
     if (drush_confirm($prompt)) {
       $path = getcwd();
     }
@@ -224,9 +224,9 @@ function drush_valkyrie_sql_diff() {
 }
 
 /**
- * Command callback for the 'valkyrie-new' command.
+ * Command callback for the 'valkyrie-generate-platform' command.
  */
-function drush_valkyrie_new($name) {
+function drush_valkyrie_generate_platform($name) {
   if (!drush_confirm(dt('Create platform "'. $name . '"?'))) {
     return drush_user_abort();
   }
@@ -251,7 +251,7 @@ function drush_valkyrie_new($name) {
   if (drush_get_option('commit', TRUE)) {
     drush_shell_cd_and_exec($name, 'git init');
     drush_shell_cd_and_exec($name, 'git add .');
-    drush_shell_cd_and_exec($name, 'git commit -m"Initialize new Valkyrie project."');
+    drush_shell_cd_and_exec($name, 'git commit -m "Valkyrie: Generate new platform."');
   }
 
 }
