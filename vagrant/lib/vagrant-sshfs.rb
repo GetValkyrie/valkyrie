@@ -26,7 +26,7 @@ end
 def create_sshfs_paths(sshfs_paths)
   sshfs_paths.each do |guest_path, host_path|
     if !Dir.exists?(host_path)
-      Dir.mkdir(host_path)
+      FileUtils.mkdir_p(host_path)
     end
   end
 end
