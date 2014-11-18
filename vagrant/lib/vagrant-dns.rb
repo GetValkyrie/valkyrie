@@ -10,11 +10,11 @@ def configure_vagrant_dns(config, conf)
 
   # Setup DNS server to resolve our TLD
   config.dns.tld = conf['tld']
-  config.dns.patterns = ["/^.*\.#{conf['tld']}$/"]
+  config.dns.patterns = ["/^.*.#{conf['tld']}$/"]
 
   config.trigger.after [:up, :reload, :resume] do
     puts 'Installing DNS resolver...'
-    system 'vagrant dns --install'
+    system 'vagrant dns --install --with-sudo'
     system 'vagrant dns --start'
   end
 
@@ -26,7 +26,7 @@ def configure_vagrant_dns(config, conf)
   config.trigger.after [:destroy] do
     # Remove vagrant-dns TLDs
     puts 'Removing DNS resolver files...'
-    system 'vagrant dns --purge'
+    system 'vagrant dns --purge --with-sudo'
     system 'vagrant dns --stop'
   end
 
