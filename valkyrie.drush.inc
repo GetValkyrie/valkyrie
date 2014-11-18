@@ -108,8 +108,22 @@ function drush_valkyrie_new($path = FALSE) {
     }
   }
   else {
-    drush_log(dt('Creating project directory.'));
-    drush_mkdir($path);
+    if (is_dir($path) && !is_dir($path . '/.valkyrie')) {
+      drush_log(dt('Project directory already exists.'), 'warning');
+      $prompt = dt('Proceed with creating a Valkyrie project in the designated directory?');
+      if (!drush_confirm($prompt)) {
+        drush_user_abort();
+        return;
+      }
+    }
+    elseif (is_dir($path . '/.valkyrie')) {
+      drush_set_error('VALKYRIE_PROJECT_EXISTS', dt('The project directory already appears to contain Valkyrie code. Try running "drush valkyrie-update" from within the directory to update the Valkyrie code.'));
+      return;
+    }
+    else {
+      drush_log(dt('Creating project directory.'));
+      drush_mkdir($path);
+    }
   }
 
   drush_log(dt('Copying Valkyrie code into project.'));
