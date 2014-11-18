@@ -8,6 +8,7 @@ require_once(dirname(__FILE__) . '/vendor/autoload.php');
 
 define('MAKEFILE_NAME', 'platform.make');
 require_once(dirname(__FILE__) . '/includes/templates.inc');
+
 // Only include Aegir hooks when on an Aegir server.
 if (function_exists('provision_fqdn')) {
   require_once(dirname(__FILE__) . '/includes/aegir.inc');
@@ -19,13 +20,13 @@ if (function_exists('provision_fqdn')) {
 function valkyrie_drush_command() {
   $items = array();
 
-  $items['valkyrie-initialize'] = array(
-    'description' => "Initialize a new Valkyrie project.",
+  $items['valkyrie-init'] = array(
+    'description' => 'Initialize a new Valkyrie project.',
     'arguments' => array(
-      'path' => 'The path to the new project (defaults to the current directory)',
+      'path' => 'Path to the new project (defaults to the current directory).',
     ),
     'options' => array(
-      'commit' => 'Commit the project into a new git repo. Defaults to true.',
+      'commit' => 'Commit the project into a new git repo (defaults to true).',
     ),
     'examples' => array(
       'drush vinit my_new_project' => 'Create a new project at ./my_new_project.',
@@ -35,28 +36,29 @@ function valkyrie_drush_command() {
   );
 
   $items['valkyrie-update'] = array(
-    'description' => "Update the Valkyrie code that is cached in a project.",
+    'description' => 'Update the Valkyrie project.',
+    'aliases' => array('vup'),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap at all.
   );
 
-  $items['valkyrie-new'] = array(
-    'description' => "Initialize a new Valkyrie project.",
+  $items['valkyrie-new-platform'] = array(
+    'description' => 'Initialize a new Valkyrie platform.',
     'arguments' => array(
-      'name' => 'The name of the new project',
+      'name' => 'Name of the platform.',
     ),
     'required-arguments' => TRUE,
     'options' => array(
-      'commit' => 'Commit the project into a new git repo. Defaults to true.',
+      'commit' => 'Commit the platform into a new git repo (defaults to true).',
     ),
     'examples' => array(
-      'drush vnew my_new_project --build=false' => 'Create a new project, but do not build a platform from the makefile.',
+      'drush vnp my_new_project --build=false' => 'Create a new project but don\'t build a platform from the makefile.',
     ),
-    'aliases' => array('vnew'),
+    'aliases' => array('vnp'),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap at all.
   );
 
   $items['valkyrie-rebuild'] = array(
-    'description' => "Rebuild an existing Valkyrie project.",
+    'description' => 'Rebuild an existing Valkyrie project.',
     'arguments' => array(
       'path' => 'The path of the project. Defaults to the current directory.',
     ),
@@ -74,8 +76,9 @@ function valkyrie_drush_command() {
     'bootstrap' => DRUSH_BOOTSTRAP_NONE,
     'handle-remote-commands' => TRUE,
   );
+
   $items['valkyrie-sql-diff'] = array(
-    'description' => "Diff the current sql-dump with an earlier snapshot.",
+    'description' => 'Diff the current sql-dump with an earlier snapshot.',
     'aliases' => array('vsd'),
     'options' => array(
       'prompt' => 'Choose from a list of previous snapshots.',
