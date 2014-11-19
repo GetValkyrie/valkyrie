@@ -8,3 +8,5 @@ dot_files:
 ip: 10.42.0.10
 tld: val
 name: valkyrie
+use_vagrant_dns: TRUE
+use_valkyrie_sshfs: TRUE

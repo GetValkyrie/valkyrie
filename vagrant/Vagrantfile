@@ -23,28 +23,30 @@ Vagrant.configure(2) do |config|
     system "rm #{semaphore} > /dev/null 2>&1; echo '==> Removed semaphore file: #{semaphore}'"
   end
 
-  require "#{valkyrie_root}/lib/drush_aliases"
-  drush_aliases(config)
-
-  require "#{valkyrie_root}/lib/vagrant-sshfs"
-  if Vagrant.has_plugin? 'vagrant-sshfs'
-    configure_vagrant_sshfs(config, conf)
-  end
-
-  require "#{valkyrie_root}/lib/vagrant-dns"
-  if Vagrant.has_plugin? 'vagrant-dns'
-    configure_vagrant_dns(config, conf)
-  else
-    install_vagrant_dns(config, conf)
-    avahi_fallback(config, conf)
-  end
-
   # Silence annoying and spurious warnings
   config.ssh.shell = 'bash -c "BASH_ENV=/etc/profile exec bash"'
 
   config.ssh.forward_agent = true
 
   config.vm.define 'default' do |vm1|
+
+    require "#{valkyrie_root}/lib/valkyrie-sshfs"
+    if Vagrant.has_plugin? 'valkyrie-sshfs'
+      configure_valkyrie_sshfs(config, conf)
+    else
+      install_valkyrie_sshfs(conf)
+    end
+
+    require "#{valkyrie_root}/lib/drush_aliases"
+    drush_aliases(config)
+
+    require "#{valkyrie_root}/lib/vagrant-dns"
+    if Vagrant.has_plugin? 'vagrant-dns'
+      configure_vagrant_dns(config, conf)
+    else
+      install_vagrant_dns(conf)
+      avahi_fallback(config, conf)
+    end
 
     vm1.vm.provider 'virtualbox' do |vbox|
       vbox.memory = '1024'
@@ -63,9 +65,11 @@ Vagrant.configure(2) do |config|
       config.ssh.username = 'aegir'
       config.ssh.private_key_path = '~/.ssh/id_rsa'
 
-      config.sshfs.paths = conf['sshfs_paths']
-      config.sshfs.enabled = false
-      config.sshfs.username = 'aegir'
+      if Vagrant.has_plugin? 'vagrant-dns'
+        config.vsshfs.paths = conf['sshfs_paths']
+        config.vsshfs.enabled = false
+        config.vsshfs.username = 'aegir'
+      end
 
       # Copy in some user-specific files to make the environment more familiar
       conf['dot_files'].each do |dot_file|

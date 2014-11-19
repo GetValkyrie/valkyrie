@@ -10,11 +10,11 @@ def configure_vagrant_dns(config, conf)
 
   # Setup DNS server to resolve our TLD
   config.dns.tld = conf['tld']
-  config.dns.patterns = ["/^.*\.#{conf['tld']}$/"]
+  config.dns.patterns = ["/^.*.#{conf['tld']}$/"]
 
   config.trigger.after [:up, :reload, :resume] do
     puts 'Installing DNS resolver...'
-    system 'vagrant dns --install'
+    system 'vagrant dns --install --with-sudo'
     system 'vagrant dns --start'
   end
 
@@ -26,7 +26,7 @@ def configure_vagrant_dns(config, conf)
   config.trigger.after [:destroy] do
     # Remove vagrant-dns TLDs
     puts 'Removing DNS resolver files...'
-    system 'vagrant dns --purge'
+    system 'vagrant dns --purge --with-sudo'
     system 'vagrant dns --stop'
   end
 
@@ -36,7 +36,7 @@ end
 # Params:
 # +config+:: The Vagrant config object.
 # +conf+:: A Valkyrie project configuration array.
-def install_vagrant_dns(config, conf)
+def install_vagrant_dns(conf)
   if (/darwin/ =~ RUBY_PLATFORM) != nil and conf['use_vagrant_dns']
     puts 'The vagrant-dns plugin does not appear to be installed.'
     puts 'To install it, run the following command:'
@@ -46,7 +46,8 @@ def install_vagrant_dns(config, conf)
     puts 'This error can be suppressed by adding the following line to config.yml at'
     puts 'the root of your project:'
     puts
-    puts 'use_vagrant_dns: false'
+    puts '    use_vagrant_dns: false'
+    puts
     abort()
   end
 end
