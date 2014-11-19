@@ -35,8 +35,6 @@ function valkyrie_drush_init() {
   }
 }
 
-
-
 /**
  * Implements hook_drush_command().
  */
@@ -117,7 +115,7 @@ function valkyrie_drush_command() {
   $items['valkyrie-logs'] = array(
     'description' => 'Tail the Apache error log.',
     'aliases' => array('vlog'),
-    'options' => array(
+    'arguments' => array(
       'log-file' => 'Log file to tail (defaults to /var/log/apache2/error.log).'
     ),
     'bootstrap' => DRUSH_BOOTSTRAP_NONE,
