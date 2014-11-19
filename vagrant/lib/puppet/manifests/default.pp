@@ -59,9 +59,11 @@ node default {
     make_aegir_platform  => true,
     makefile        => '/var/aegir/.drush/provision/aegir-dev.make',
     platform_path   => '/var/aegir/hostmaster-7.x-3.x',
+    queued_service  => false,
   }
 
   include avahi
+  include skynet
 
   drush::en {['hosting_git', 'hosting_platform_pathauto', 'hosting_git_pull']:
     site_alias => '@hm',
