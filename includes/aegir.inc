@@ -58,7 +58,7 @@ function _valkyrie_fix_dev_perms() {
     $path = d()->site_path . '/modules/custom';
     $group = d('@server_master')->web_group;
     drush_log('Ensuring custom features can be exported directly from the site.');
-    provision_file()->chgrp($path, $group, TRUE)
+    provision_file()->chgrp($path, $group)
       ->succeed('Changed group ownership of <code>@path</code> to @gid')
       ->fail('Could not change group ownership <code>@path</code> to @gid');
     // Sites appear to be cloned as 555, making it impossible to delete them.
