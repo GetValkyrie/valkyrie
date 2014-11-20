@@ -13,7 +13,7 @@ node default {
     shell  => '/bin/bash',
   }
 
-  # Allow 'aegir' user passqord-less sudo.
+  # Allow 'aegir' user password-less sudo.
   file {'/etc/sudoers.d/aegir-sudo':
     content => "${aegir_user} ALL=NOPASSWD:ALL",
     mode    => '440',

@@ -42,7 +42,7 @@ class skynet (
       ensure  => 'running',
       command => '/var/aegir/.drush/skynet/skynet.py queued --config_file=/var/aegir/config/skynet.conf',
       user    => 'aegir',
-      environment => "HOME='/var/aegir'",
+      environment => "HOME='/var/aegir',USER='aegir'",
     }
   }
 
