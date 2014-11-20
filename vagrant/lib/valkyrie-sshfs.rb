@@ -4,19 +4,21 @@
 # +config+:: The Vagrant config object.
 # +conf+:: A Valkyrie project configuration array.
 def configure_valkyrie_sshfs(config, conf)
-  config.trigger.before [:up, :reload, :resume] do
-    # Create local sshfs paths. This avoids superfluous prompts.
-    create_sshfs_paths(conf['sshfs_paths'])
-  end
+  if conf['use_valkyrie_sshfs']
+    config.trigger.before [:up, :reload, :resume] do
+      # Create local sshfs paths. This avoids superfluous prompts.
+      create_sshfs_paths(conf['sshfs_paths'])
+    end
 
-  config.trigger.after [:up, :reload, :resume] do
-    # Mount platforms and aliases via SSHFS
-    system 'vagrant vsshfs'
-  end
+    config.trigger.after [:up, :reload, :resume] do
+      # Mount platforms and aliases via SSHFS
+      system 'vagrant vsshfs'
+    end
 
-  config.trigger.before [:halt, :suspend, :destroy] do
-    # Unmount SSHFS paths
-    umount_sshfs_paths(conf['sshfs_paths'])
+    config.trigger.before [:halt, :suspend, :destroy] do
+      # Unmount SSHFS paths
+      umount_sshfs_paths(conf['sshfs_paths'])
+    end
   end
 end
 
@@ -67,5 +69,3 @@ def install_valkyrie_sshfs(conf)
     abort()
   end
 end
-
-

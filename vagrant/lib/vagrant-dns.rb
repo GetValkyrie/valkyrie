@@ -5,29 +5,31 @@
 # +conf+:: A Valkyrie project configuration array.
 def configure_vagrant_dns(config, conf)
 
-  # Set hostname
-  config.vm.hostname = "#{conf['name']}.#{conf['tld']}"
+  if conf['use_vagrant_dns']
+    # Set hostname
+    config.vm.hostname = "#{conf['name']}.#{conf['tld']}"
 
-  # Setup DNS server to resolve our TLD
-  config.dns.tld = conf['tld']
-  config.dns.patterns = ["/^.*.#{conf['tld']}$/"]
+    # Setup DNS server to resolve our TLD
+    config.dns.tld = conf['tld']
+    config.dns.patterns = ["/^.*.#{conf['tld']}$/"]
 
-  config.trigger.after [:up, :reload, :resume] do
-    puts 'Installing DNS resolver...'
-    system 'vagrant dns --install --with-sudo'
-    system 'vagrant dns --start'
-  end
+    config.trigger.after [:up, :reload, :resume] do
+      puts 'Installing DNS resolver...'
+      system 'vagrant dns --install --with-sudo'
+      system 'vagrant dns --start'
+    end
 
-  config.trigger.before [:halt, :suspend] do
-    # Stop DNS server
-    system 'vagrant dns --stop'
-  end
+    config.trigger.before [:halt, :suspend] do
+      # Stop DNS server
+      system 'vagrant dns --stop'
+    end
 
-  config.trigger.after [:destroy] do
-    # Remove vagrant-dns TLDs
-    puts 'Removing DNS resolver files...'
-    system 'vagrant dns --purge --with-sudo'
-    system 'vagrant dns --stop'
+    config.trigger.after [:destroy] do
+      # Remove vagrant-dns TLDs
+      puts 'Removing DNS resolver files...'
+      system 'vagrant dns --purge --with-sudo'
+      system 'vagrant dns --stop'
+    end
   end
 
 end
