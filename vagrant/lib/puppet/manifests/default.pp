@@ -62,7 +62,9 @@ node default {
     queued_service  => false,
   }
 
-  include avahi
+  if $domain == 'local' {
+    include avahi
+  }
   include skynet
 
   drush::en {[
