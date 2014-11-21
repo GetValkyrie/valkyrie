@@ -85,8 +85,8 @@ node default {
 
   drush::run {"drush-cc-drush:valkyrie":
     command     => 'cache-clear drush',
-    drush_user  => $drush_user,
-    drush_home  => $drush_home,
+    drush_user  => $aegir_user,
+    drush_home  => '/var/aegir',
     refreshonly => true,
   }
 
@@ -98,6 +98,16 @@ node default {
     git_branch => 'dev/2362437',
     user       => $aegir_user,
     #update     => true,
+    require    => Class['aegir::dev'],
+  }
+
+  # Set a default URL alias (based on the Facter-provided $domain)
+  drush::run {'drush-vset-tld':
+    command    => "vset hosting_alias_subdomain ${domain}",
+    site_alias => '@hm',
+    drush_user => $aegir_user,
+    drush_home => '/var/aegir',
+    unless     => "/usr/bin/drush @hm vget hosting_alias_subdomain|/bin/grep ${domain}",
     require    => Class['aegir::dev'],
   }
 
