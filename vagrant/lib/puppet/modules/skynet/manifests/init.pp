@@ -43,6 +43,7 @@ class skynet (
       command => '/var/aegir/.drush/skynet/skynet.py queued --config_file=/var/aegir/config/skynet.conf',
       user    => 'aegir',
       environment => "HOME='/var/aegir',USER='aegir'",
+      require => Drush::Git['https://github.com/PraxisLabs/skynet.git'],
     }
   }
 
@@ -52,6 +53,7 @@ class skynet (
       mode    => '440',
       owner   => 'root',
       group   => 'root',
+      require => Supervisor::Service['skynet-queue'],
     }
   }
 
