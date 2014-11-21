@@ -65,7 +65,12 @@ node default {
   include avahi
   include skynet
 
-  drush::en {['hosting_git', 'hosting_platform_pathauto', 'hosting_git_pull']:
+  drush::en {[
+    'hosting_git',
+    'hosting_platform_pathauto',
+    'hosting_git_pull',
+    'hosting_alias',
+  ]:
     site_alias => '@hm',
     drush_user => $aegir_user,
     drush_home => $aegir_root,
