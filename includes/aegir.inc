@@ -78,7 +78,7 @@ function drush_valkyrie_post_provision_verify() {
   if (d()->type == 'site') {
     _drush_valkyrie_create_alias();
     if (d()->profile == 'hostmaster') {
-      _drush_valkyrie_create_alias(gethostname());
+      _drush_valkyrie_create_alias(gethostname(), AEGIR_FRONTEND_URL);
     }
     _valkyrie_fix_dev_perms();
     _valkyrie_add_default_drushrc();
@@ -88,7 +88,7 @@ function drush_valkyrie_post_provision_verify() {
 /**
  * Helper function to create aliases for use on the host.
  */
-function _drush_valkyrie_create_alias($aliasname = NULL) {
+function _drush_valkyrie_create_alias($aliasname = NULL, $uri = NULL) {
   if (is_null($aliasname)) {
     $aliases = d()->aliases;
     if (count($aliases)) {
@@ -106,7 +106,7 @@ function _drush_valkyrie_create_alias($aliasname = NULL) {
       'remote-host' => provision_fqdn(d()->server->remote_host),
       'remote-user' => d()->server->script_user,
       'root' => d()->root,
-      'uri' => $aliasname,
+      'uri' => is_null($uri) ? $aliasname : $uri,
     ),
   );
   if (valkyrie_template($template_path, $dest_path, $variables, TRUE)) {
