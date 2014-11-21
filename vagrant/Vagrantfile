@@ -81,10 +81,17 @@ Vagrant.configure(2) do |config|
       end
     end
 
+    facter = { 'fqdn' => config.vm.hostname }
+    # Facter cannot determine the domain under vagrant-dns, so we set it
+    # directly.
+    if Vagrant.has_plugin? 'vagrant-dns'
+      facter['domain'] = conf['tld']
+    end
+
     vm1.vm.provision 'puppet',
       module_path: "#{valkyrie_root}/lib/puppet/modules",
       manifests_path: "#{valkyrie_root}/lib/puppet/manifests",
-      facter: { 'fqdn' => config.vm.hostname }
+      facter: facter
 
   end
 end
