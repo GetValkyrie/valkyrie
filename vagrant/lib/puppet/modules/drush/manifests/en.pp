@@ -5,7 +5,6 @@ define drush::en (
   $drush_user  = $drush::defaults::drush_user,
   $drush_home  = $drush::defaults::drush_home,
   $log         = $drush::defaults::log,
-  $refreshonly = false
   ) {
 
   if $arguments { $real_args = $arguments }
@@ -18,8 +17,8 @@ define drush::en (
     arguments   => $real_args,
     drush_user  => $drush_user,
     drush_home  => $drush_home,
-    refreshonly => $refreshonly,
     log         => $log,
+    notify      => Drush::Run["drush-cc-drush:${name}"],
     unless      => "drush ${site_alias} pm-list --status=enabled | grep ${name}",
   }
 
@@ -29,9 +28,8 @@ define drush::en (
     site_alias  => $site_alias,
     drush_user  => $drush_user,
     drush_home  => $drush_home,
-    refreshonly => $refreshonly,
+    refreshonly => true,
     log         => $log,
-    require     => Drush::Run["drush-en:${name}"],
   }
 
 }
