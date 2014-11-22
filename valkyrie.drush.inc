@@ -265,7 +265,14 @@ function drush_valkyrie_sql_diff() {
       return FALSE;
     }
   }
-  $diff_command = drush_get_option('diff-cmd', 'git diff --no-index -U0 --no-prefix');
+
+  // Load our cached data
+  $default_diff_cmd = drush_cache_get('default_diff_cmd', 'valkyrie');
+  if (!$default_diff_cmd) {
+    $default_diff_cmd = PHP_OS == 'Darwin' ? 'opendiff' : 'git diff --no-index -U0 --no-prefix';
+    drush_cache_set('default_diff_cmd', $default_diff_cmd, 'valkyrie', DRUSH_CACHE_PERMANENT);
+  }
+  $diff_command = drush_get_option('diff-cmd', $default_diff_cmd);
   drush_shell_proc_open("$diff_command $snapshot $filename");
 }
 
