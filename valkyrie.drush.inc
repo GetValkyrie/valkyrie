@@ -267,10 +267,13 @@ function drush_valkyrie_sql_diff() {
   }
 
   // Load our cached data
-  $default_diff_cmd = drush_cache_get('default_diff_cmd', 'valkyrie');
-  if (!$default_diff_cmd) {
+  $cached_diff_cmd = drush_cache_get('default_diff_cmd', 'valkyrie');
+  if (!$cached_diff_cmd) {
     $default_diff_cmd = PHP_OS == 'Darwin' ? 'opendiff' : 'git diff --no-index -U0 --no-prefix';
     drush_cache_set('default_diff_cmd', $default_diff_cmd, 'valkyrie', DRUSH_CACHE_PERMANENT);
+  }
+  else {
+    $default_diff_cmd = $cached_diff_cmd->data;
   }
   $diff_command = drush_get_option('diff-cmd', $default_diff_cmd);
   drush_shell_proc_open("$diff_command $snapshot $filename");
