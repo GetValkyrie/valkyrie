@@ -98,22 +98,20 @@ function _drush_valkyrie_create_alias($aliasname = NULL, $uri = NULL) {
       $aliasname = d()->uri;
     }
   }
-  $template_path = dirname(dirname(__FILE__)) . '/templates/drush_alias.tpl.php';
-  $dest_path = VALKYRIE_ALIASES_PATH . "/$aliasname.alias.drushrc.php";
-  $variables = array(
-    'aliasname' => $aliasname,
-    'options' => array(
-      'remote-host' => provision_fqdn(d()->server->remote_host),
-      'remote-user' => d()->server->script_user,
-      'uri' => is_null($uri) ? $aliasname : $uri,
-    ),
+  $options = array(
+    'remote_host' => provision_fqdn(d()->server->remote_host),
+    'remote_user' => d()->server->script_user,
+    'uri' => is_null($uri) ? $aliasname : $uri,
   );
-  if (valkyrie_template($template_path, $dest_path, $variables, TRUE)) {
-    drush_log('Created Drush alias for Valkyrie.', 'ok');
-  }
-  else {
-    drush_log('Failed to create Drush alias for Valkyrie.', 'warning');
-  }
+  drush_valkyrie_create_alias($aliasname, $options);
+}
+
+function drush_valkyrie_create_alias($aliasname, $options) {
+  // Let Provision_Context_Valkyrie know which options to write to the alias.
+  $options['options'] = implode(',',array_keys($options));
+  
+  $options['context_type'] = 'Valkyrie';
+  provision_backend_invoke('@hostmaster', 'provision-save', array($aliasname), $options);
 }
 
 /**

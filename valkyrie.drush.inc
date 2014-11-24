@@ -14,9 +14,6 @@ if (function_exists('provision_fqdn')) {
   require_once(dirname(__FILE__) . '/includes/aegir.inc');
 }
 
-require_once(dirname(__FILE__) . '/Provision/Context/Valkyrie.php');
-require_once(dirname(__FILE__) . '/Provision/Config/Drushrc/Valkyrie.php');
-
 /**
  * Implements hook_drush_init().
  */
@@ -35,6 +32,23 @@ function valkyrie_drush_init() {
         drush_cache_set('vagrant_path', $vagrant_path[0], 'valkyrie', DRUSH_CACHE_PERMANENT);
       }
     }
+  }
+
+  // Register our config and context classes for autoloading.
+  valkyrie_provision_register_autoload();
+}
+
+/**
+ * Register our directory as a place to find Provision classes.
+ *
+ * This allows Provision to autoload our classes, so that we don't need to
+ * specifically include the files before we use the class.
+ */
+function valkyrie_provision_register_autoload() {
+  static $loaded = FALSE;
+  if (!$loaded && function_exists('provision_autoload_register_prefix')) {
+    $loaded = TRUE;
+    provision_autoload_register_prefix('Provision_', dirname(__FILE__));
   }
 }
 
