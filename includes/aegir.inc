@@ -76,9 +76,9 @@ function _valkyrie_fix_dev_perms() {
  */
 function drush_valkyrie_post_provision_verify() {
   if (d()->type == 'site') {
-    _drush_valkyrie_create_alias();
+    _drush_valkyrie_create_site_alias();
     if (d()->profile == 'hostmaster') {
-      _drush_valkyrie_create_alias(gethostname(), AEGIR_FRONTEND_URL);
+      _drush_valkyrie_create_server_alias();
     }
     _valkyrie_fix_dev_perms();
     _valkyrie_add_default_drushrc();
@@ -86,17 +86,15 @@ function drush_valkyrie_post_provision_verify() {
 }
 
 /**
- * Helper function to create aliases for use on the host.
+ * Helper function to create site aliases for use on the host.
  */
-function _drush_valkyrie_create_alias($aliasname = NULL, $uri = NULL) {
-  if (is_null($aliasname)) {
-    $aliases = d()->aliases;
-    if (count($aliases)) {
-      $aliasname = $aliases[0];
-    }
-    else {
-      $aliasname = d()->uri;
-    }
+function _drush_valkyrie_create_site_alias() {
+  $aliases = d()->aliases;
+  if (count($aliases)) {
+    $aliasname = $aliases[0];
+  }
+  else {
+    $aliasname = d()->uri;
   }
   $options = array(
     'remote_host' => provision_fqdn(d()->server->remote_host),
@@ -106,6 +104,20 @@ function _drush_valkyrie_create_alias($aliasname = NULL, $uri = NULL) {
   drush_valkyrie_create_alias($aliasname, $options);
 }
 
+/**
+ * Helper function to create a server alias for use on the host.
+ */
+function _drush_valkyrie_create_server_alias() {
+  $options = array(
+    'remote_host' => provision_fqdn(d()->server->remote_host),
+    'remote_user' => d()->server->script_user,
+  );
+  drush_valkyrie_create_alias(gethostname(), $options);
+}
+
+/**
+ * Create an alias with arbitrary options.
+ */
 function drush_valkyrie_create_alias($aliasname, $options) {
   // Let Provision_Context_Valkyrie know which options to write to the alias.
   $options['options'] = implode(',',array_keys($options));
