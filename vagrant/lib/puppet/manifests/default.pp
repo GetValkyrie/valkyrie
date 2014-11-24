@@ -118,4 +118,14 @@ node default {
     require    => Class['aegir::dev'],
   }
 
+  # Allow site deletion without disabling first.
+  drush::run {'drush-vset-no-disable-before-delete':
+    command    => "vset hosting_require_disable_before_delete 0",
+    site_alias => '@hm',
+    drush_user => $aegir_user,
+    drush_home => '/var/aegir',
+    unless     => "/usr/bin/drush @hm vget hosting_require_disable_before_delete|/bin/grep 0",
+    require    => Class['aegir::dev'],
+  }
+
 }
