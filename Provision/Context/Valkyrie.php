@@ -14,6 +14,9 @@ class Provision_Context_Valkyrie extends Provision_Context {
         }
       }
     }
+    if ($remote_host = drush_get_option('remote_host', FALSE)) {
+      $this->setProperty('remote-host', $remote_host);
+    }
   }
 
   /**

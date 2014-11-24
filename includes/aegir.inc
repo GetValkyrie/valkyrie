@@ -98,8 +98,9 @@ function _drush_valkyrie_create_site_alias() {
   }
   $options = array(
     'remote_host' => provision_fqdn(d()->server->remote_host),
-    'remote_user' => d()->server->script_user,
-    'uri' => is_null($uri) ? $aliasname : $uri,
+    'remote-user' => d()->server->script_user,
+    'uri' => $aliasname,
+    'root' => d()->root,
   );
   drush_valkyrie_create_alias($aliasname, $options);
 }
@@ -110,7 +111,8 @@ function _drush_valkyrie_create_site_alias() {
 function _drush_valkyrie_create_server_alias() {
   $options = array(
     'remote_host' => provision_fqdn(d()->server->remote_host),
-    'remote_user' => d()->server->script_user,
+    'remote-user' => d()->server->script_user,
+    'uri' => provision_fqdn(d()->server->remote_host),
   );
   drush_valkyrie_create_alias(gethostname(), $options);
 }
