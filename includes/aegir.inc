@@ -105,7 +105,6 @@ function _drush_valkyrie_create_alias($aliasname = NULL, $uri = NULL) {
     'options' => array(
       'remote-host' => provision_fqdn(d()->server->remote_host),
       'remote-user' => d()->server->script_user,
-      'root' => d()->root,
       'uri' => is_null($uri) ? $aliasname : $uri,
     ),
   );
