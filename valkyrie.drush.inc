@@ -14,6 +14,9 @@ if (function_exists('provision_fqdn')) {
   require_once(dirname(__FILE__) . '/includes/aegir.inc');
 }
 
+require_once(dirname(__FILE__) . '/Provision/Context/Valkyrie.php');
+require_once(dirname(__FILE__) . '/Provision/Config/Drushrc/Valkyrie.php');
+
 /**
  * Implements hook_drush_init().
  */
