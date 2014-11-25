@@ -28,11 +28,11 @@ function valkyrie_provision_drupal_create_directories_alter(&$mkdir, $url) {
 }
 
 /**
- * Implements hook_provision_drupal_non_recursive_directories_alter().
+ * Implements hook_provision_drupal_chmod_not_recursive_directories_alter().
  */
-function valkyrie_provision_drupal_non_recursive_directories_alter(&$non_recursive, $url) {
+function valkyrie_provision_drupal_chmod_not_recursive_directories_alter(&$chmod_not_recursive, $url) {
   if (!in_array($url, array('all', AEGIR_FRONTEND_URL))) {
-    $non_recursive[] = "sites/$url/modules/custom";
+    $chmod_not_recursive[] = "sites/$url/modules/custom";
   }
 }
 
