@@ -328,7 +328,7 @@ function drush_valkyrie_logs($log_path = '/var/log/apache2/error.log') {
 function drush_valkyrie_generate_platform($name, $makefile = NULL) {
   // We only accept remote aliases, since we build platforms in a VM.
   if (!$alias = drush_get_context('DRUSH_TARGET_SITE_ALIAS')) {
-    return drush_set_error('VALKYRIE_GENERATE_PLATFORM_MISSING_TARGET_ALIAS', dt('A remote site alias is required. The way you call valkyrie-generate-platform is: `drush @vm_alias vgp new_platform_name`.'));
+    return drush_set_error('VALKYRIE_GENERATE_PLATFORM_MISSING_TARGET_ALIAS', dt('A remote server alias is required. The way you call valkyrie-generate-platform is: `drush @vm_alias vgp new_platform_name`.'));
   }
   $site = drush_sitealias_get_record($alias);
   if (empty($site['remote-host'])) {
