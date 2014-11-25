@@ -93,7 +93,8 @@ function valkyrie_drush_command() {
       'drush vgp my_platform --build=false' => 'Create a platform but don\'t build it from the makefile.',
     ),
     'aliases' => array('vgp'),
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap at all.
+    'bootstrap' => DRUSH_BOOTSTRAP_NONE,
+    'handle-remote-commands' => TRUE,
   );
 
   $items['valkyrie-rebuild'] = array(
@@ -229,7 +230,6 @@ function drush_valkyrie_update() {
  */
 function drush_valkyrie_sql_snapshot() {
   $alias = drush_get_context('DRUSH_TARGET_SITE_ALIAS');
-  // TODO: move the default snapshot location to a cache directory
   $dir = drush_get_option('snapshot-dir', getcwd() . '/.valkyrie/sql-snapshots');
   if (!is_dir($dir)) {
     drush_mkdir($dir);
@@ -306,8 +306,7 @@ function drush_valkyrie_logs($log_path = '/var/log/apache2/error.log') {
   $site = drush_sitealias_get_record($alias);
   // We only accept remote aliases.
   if (empty($site['remote-host'])) {
-    drush_set_error('VALKYRIE_LOGS_REMOTE_ALIAS_REQUIRED', dt('@alias does not specify a remote-host.', array('@alias' => $alias)));
-    return;
+    return drush_set_error('VALKYRIE_LOGS_REMOTE_ALIAS_REQUIRED', dt('@alias does not specify a remote-host.', array('@alias' => $alias)));
   }
 
   $command = "tail -f $log_path";
@@ -326,32 +325,32 @@ function drush_valkyrie_logs($log_path = '/var/log/apache2/error.log') {
 /**
  * Command callback for the 'valkyrie-generate-platform' command.
  */
-function drush_valkyrie_generate_platform($name) {
-  if (!drush_confirm(dt('Create platform "'. $name . '"?'))) {
-    return drush_user_abort();
+function drush_valkyrie_generate_platform($name, $makefile = NULL) {
+  // We only accept remote aliases, since we build platforms in a VM.
+  if (!$alias = drush_get_context('DRUSH_TARGET_SITE_ALIAS')) {
+    return drush_set_error('VALKYRIE_GENERATE_PLATFORM_MISSING_TARGET_ALIAS', dt('A remote site alias is required. The way you call valkyrie-generate-platform is: `drush @vm_alias vgp new_platform_name`.'));
+  }
+  $site = drush_sitealias_get_record($alias);
+  if (empty($site['remote-host'])) {
+    return drush_set_error('VALKYRIE_LOGS_REMOTE_ALIAS_REQUIRED', dt('@alias does not specify a remote-host.', array('@alias' => $alias)));
   }
 
-  $templates_dir = dirname(__FILE__) . '/templates';
-
-  $result = drush_invoke('make', array("$templates_dir/platform.make", $name));
-
-  drush_log(dt('Adding default files.'), 'ok');
-  $templates = array(
-    'platform.info' => "$name/profiles/$name/$name.info",
-    MAKEFILE_NAME => $name. '/' . MAKEFILE_NAME,
-    'gitignore' => "$name/.gitignore",
-    'platform.profile' => "$name/profiles/$name/$name.profile",
-    'platform.install' => "$name/profiles/$name/$name.install",
+  // Write an Aegir context for the new platform.
+  $options = array(
+    'context_type' => 'platform',
+    'web_server' => '@server_master',
+    'root' => "/var/aegir/platforms/$name",
+    'makefile' => '/var/aegir/.drush/provision/aegir-dev.make',
   );
-  foreach ($templates as $template => $dest_path) {
-    valkyrie_template($templates_dir . '/' . $template, $dest_path, array('name' => $name), TRUE);
-  }
+  drush_invoke_process('@self', 'provision-save', array("@platform_$name"), $options);
 
-  drush_log(dt('Initializing git repo, and committing new platform.'), 'ok');
-  if (drush_get_option('commit', TRUE)) {
-    drush_shell_cd_and_exec($name, 'git init');
-    drush_shell_cd_and_exec($name, 'git add .');
-    drush_shell_cd_and_exec($name, 'git commit -m "Valkyrie: Generate new platform."');
+  // Import the new platform context into the Hostmaster site.
+  $command = "drush @hostmaster hosting-import @platform_$name";
+  $cmd = drush_shell_proc_build($site, $command, NULL, FALSE);
+  $status = drush_shell_proc_open($cmd);
+  if ($status != 0) {
+    return drush_set_error('DRUSH_SITE_SSH_ERROR', dt('An error @code occurred while running the command `@command`',
+      array('@command' => $cmd, '@code' => $status)));
   }
 
 }
