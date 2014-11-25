@@ -335,12 +335,21 @@ function drush_valkyrie_generate_platform($name, $makefile = NULL) {
     return drush_set_error('VALKYRIE_LOGS_REMOTE_ALIAS_REQUIRED', dt('@alias does not specify a remote-host.', array('@alias' => $alias)));
   }
 
+  // Cache a lockfile from which to build the platform.
+  $makefile = !is_null($makefile) ? $makefile : dirname(__FILE__) . '/templates/platform.make';
+  drush_mkdir(getcwd() . '/.valkyrie/cache/makefiles', FALSE);
+  $options = array(
+    'lock' => getcwd() . "/.valkyrie/cache/makefiles/$name.lock",
+    'no-build' => 1,
+  );
+  drush_invoke_process('@none', 'make', array($makefile), $options);
+
   // Write an Aegir context for the new platform.
   $options = array(
     'context_type' => 'platform',
     'web_server' => '@server_master',
     'root' => "/var/aegir/platforms/$name",
-    'makefile' => '/var/aegir/.drush/provision/aegir-dev.make',
+    'makefile' => "/vagrant/.valkyrie/cache/makefiles/$name.lock",
   );
   drush_invoke_process('@self', 'provision-save', array("@platform_$name"), $options);
 
