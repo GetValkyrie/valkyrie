@@ -86,16 +86,23 @@ function drush_valkyrie_post_provision_verify() {
 }
 
 /**
+ * Helper function to determine the site alias name.
+ */
+function _drush_valkyrie_get_site_aliasname() {
+  $aliases = d()->aliases;
+  if (count($aliases)) {
+    return $aliases[0];
+  }
+  else {
+    return d()->uri;
+  }
+}
+
+/**
  * Helper function to create site aliases for use on the host.
  */
 function _drush_valkyrie_create_site_alias() {
-  $aliases = d()->aliases;
-  if (count($aliases)) {
-    $aliasname = $aliases[0];
-  }
-  else {
-    $aliasname = d()->uri;
-  }
+  $aliasname = _drush_valkyrie_get_site_aliasname();
   $options = array(
     'remote_host' => provision_fqdn(d()->server->remote_host),
     'remote-user' => d()->server->script_user,
@@ -123,7 +130,7 @@ function _drush_valkyrie_create_server_alias() {
 function drush_valkyrie_create_alias($aliasname, $options) {
   // Let Provision_Context_Valkyrie know which options to write to the alias.
   $options['options'] = implode(',',array_keys($options));
-  
+
   $options['context_type'] = 'Valkyrie';
   provision_backend_invoke('@hostmaster', 'provision-save', array($aliasname), $options);
 }
@@ -148,7 +155,8 @@ function drush_valkyrie_post_provision_delete() {
  * Helper function to delete aliases generated for use on the host.
  */
 function _drush_valkyrie_delete_alias() {
-  $alias_path = VALKYRIE_ALIASES_PATH . '/' . d()->uri . '.alias.drushrc.php';
+  $aliasname = _drush_valkyrie_get_site_aliasname();
+  $alias_path = VALKYRIE_ALIASES_PATH . "/$aliasname.alias.drushrc.php";
   if (file_exists($alias_path)) {
     if (unlink($alias_path)) {
       drush_log('Deleted Drush alias for Valkyrie.', 'ok');
