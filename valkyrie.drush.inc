@@ -97,15 +97,6 @@ function valkyrie_drush_command() {
     'handle-remote-commands' => TRUE,
   );
 
-  $items['valkyrie-rebuild'] = array(
-    'description' => 'Rebuild an existing Valkyrie project.',
-    'arguments' => array(
-      'path' => 'The path of the project. Defaults to the current directory.',
-    ),
-    'aliases' => array('vre'),
-    'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap at all.
-  );
-
   $items['valkyrie-sql-snapshot'] = array(
     'description' => "Cache a sql-dump for later diff'ing.",
     'aliases' => array('vss'),
@@ -362,91 +353,4 @@ function drush_valkyrie_generate_platform($name, $makefile = NULL) {
       array('@command' => $cmd, '@code' => $status)));
   }
 
-}
-
-/**
- * Command callback for the 'valkyrie-rebuild' command.
- */
-function drush_valkyrie_rebuild($path = FALSE) {
-  if (!$path) {
-    if (!drush_confirm(dt('Rebuild the platform in the current directory?'))) {
-      return drush_user_abort();
-    }
-    $path = getcwd();
-  }
-  if (!is_dir($path)) {
-    drush_set_error('VALKYRIE_REBUILD_NO_PLATFORM_PATH',"The specified path ('$path') does not exist or is not a directory.");
-  }
-
-  drush_log('Beginning platform rebuild.', 'ok');
-
-  drush_log('Creating temporary directory.');
-  $tempdir = dirname($path) . '/tmp-' . time();
-  mkdir($tempdir);
-
-  drush_log('Preserving sites directory.');
-  $sites_dir = $path . '/sites';
-  $tmp_sites_dir = $tempdir . '/sites';
-  if (!is_dir($sites_dir)) {
-    drush_set_error('VALKYRIE_REBUILD_NO_SITES_PATH',"The sites directory in the specified platform ('$sites_dir') does not exist.");
-  }
-  drush_move_dir($sites_dir, $tmp_sites_dir);
-
-  drush_log('Removing sites/all and sites/default');
-  drush_delete_dir("$tmp_sites_dir/all");
-  drush_delete_dir("$tmp_sites_dir/default");
-
-  drush_log('Preserving .git directory.');
-  $git_dir = $path . '/.git';
-  $tmp_git_dir = $tempdir . '/.git';
-  if (!is_dir($git_dir)) {
-    drush_set_error('VALKYRIE_REBUILD_NO_GIT_PATH',"The .git directory in the specified platform ('$git_dir') does not exist.");
-  }
-  drush_move_dir($git_dir, $tmp_git_dir);
-
-  $profile_name = basename($path);
-  drush_log('Preserving ' . $profile_name . ' directory.');
-  $profile_dir = $path . '/profiles/' . $profile_name;
-  $tmp_profile_dir = $tempdir . '/profile';
-  if (!is_dir($profile_dir)) {
-    drush_set_error('VALKYRIE_REBUILD_NO_PROFILE_PATH',"The profile directory ('$profile_dir') does not exist.");
-  }
-  drush_move_dir($profile_dir, $tmp_profile_dir);
-
-  drush_log('Preserving makefile.');
-  rename($path . '/' . MAKEFILE_NAME, $tempdir . '/' . MAKEFILE_NAME);
-
-  drush_log('Preserving .gitignore.');
-  rename("$path/.gitignore", $tempdir . '/gitignore');
-
-  drush_log('Removing old platform.');
-  drush_delete_dir_contents($path);
-
-  drush_log('Building new platform');
-  $drush_affirmative = drush_get_context('DRUSH_AFFIRMATIVE');
-  drush_set_context('DRUSH_AFFIRMATIVE', TRUE);
-  drush_invoke('make', array($tempdir . '/' . MAKEFILE_NAME));
-  drush_set_context('DRUSH_AFFIRMATIVE', $drush_affirmative);
-
-  drush_log('Restoring sites directory.');
-  drush_move_dir("$sites_dir/all", "$tmp_sites_dir/all");
-  drush_move_dir("$sites_dir/default", "$tmp_sites_dir/default");
-  drush_move_dir($tmp_sites_dir, $sites_dir, TRUE);
-
-  drush_log('Restoring .git directory.');
-  drush_move_dir($tmp_git_dir, $git_dir, TRUE);
-
-  drush_log("Restoring '$profile_name' profile directory.");
-  drush_move_dir($tmp_profile_dir, $profile_dir, TRUE);
-
-  drush_log('Restoring .gitignore.');
-  rename($tempdir . '/gitignore', "$path/.gitignore");
-
-  drush_log('Restoring makefile.');
-  rename($tempdir . '/' . MAKEFILE_NAME, $path . '/' . MAKEFILE_NAME);
-
-  drush_log('Removing temporary directory');
-  rmdir($tempdir);
-
-  drush_log('Platform rebuild complete.', 'ok');
 }
