@@ -230,7 +230,7 @@ function drush_valkyrie_update() {
  */
 function drush_valkyrie_sql_snapshot() {
   $alias = drush_get_context('DRUSH_TARGET_SITE_ALIAS');
-  $dir = drush_get_option('snapshot-dir', getcwd() . '/.valkyrie/sql-snapshots');
+  $dir = drush_get_option('snapshot-dir', getcwd() . '/.valkyrie/cache/sql-snapshots');
   if (!is_dir($dir)) {
     drush_mkdir($dir);
   }
@@ -261,7 +261,7 @@ function drush_valkyrie_sql_diff() {
     $snapshot = drush_get_option('snapshot-file');
   }
   else {
-    $dir = drush_get_option('snapshot-dir', getcwd() . '/.valkyrie/sql-snapshots');
+    $dir = drush_get_option('snapshot-dir', getcwd() . '/.valkyrie/cache/sql-snapshots');
     $files = array_keys(drush_scan_directory($dir, "/$alias/"));
     if (!count($files)) {
       return drush_set_error('No snapshot file found.');
