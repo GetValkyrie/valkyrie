@@ -339,7 +339,7 @@ function drush_valkyrie_generate_platform($name, $makefile = NULL) {
   $makefile = !is_null($makefile) ? $makefile : dirname(__FILE__) . '/templates/platform.make';
   drush_mkdir(getcwd() . '/.valkyrie/cache/makefiles', FALSE);
   $options = array(
-    'lock' => getcwd() . "/.valkyrie/cache/makefiles/$name.lock",
+    'lock' => getcwd() . "/.valkyrie/cache/makefiles/$name.make",
     'no-build' => 1,
   );
   drush_invoke_process('@none', 'make', array($makefile), $options);
@@ -349,7 +349,7 @@ function drush_valkyrie_generate_platform($name, $makefile = NULL) {
     'context_type' => 'platform',
     'web_server' => '@server_master',
     'root' => "/var/aegir/platforms/$name",
-    'makefile' => "/vagrant/.valkyrie/cache/makefiles/$name.lock",
+    'makefile' => "/vagrant/.valkyrie/cache/makefiles/$name.make",
   );
   drush_invoke_process('@self', 'provision-save', array("@platform_$name"), $options);
 
