@@ -416,6 +416,10 @@ function drush_valkyrie_clone_site($name, $git_repo) {
     'uri' => $name,
     'root' => "/var/aegir/platforms/$platform_name",
     'profile' => 'minimal',
+    #'client_email' => 'me@example.com',
+    # TODO: Why doesn't the above option work? Instead we need to do this in
+    # drush_valkyrie_pre_provision_install_backend().
+    # FWIW, passing --client_email to hosting-import doesn't work either.
   );
   drush_invoke_process('@self', 'provision-save', array("@$name"), $options);
 
