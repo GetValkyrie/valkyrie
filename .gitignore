@@ -1,1 +1,5 @@
 composer.phar
+bin/
+vendor/behat
+vendor/symfony
+!vendor/symfony/yaml

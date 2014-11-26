@@ -1,5 +1,13 @@
 {
   "require": {
     "symfony/yaml": "2.*"
+  },
+
+  "require-dev": {
+    "behat/behat": "2.4.*@stable"
+  },
+  "config": {
+    "bin-dir": "bin/"
   }
+
 }
