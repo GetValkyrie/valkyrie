@@ -189,3 +189,13 @@ function _valkyrie_add_default_drushrc() {
     }
   }
 }
+
+/**
+ * Implements drush_hook_pre_COMMAND().
+ *
+ * TODO: Why can't we pass in 'client_email' in the $options array in
+ * drush_valkyrie_clone_site()?
+ */
+function drush_valkyrie_pre_provision_install_backend() {
+  drush_set_option('client_email', 'me@example.com');
+}
