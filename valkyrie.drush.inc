@@ -87,6 +87,9 @@ function valkyrie_drush_command() {
       'makefile' => 'Path to a makefile.',
     ),
     'required-arguments' => 1,
+    'options' => array(
+      'verify' => 'Verify (and build) the platform before importing it into Aegir.',
+    ),
     'examples' => array(
       'drush vgp my_platform platform.make' => 'Create a platform built from the provided makefile.',
     ),
@@ -360,6 +363,17 @@ function drush_valkyrie_generate_platform($name, $makefile = NULL) {
     'makefile' => "/vagrant/.valkyrie/cache/makefiles/$name.make",
   );
   drush_invoke_process('@self', 'provision-save', array("@platform_$name"), $options);
+
+  if (drush_get_option('verify', FALSE)) {
+    // Verify the new platform. This will run 'drush make'.
+    $command = "drush @platform_$name provision-verify";
+    $cmd = drush_shell_proc_build($site, $command, NULL, FALSE);
+    $status = drush_shell_proc_open($cmd);
+    if ($status != 0) {
+      return drush_set_error('DRUSH_SITE_SSH_ERROR', dt('An error @code occurred while running the command `@command`',
+        array('@command' => $cmd, '@code' => $status)));
+    }
+  }
 
   // Import the new platform context into the Hostmaster site.
   $command = "drush @hostmaster hosting-import @platform_$name";
