@@ -417,7 +417,9 @@ function drush_valkyrie_clone_site($name, $git_repo) {
   $makefile = ".valkyrie/cache/site_repos/$name/platform.make";
   $platform_name = preg_replace("/[!\W\.\-]/", "", $name);
   drush_unset_option('branch');
+  drush_set_option('verify', TRUE);
   drush_invoke('valkyrie-generate-platform', array($platform_name, $makefile));
+  drush_unset_option('verify');
 
   // Write an Aegir context for the new site.
   $options = array(
@@ -436,6 +438,11 @@ function drush_valkyrie_clone_site($name, $git_repo) {
     # FWIW, passing --client_email to hosting-import doesn't work either.
   );
   drush_invoke_process('@self', 'provision-save', array("@$name"), $options);
+
+  // TODO: Figure out a way to poll the Aegir queue for outstanding tasks.
+  // Perhaps a hidden task we can run on the VM...
+  drush_log('Waiting for platform to be ready.');
+  sleep(2);
 
   // Import the new site context into the Hostmaster site.
   $command = "drush @hostmaster hosting-import @$name";

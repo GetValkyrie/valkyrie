@@ -110,6 +110,8 @@ git, like so:
 
 ### Building a platform and site
 
+(deploy key)
+
 valkyrie-generate-platform (vgp)  Generate a platform.
 
 
