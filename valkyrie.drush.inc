@@ -84,15 +84,32 @@ function valkyrie_drush_command() {
     'description' => 'Generate a platform.',
     'arguments' => array(
       'name' => 'Name of the platform.',
+      'makefile' => 'Path to a makefile.',
+    ),
+    'required-arguments' => 1,
+    'examples' => array(
+      'drush vgp my_platform platform.make' => 'Create a platform built from the provided makefile.',
+    ),
+    'aliases' => array('vgp'),
+    'bootstrap' => DRUSH_BOOTSTRAP_NONE,
+    'handle-remote-commands' => TRUE,
+  );
+
+  $items['valkyrie-clone-site'] = array(
+    'description' => 'Clone a site from a git repo.',
+    'arguments' => array(
+      'URL' => 'The URL at which to create the site. Use of the production domain (e.g., example.com) is recommended. A local alias (e. g., example-com.local) will be created for you.',
+      'git repo' => "The git repo from which to clone this site's configuration",
     ),
     'required-arguments' => TRUE,
     'options' => array(
-      'commit' => 'Commit the platform into a new git repo (defaults to true).',
+      'enable' => 'The name of one or more Features (or modules) to enable post-install.',
+      'branch' => 'The git branch to clone.',
     ),
     'examples' => array(
-      'drush vgp my_platform --build=false' => 'Create a platform but don\'t build it from the makefile.',
+      'drush vcs example.com http://github.com/example/example.com' => 'Install a site from the configration provided in the provided git repo.',
     ),
-    'aliases' => array('vgp'),
+    'aliases' => array('vcs'),
     'bootstrap' => DRUSH_BOOTSTRAP_NONE,
     'handle-remote-commands' => TRUE,
   );
@@ -323,7 +340,7 @@ function drush_valkyrie_generate_platform($name, $makefile = NULL) {
   }
   $site = drush_sitealias_get_record($alias);
   if (empty($site['remote-host'])) {
-    return drush_set_error('VALKYRIE_LOGS_REMOTE_ALIAS_REQUIRED', dt('@alias does not specify a remote-host.', array('@alias' => $alias)));
+    return drush_set_error('VALKYRIE_GENERATE_PLATFORM_REMOTE_ALIAS_REQUIRED', dt('@alias does not specify a remote-host.', array('@alias' => $alias)));
   }
 
   // Cache a lockfile from which to build the platform.
@@ -346,6 +363,64 @@ function drush_valkyrie_generate_platform($name, $makefile = NULL) {
 
   // Import the new platform context into the Hostmaster site.
   $command = "drush @hostmaster hosting-import @platform_$name";
+  $cmd = drush_shell_proc_build($site, $command, NULL, FALSE);
+  $status = drush_shell_proc_open($cmd);
+  if ($status != 0) {
+    return drush_set_error('DRUSH_SITE_SSH_ERROR', dt('An error @code occurred while running the command `@command`',
+      array('@command' => $cmd, '@code' => $status)));
+  }
+
+}
+
+/**
+ * Command callback for the 'valkyrie-clone-site' command.
+ */
+function drush_valkyrie_clone_site($name, $git_repo) {
+  // We only accept remote aliases, since we build sites in a VM.
+  if (!$alias = drush_get_context('DRUSH_TARGET_SITE_ALIAS')) {
+    return drush_set_error('VALKYRIE_CLONE_SITE_MISSING_TARGET_ALIAS', dt('A remote server alias is required. The way you call valkyrie-clone-site is: `drush @vm_alias vcs example.com http://github.com/example/example.com.git`.'));
+  }
+  $site = drush_sitealias_get_record($alias);
+  if (empty($site['remote-host'])) {
+    return drush_set_error('VALKYRIE_CLONE_SITE_REMOTE_ALIAS_REQUIRED', dt('@alias does not specify a remote-host.', array('@alias' => $alias)));
+  }
+
+  // Cache a copy of the site git repo, so we can retrieve the makefile.
+  // We do so from within the VM, to ensure the deploy key has been authorized
+  // in the repo.
+  $command = "git clone $git_repo /var/aegir/.cache/site_repos/$name";
+  if ($branch = drush_get_option('branch', FALSE)) {
+    $command .= " --branch=$branch";
+  }
+  $cmd = drush_shell_proc_build($site, $command, NULL, FALSE);
+  $status = drush_shell_proc_open($cmd);
+  if ($status != 0) {
+    return drush_set_error('DRUSH_SITE_SSH_ERROR', dt('An error @code occurred while running the command `@command`',
+      array('@command' => $cmd, '@code' => $status)));
+  }
+
+  // Build a platform.
+  $makefile = ".valkyrie/cache/site_repos/$name/platform.make";
+  $platform_name = preg_replace("/[!\W\.\-]/", "", $name);
+  drush_unset_option('branch');
+  drush_invoke('valkyrie-generate-platform', array($platform_name, $makefile));
+
+  // Write an Aegir context for the new site.
+  $options = array(
+    'context_type' => 'site',
+    'platform' => "@platform_$platform_name",
+    'db_server' => '@server_localhost',
+    'repo_url' => $git_repo,
+    'deploy_from_git' => true,
+    'git_ref' => isset($branch) ? $branch : 'master',
+    'uri' => $name,
+    'root' => "/var/aegir/platforms/$platform_name",
+    'profile' => 'minimal',
+  );
+  drush_invoke_process('@self', 'provision-save', array("@$name"), $options);
+
+  // Import the new site context into the Hostmaster site.
+  $command = "drush @hostmaster hosting-import @$name";
   $cmd = drush_shell_proc_build($site, $command, NULL, FALSE);
   $status = drush_shell_proc_open($cmd);
   if ($status != 0) {
