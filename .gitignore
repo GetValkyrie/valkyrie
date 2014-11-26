@@ -1,5 +1,6 @@
 composer.phar
 bin/
-vendor/behat
-vendor/symfony
+vendor/symfony/*
+vendor/*
 !vendor/symfony/yaml
+!vendor/composer/
