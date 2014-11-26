@@ -108,6 +108,7 @@ function valkyrie_drush_command() {
     'options' => array(
       'enable' => 'The name of one or more Features (or modules) to enable post-install.',
       'branch' => 'The git branch to clone.',
+      'profile' => 'The profile with which to install the site.',
     ),
     'examples' => array(
       'drush vcs example.com http://github.com/example/example.com' => 'Install a site from the configration provided in the provided git repo.',
@@ -405,6 +406,9 @@ function drush_valkyrie_clone_site($name, $git_repo) {
   $command = "git clone $git_repo /var/aegir/.cache/site_repos/$name";
   if ($branch = drush_get_option('branch', FALSE)) {
     $command .= " --branch=$branch";
+    // Clear this option so that it doesn't interfere with later command
+    // invocations.
+    drush_unset_option('branch');
   }
   $cmd = drush_shell_proc_build($site, $command, NULL, FALSE);
   $status = drush_shell_proc_open($cmd);
@@ -413,10 +417,14 @@ function drush_valkyrie_clone_site($name, $git_repo) {
       array('@command' => $cmd, '@code' => $status)));
   }
 
+  // Retrieve the profile option then clear it so that it doesn't interfere
+  // with later command invocations.
+  $profile = drush_get_option('profile', 'minimal');
+  drush_unset_option('profile');
+
   // Build a platform.
   $makefile = ".valkyrie/cache/site_repos/$name/platform.make";
   $platform_name = preg_replace("/[!\W\.\-]/", "", $name);
-  drush_unset_option('branch');
   drush_set_option('verify', TRUE);
   drush_invoke('valkyrie-generate-platform', array($platform_name, $makefile));
   drush_unset_option('verify');
@@ -431,7 +439,7 @@ function drush_valkyrie_clone_site($name, $git_repo) {
     'git_ref' => isset($branch) ? $branch : 'master',
     'uri' => $name,
     'root' => "/var/aegir/platforms/$platform_name",
-    'profile' => 'minimal',
+    'profile' => $profile,
     #'client_email' => 'me@example.com',
     # TODO: Why doesn't the above option work? Instead we need to do this in
     # drush_valkyrie_pre_provision_install_backend().
