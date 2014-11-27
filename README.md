@@ -7,118 +7,51 @@ git- and Features-based workflows. These, in turn, enable teams to easily
 collaborate and automate processes from development, through QA to deployment
 and ongoing maintenance.
 
-
-INSTALLATION
-------------
-
-Installing Valkyrie is as simple as:
-
-    $ drush dl valkyrie
-
-*N.B.* Valkyrie supports both Linux and OSX operating systems. We have no plans
-to support Windows.
+See INSTALLATION.md and USAGE.md for more detailed documentation.
 
 
-DEPENDENCIES
-------------
+FEATURES
+--------
 
-Valkyrie is a Drush extension, and thus requires a recent version of Drush. We
-currently recommend using Drush 7.x. Earlier versions *may* work, but are not
-currently well-tested or supported. Note that Drush can be installed stand-
-alone, if you are unable or unwilling to upgrade your system install.
-
- * https://github.com/drush-ops/drush#installupdate---a-global-drush-for-all-projects
-
-Valkyrie depends on Vagrant, which in turn requires Virtualbox. These projects
-publish their own packages for most operating systems. We recommend installing
-these, as it will ensure that you are running on recent versions, and thus can
-take advantage of newer features.
-
- * https://www.vagrantup.com/downloads.html
- * https://www.virtualbox.org/wiki/Downloads
-
-Valkyrie also makes use of a couple Vagrant plugins: valkyrie-sshfs (a fork of
-vagrant sshfs) and vagrant-dns (for Mac users only). Installing these should be
-as simple as:
-
-    $ vagrant plugin install valkyrie-sshfs
-    $ vagrant plugin install vagrant-dns
-
-Valkyrie-sshfs, in turn, requires SSHFS and thus FUSE. These have packages
-available on most flavours of Linux and OSX:
-
-    # apt-get install sshfs     # Debian, Ubuntu and other derivatives
-    # yum install fuse-sshfs    # CentOS, RHEL, etc.
-    # brew install sshfs        # OSX
-
-Valkyrie also uses git quite extensively. So if you don't already have it
-installed, go ahead and do that next.
-
- * http://git-scm.com/downloads
+0. Fully Free Software stack.
+1. Easy platform management.
+2. Version-controlled site configuration.
+3. Automatic local domain resolution.
 
 
-USAGE
------
+Free Software
+-------------
 
-Valkyrie provides a number of Drush commands, which are well documented within
-Drush itself. Run the following to review these commands:
-
-    $ drush help --filter=valkyrie
-
-These break down into three categories:
-
- * Setting up a project
- * Building a platform (Drupal code-base) and site.
- * Tools to ease development
+We are firm proponents of Free Software. Valkyrie only exists because of the
+ongoing efforts of many other projects including: Aegir, Drupal, Drush, Git,
+GNU/Linux, Puppet, Vagrant and VirtualBox. In addition, many plugins, modules,
+extensions and libraries are developed and maintained by individual developers
+and organizations of all sizes and types. We commend their admirable efforts.
 
 
-### Project setup
+Platform Management
+-------------------
 
-Once you've installed Valkyrie and its dependencies, the first things you'll
-want to do is create a new project. In this context, a 'project' is a directory
-containing all the components required to launch and configure a local VM.
-
-The 'drush valkyrie-new' command (aliased to 'vnew') will create such a
-project. Besides creating the directory, this command will copy Valkyrie itself
-into a hidden folder within the project. This ensures that the project will
-keep running, regardless of updates to the Valkyrie Drush extension. This
-directory's contents are committed into a git repository to make tracking
-changes easier. Any customizations can be done here, in isolation from the
-system install, and shared with other team members via git.
-
-To launch the VM, just use Vagrant as normal:
-
-    $ vagrant up
-
-If you've updated the Valkyrie Drush extension (i.e., via 'drush dl valkyrie'),
-you may want to update your projects to use some if the new code. Within a
-project, this will affect mostly the Vagrantfile (and associated code) and the
-Puppet code used to configure the VM. To update the Valkyrie code cached in a
-project, run 'drush valkyrie-update' (or 'vup') from the project root. This
-will copy in a fresh version of Valkyrie from the recently update Drush
-entension.
-
-To apply any changes in VM configuration, re-run the provisioners in Vagrant:
-
-    $ vagrant provision
-
-If there's any reason to rollback from an update, you should be able to use
-git, like so:
-
-    $ git checkout .valkyrie/valkyrie
+The codebase of a modern Drupal site is complex. Maintaining the security
+of the codebase requires frequent updates. We are striving to fully automate
+such updates. While we aren't there yet, we've made things pretty easy.
 
 
-### Building a platform and site
+Site Configuration
+------------------
 
-(deploy key)
+Keeping site configuration and content separate can be a challenge. The
+Features module goes a long way towards solving this issue, but it isn't always
+obvious what to export to code. We've found that comparing database dumps is a
+pretty good way to visualize these chnges, and so we've added some commands to
+make this quick and easy.
 
-valkyrie-generate-platform (vgp)  Generate a platform.
 
+Local Domain Resolution
+-----------------------
 
-### Development extras
-
-valkyrie-logs (vlog)              Tail the Apache error log.
-valkyrie-sql-snapshot (vss)       Cache a sql-dump for later diff'ing.
-valkyrie-sql-diff (vsd)           Diff the current sql-dump with an earlier
-                                  snapshot.
-
+When building websites locally, it's common practice to add development domains
+to /etc/hosts. This is fine, as far as it goes. But when you can spin up new
+platforms and sites as easily as Valkyrie allows, that extra step starts to be
+a hassle. Through the magic of Avahi (on Linux systems) or a vagrant-dns plugin (on
+Macs), every site provisioned on Valkyrie automatically resolves to a local alias.
