@@ -28,12 +28,14 @@ class FeatureContext extends RawDrupalContext implements SnippetAcceptingContext
    */
   public static function teardown(Behat\Testwork\Hook\Scope\AfterSuiteScope $scope) {
     // remove the test environment
-    $old = getcwd(); // Save the current directory
     $test_project_path = '/tmp/test_project';
-    chdir($test_project_path);
-    system('vagrant destroy -f');
-    chdir($old);
-    system("rm -rf $test_project_path");
+    if (is_dir($test_project_path)) {
+      $old = getcwd(); // Save the current directory
+      chdir($test_project_path);
+      system('vagrant destroy -f');
+      chdir($old);
+      system("rm -rf $test_project_path");
+    }
   }
 
 }
