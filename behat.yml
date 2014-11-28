@@ -6,6 +6,9 @@ default:
         - Drupal\DrupalExtension\Context\DrupalContext
         - Drupal\DrupalExtension\Context\DrushContext
         - Drupal\DrupalExtension\Context\MinkContext
+        - behatch:system
+      filters:
+        tags: "~@wip"
   extensions:
     Behat\MinkExtension:
       goutte: ~
@@ -15,3 +18,4 @@ default:
       blackbox: ~
       drush:
         alias: 'none'
+    Sanpi\Behatch\Extension: ~
