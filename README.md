@@ -14,9 +14,10 @@ FEATURES
 --------
 
 0. Fully Free Software stack.
-1. Easy platform management.
+1. Locally mounted codebase.
 2. Version-controlled site configuration.
 3. Automatic local domain resolution.
+4. Easy platform management.
 
 
 Free Software
@@ -29,12 +30,14 @@ extensions and libraries are developed and maintained by individual developers
 and organizations of all sizes and types. We commend their admirable efforts.
 
 
-Platform Management
--------------------
+Local codebase
+--------------
 
-The codebase of a modern Drupal site is complex. Maintaining the security
-of the codebase requires frequent updates. We are striving to fully automate
-such updates. While we aren't there yet, we've made things pretty easy.
+Having to SSH into a development VM and edit code using a terminal-based editor
+(such as vim) isn't everyone's cup of tea. Many IDEs support mounting remote
+filesystems, but this can be tricky and needlessly time-consuming. Valkyrie
+uses SSHFS to mount all your platforms directly on your host machine, which
+allows you to use the same editor you're used to without jumping through hoops.
 
 
 Site Configuration
@@ -55,3 +58,14 @@ to /etc/hosts. This is fine, as far as it goes. But when you can spin up new
 platforms and sites as easily as Valkyrie allows, that extra step starts to be
 a hassle. Through the magic of Avahi (on Linux systems) or a vagrant-dns plugin (on
 Macs), every site provisioned on Valkyrie automatically resolves to a local alias.
+
+
+Platform Management
+-------------------
+
+The codebase of a modern Drupal site is complex. Maintaining the security
+of the codebase requires frequent updates. We are striving to fully automate
+such updates. While we aren't there yet, we've made things pretty easy. You can
+expect significant further improvements here in the coming weeks.
+
+

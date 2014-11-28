@@ -16,7 +16,8 @@ These break down into three categories:
  * Tools to ease development
 
 
-### Project setup
+Project setup
+-------------
 
 Once you've installed Valkyrie and its dependencies, the first things you'll
 want to do is create a new project. In this context, a 'project' is a directory
@@ -52,12 +53,41 @@ git, like so:
     $ git checkout .valkyrie/valkyrie
 
 
-### Building a platform and site
+### SSHFS
+
+We mount various directories using SSHFS. These can be re-mounted with the
+following command:
+
+    $ vagrant vsshfs
+
+In comparison to other options, such as NFS or rsync, we find SSHFS works very
+well for our use-cases. That said, we are trying to work out some rough edges.
+This FAQ may come in handy if you aren't already familiar with SSHFS:
+
+ * http://sourceforge.net/p/fuse/wiki/SshfsFaq/
+
+
+### Dotfiles
+
+In order to make working within the VM easier and more familiar, we copy in
+various dotfiles from the host machine. These can be overridden in a
+config.yaml at your project root. The default list of dotfiles looks like this:
+
+    dot_files:
+      - .gitconfig
+      - .vimrc
+      - .bashrc
+
+
+
+Building platforms and sites
+----------------------------
 
 valkyrie-generate-platform (vgp)  Generate a platform.
 
 
-### Development extras
+Development extras
+------------------
 
 valkyrie-logs (vlog)              Tail the Apache error log.
 valkyrie-sql-snapshot (vss)       Cache a sql-dump for later diffing.
