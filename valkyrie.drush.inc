@@ -463,10 +463,9 @@ function drush_valkyrie_init_site($name, $makefile = FALSE, $git_repo = FALSE) {
   );
   drush_invoke_process('@self', 'provision-save', array("@$name"), $options);
 
-  // TODO: Figure out a way to poll the Aegir queue for outstanding tasks.
-  // Perhaps a hidden task we can run on the VM...
-  drush_log('Waiting for platform to be ready.');
-  sleep(2);
+  // Install the new site.
+  $command = "drush @$name provision-install";
+  _valkyrie_invoke_remote_cmd($server, $command);
 
   // Import the new site context into the Hostmaster site.
   $command = "drush @hostmaster hosting-import @$name";
