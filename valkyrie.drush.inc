@@ -477,11 +477,11 @@ function drush_valkyrie_init_site($name, $makefile = 'path/to/default', $git_rep
 function _valkyrie_get_target_server_record() {
   // We only accept remote aliases, since we run operations in a VM.
   if (!$alias = drush_get_context('DRUSH_TARGET_SITE_ALIAS')) {
-    return drush_set_error('VALKYRIE_TARGET_SERVER_ALIAS_REQUIRED', dt('A remote server alias is required. The way you call this Valkyrie command is: `drush @vm_alias valkyrie-cmd ... `.'));
+    drush_die(dt('A remote server alias is required. The way you call this Valkyrie command is: `drush @vm_alias valkyrie-cmd ... `.'));
   }
   $server = drush_sitealias_get_record($alias);
   if (empty($server['remote-host'])) {
-    return drush_set_error('VALKYRIE_REMOTE_HOST_REQUIRED', dt('@alias does not specify a remote-host.', array('@alias' => $alias)));
+    drush_die(dt('@alias does not specify a remote-host.', array('@alias' => $alias)));
   }
   return $server;
 }
