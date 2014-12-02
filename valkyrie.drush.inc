@@ -490,7 +490,6 @@ function _valkyrie_get_target_server_record() {
  * Call a command on a Valkyrie server.
  */
 function _valkyrie_invoke_remote_cmd($server, $command) {
-  $command = "drush @hostmaster hosting-import @$name";
   $cmd = drush_shell_proc_build($server, $command, NULL, FALSE);
   $status = drush_shell_proc_open($cmd);
   if ($status != 0) {
