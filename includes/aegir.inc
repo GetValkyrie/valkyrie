@@ -4,7 +4,7 @@
  * @file Hooks to modify Aegir's operations.
  */
 
-define('AEGIR_FRONTEND_URL', provision_fqdn(d()->server->remote_host));
+define('AEGIR_FRONTEND_URL', provision_fqdn());
 define('VALKYRIE_ALIASES_PATH', '/var/aegir/config/valkyrie_aliases');
 
 /**
