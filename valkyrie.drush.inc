@@ -102,7 +102,7 @@ function valkyrie_drush_command() {
     'description' => 'Clone a site from a git repo.',
     'arguments' => array(
       'URL' => 'The URL at which to create the site. Use of the production domain (e.g., example.com) is recommended. A local alias (e. g., example-com.local) will be created for you.',
-      'git repo' => "The git repo from which to clone this site's configuration",
+      'git repo' => "The git repo from which to clone this site's configuration.",
     ),
     'required-arguments' => TRUE,
     'options' => array(
@@ -320,11 +320,11 @@ function drush_valkyrie_logs($log_path = '/var/log/apache2/error.log') {
 /**
  * Command callback for the 'valkyrie-generate-platform' command.
  */
-function drush_valkyrie_generate_platform($name, $makefile = NULL) {
+function drush_valkyrie_generate_platform($name, $makefile = FALSE) {
   $server = _valkyrie_get_target_server_record();
 
   // Cache a lockfile from which to build the platform.
-  $makefile = !is_null($makefile) ? $makefile : dirname(__FILE__) . '/templates/platform.make';
+  $makefile = $makefile ? $makefile : dirname(__FILE__) . '/templates/platform.make';
   drush_mkdir(getcwd() . '/.valkyrie/cache/makefiles', FALSE);
   $options = array(
     'lock' => getcwd() . "/.valkyrie/cache/makefiles/$name.make",
