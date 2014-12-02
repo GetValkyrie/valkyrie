@@ -118,6 +118,25 @@ function valkyrie_drush_command() {
     'handle-remote-commands' => TRUE,
   );
 
+  $items['valkyrie-init-site'] = array(
+    'description' => 'Initialize a new git-based site.',
+    'arguments' => array(
+      'URL' => 'The URL at which to create the site. Use of the production domain (e.g., example.com) is recommended. A local alias (e. g., example-com.local) will be created for you.',
+      'makefile' => "A makefile from which to build the site's platform.",
+      'git repo' => "The git repo from which to clone this site's configuration.",
+    ),
+    'required-arguments' => 1,
+    'options' => array(
+      'profile' => 'The profile with which to install the site.',
+    ),
+    'examples' => array(
+      'drush vis example.com http://github.com/example/example.com' => 'Install a site from the configration provided in the provided git repo.',
+    ),
+    'aliases' => array('vis'),
+    'bootstrap' => DRUSH_BOOTSTRAP_NONE,
+    'handle-remote-commands' => TRUE,
+  );
+
   $items['valkyrie-sql-snapshot'] = array(
     'description' => "Cache a sql-dump for later diff'ing.",
     'aliases' => array('vss'),
@@ -415,20 +434,8 @@ function drush_valkyrie_clone_site($name, $git_repo) {
 /**
  * Command callback for the 'valkyrie-init-site' command.
  */
-function drush_valkyrie_init_site($name, $makefile = 'path/to/default', $git_repo = FALSE) {
+function drush_valkyrie_init_site($name, $makefile = FALSE, $git_repo = FALSE) {
   $server = _valkyrie_get_target_server_record();
-
-  // Cache a copy of the site git repo, so we can retrieve the makefile.
-  // We do so from within the VM, to ensure the deploy key has been authorized
-  // in the repo.
-  $command = "git clone $git_repo /var/aegir/.cache/site_repos/$name";
-  if ($branch = drush_get_option('branch', FALSE)) {
-    $command .= " --branch=$branch";
-    // Clear this option so that it doesn't interfere with later command
-    // invocations.
-    drush_unset_option('branch');
-  }
-  _valkyrie_invoke_remote_cmd($server, $command);
 
   // Retrieve the profile option then clear it so that it doesn't interfere
   // with later command invocations.
@@ -436,7 +443,7 @@ function drush_valkyrie_init_site($name, $makefile = 'path/to/default', $git_rep
   drush_unset_option('profile');
 
   // Build a platform.
-  $makefile = ".valkyrie/cache/site_repos/$name/platform.make";
+  $makefile = $makefile ? $makefile : dirname(__FILE__) . '/templates/platform.make';
   $platform_name = preg_replace("/[!\W\.\-]/", "", $name);
   drush_set_option('verify', TRUE);
   drush_invoke('valkyrie-generate-platform', array($platform_name, $makefile));
@@ -448,15 +455,11 @@ function drush_valkyrie_init_site($name, $makefile = 'path/to/default', $git_rep
     'platform' => "@platform_$platform_name",
     'db_server' => '@server_localhost',
     'repo_url' => $git_repo,
-    'deploy_from_git' => true,
+    'deploy_from_git' => false,  # We're creating a new repo, not cloning an existing one.
     'git_ref' => isset($branch) ? $branch : 'master',
     'uri' => $name,
     'root' => "/var/aegir/platforms/$platform_name",
     'profile' => $profile,
-    #'client_email' => 'me@example.com',
-    # TODO: Why doesn't the above option work? Instead we need to do this in
-    # drush_valkyrie_pre_provision_install_backend().
-    # FWIW, passing --client_email to hosting-import doesn't work either.
   );
   drush_invoke_process('@self', 'provision-save', array("@$name"), $options);
 
