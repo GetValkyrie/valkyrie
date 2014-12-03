@@ -67,11 +67,33 @@ node default {
   }
   include skynet
 
+  drush::git {'http://git.drupal.org/sandbox/ergonlogic/2386543.git':
+    path       => '/var/aegir/hostmaster-7.x-3.x/profiles/hostmaster/modules/aegir',
+    dir_name   => 'hosting_reinstall',
+    git_branch => '7.x-3.x',
+    user       => $aegir_user,
+    #update     => true,
+    require    => Class['aegir::dev'],
+  }
+  /*
+  drush::git {'http://git.poeticsystems.com/valkyrie/hosting-storage.git':
+    path       => '/var/aegir/hostmaster-7.x-3.x/profiles/hostmaster/modules/aegir',
+    dir_name   => 'hosting_storage',
+    #git_branch => '7.x-3.x',
+    git_branch => 'master',
+    user       => $aegir_user,
+    #update     => true,
+    require    => Class['aegir::dev'],
+  }
+  */
+
   drush::en {[
-    'hosting_git',
-    'hosting_platform_pathauto',
-    'hosting_git_pull',
     'hosting_alias',
+    'hosting_git',
+    'hosting_git_pull',
+    'hosting_platform_pathauto',
+    'hosting_reinstall',
+    #'hosting_storage',  # Not ready for default usage.
   ]:
     site_alias => '@hm',
     drush_user => $aegir_user,
