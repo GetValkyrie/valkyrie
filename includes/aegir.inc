@@ -110,6 +110,7 @@ function _drush_valkyrie_create_site_alias() {
       'remote-user' => d()->server->script_user,
       'uri' => $aliasname,
       'root' => d()->root,
+      'alias' => d()->name,
     );
     drush_valkyrie_create_alias($aliasname, $options);
   }
@@ -152,7 +153,7 @@ function drush_valkyrie_post_provision_install() {
 function drush_valkyrie_pre_provision_reinstall() {
   // Run a 'git pull' on the site, so that we install on the latest code.
   drush_log('Pulling Git repo before reinstall.');
-  drush_invoke('provision-git-pull');
+  #drush_invoke('provision-git-pull');
 }
 
 /**
