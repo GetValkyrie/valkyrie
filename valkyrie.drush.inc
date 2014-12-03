@@ -118,6 +118,16 @@ function valkyrie_drush_command() {
     'handle-remote-commands' => TRUE,
   );
 
+  $items['valkyrie-reinstall-site'] = array(
+    'description' => 'Reinstall a site.',
+    'examples' => array(
+      'drush @example-com.local vrs' => 'Delete and then reinstall a site.',
+    ),
+    'aliases' => array('vrs'),
+    'bootstrap' => DRUSH_BOOTSTRAP_NONE,
+    'handle-remote-commands' => TRUE,
+  );
+
   $items['valkyrie-init-site'] = array(
     'description' => 'Initialize a new git-based site.',
     'arguments' => array(
@@ -333,6 +343,16 @@ function drush_valkyrie_sql_diff() {
 function drush_valkyrie_logs($log_path = '/var/log/apache2/error.log') {
   $server = _valkyrie_get_target_server_record();
   $command = "tail -f $log_path";
+  _valkyrie_invoke_remote_cmd($server, $command);
+}
+
+/**
+ * Command callback for the 'valkyrie-reinstall-site' command.
+ */
+function drush_valkyrie_reinstall_site() {
+  $server = _valkyrie_get_target_server_record();
+  $alias = $server['alias'];
+  $command = "drush $alias provision-reinstall";
   _valkyrie_invoke_remote_cmd($server, $command);
 }
 
