@@ -147,6 +147,15 @@ function drush_valkyrie_post_provision_install() {
 }
 
 /**
+ * Implements drush_hook_pre_COMMAND().
+ */
+function drush_valkyrie_pre_provision_reinstall() {
+  // Run a 'git pull' on the site, so that we install on the latest code.
+  drush_log('Pulling Git repo before reinstall.');
+  drush_invoke('provision-git-pull');
+}
+
+/**
  * Implements drush_hook_post_COMMAND().
  */
 function drush_valkyrie_post_provision_reinstall() {
@@ -155,7 +164,7 @@ function drush_valkyrie_post_provision_reinstall() {
   // better allow for a headless Valkyrie.
 
   // Run a verify on the site, so that we get back our aliases, etc.
-  drush_log('Verify site after re-install.');
+  drush_log('Verify site after reinstall.');
   drush_invoke_process('@hostmaster', 'hosting-task', array(d()->name, 'verify'));
 }
 
