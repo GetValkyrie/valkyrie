@@ -95,7 +95,8 @@ function _drush_valkyrie_get_site_aliasname() {
     return $aliases[0];
   }
   else {
-    return d()->uri;
+    drush_log(dt('No URL aliases were defined for :name. Skipping Valkyrie alias creation.', array(':name' => d()->name)));
+    return FALSE;
   }
 }
 
@@ -103,14 +104,15 @@ function _drush_valkyrie_get_site_aliasname() {
  * Helper function to create site aliases for use on the host.
  */
 function _drush_valkyrie_create_site_alias() {
-  $aliasname = _drush_valkyrie_get_site_aliasname();
-  $options = array(
-    'remote_host' => provision_fqdn(d()->server->remote_host),
-    'remote-user' => d()->server->script_user,
-    'uri' => $aliasname,
-    'root' => d()->root,
-  );
-  drush_valkyrie_create_alias($aliasname, $options);
+  if ($aliasname = _drush_valkyrie_get_site_aliasname()) {
+    $options = array(
+      'remote_host' => provision_fqdn(d()->server->remote_host),
+      'remote-user' => d()->server->script_user,
+      'uri' => $aliasname,
+      'root' => d()->root,
+    );
+    drush_valkyrie_create_alias($aliasname, $options);
+  }
 }
 
 /**
@@ -131,8 +133,8 @@ function _drush_valkyrie_create_server_alias() {
 function drush_valkyrie_create_alias($aliasname, $options) {
   // Let Provision_Context_Valkyrie know which options to write to the alias.
   $options['options'] = implode(',',array_keys($options));
-
   $options['context_type'] = 'Valkyrie';
+  drush_log(dt('Creating Valkyrie alias `:alias`',array(':alias' => $aliasname)));
   provision_backend_invoke('@hostmaster', 'provision-save', array($aliasname), $options);
 }
 
@@ -142,6 +144,19 @@ function drush_valkyrie_create_alias($aliasname, $options) {
 function drush_valkyrie_post_provision_install() {
   // Sites are not verified on install, so run our hook here.
   drush_valkyrie_post_provision_verify();
+}
+
+/**
+ * Implements drush_hook_post_COMMAND().
+ */
+function drush_valkyrie_post_provision_reinstall() {
+  // TODO: Move this to a hook_post_hosting_TASK_TYPE_task() in a front-end
+  // module? If we can get aliases to persist across reinstalls, this would
+  // better allow for a headless Valkyrie.
+
+  // Run a verify on the site, so that we get back our aliases, etc.
+  drush_log('Verify site after re-install.');
+  drush_invoke_process('@hostmaster', 'hosting-task', array(d()->name, 'verify'));
 }
 
 /**

@@ -24,6 +24,7 @@ class Provision_Context_Valkyrie extends Provision_Context {
    */
   function write_alias() {
     $config = new Provision_Config_Drushrc_Valkyrie($this->name, $this->properties);
+    drush_log(dt('Writing Valkyrie alias to :path', array(':path' => $config->filename())));
     $config->write();
   }
 
