@@ -445,16 +445,19 @@ function drush_valkyrie_clone_site($name, $git_repo) {
   drush_log('Waiting for platform to be ready.');
   sleep(2);
 
+  # enable $enable module or 'keystone' if it exists
+
   // Import the new site context into the Hostmaster site.
   $command = "drush @hostmaster hosting-import @$name";
   _valkyrie_invoke_remote_cmd($server, $command);
 
 }
 
+
 /**
  * Command callback for the 'valkyrie-init-site' command.
  */
-function drush_valkyrie_init_site($name, $makefile = FALSE, $git_repo = FALSE) {
+function drush_valkyrie_init_site($name, $makefile = 'default', $git_repo = FALSE) {
   $server = _valkyrie_get_target_server_record();
 
   // Retrieve the profile option then clear it so that it doesn't interfere
@@ -463,7 +466,7 @@ function drush_valkyrie_init_site($name, $makefile = FALSE, $git_repo = FALSE) {
   drush_unset_option('profile');
 
   // Build a platform.
-  $makefile = $makefile ? $makefile : dirname(__FILE__) . '/templates/platform.make';
+  $makefile = $makefile == 'default' ? dirname(__FILE__) . '/templates/platform.make' : $makefile;
   $platform_name = preg_replace("/[!\W\.\-]/", "", $name);
   drush_set_option('verify', TRUE);
   drush_invoke('valkyrie-generate-platform', array($platform_name, $makefile));
@@ -476,7 +479,7 @@ function drush_valkyrie_init_site($name, $makefile = FALSE, $git_repo = FALSE) {
     'db_server' => '@server_localhost',
     'repo_url' => $git_repo,
     'deploy_from_git' => false,  # We're creating a new repo, not cloning an existing one.
-    'git_ref' => isset($branch) ? $branch : 'master',
+    'git_ref' => 'master',
     'uri' => $name,
     'root' => "/var/aegir/platforms/$platform_name",
     'profile' => $profile,
@@ -488,6 +491,17 @@ function drush_valkyrie_init_site($name, $makefile = FALSE, $git_repo = FALSE) {
   #_valkyrie_invoke_remote_cmd($server, $command);
   drush_log('Waiting for platform to be ready.');
   sleep(2);
+
+  # copy platform.make into place
+  # copy gitignore into place
+  # git init
+  # git add .
+  # git commit -m"Initial commit."
+  # git push
+
+  # provision_save set deploy_from_git true
+
+  # TODO: add link to project url to frontend
 
   // Import the new site context into the Hostmaster site.
   $command = "drush @hostmaster hosting-import @$name";
