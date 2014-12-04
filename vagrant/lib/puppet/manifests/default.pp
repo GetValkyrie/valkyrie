@@ -74,6 +74,7 @@ node default {
     user       => $aegir_user,
     #update     => true,
     require    => Class['aegir::dev'],
+    notify   => Drush::Run['drush-cc-drush:valkyrie'],
   }
   /*
   drush::git {'http://git.poeticsystems.com/valkyrie/hosting-storage.git':
