@@ -75,17 +75,18 @@ node default {
     #update     => true,
     require    => Class['aegir::dev'],
     before     => Drush::En['hosting_reinstall'],
-    notify     => Drush::Run['drush-cc-drush:valkyrie'],
+    #notify     => Drush::Run['drush-cc-drush:valkyrie'],
   }
   /*
   drush::git {'http://git.poeticsystems.com/valkyrie/hosting-storage.git':
     path       => '/var/aegir/hostmaster-7.x-3.x/profiles/hostmaster/modules/aegir',
     dir_name   => 'hosting_storage',
-    #git_branch => '7.x-3.x',
-    git_branch => 'master',
+    git_branch => '7.x-3.x',
+    #git_branch => 'master',
     user       => $aegir_user,
     #update     => true,
     require    => Class['aegir::dev'],
+    notify     => Drush::Run['drush-cc-drush:valkyrie'],
   }
   */
 
@@ -100,7 +101,10 @@ node default {
     site_alias => '@hm',
     drush_user => $aegir_user,
     drush_home => $aegir_root,
-    require    => Class['aegir::dev'],
+    require    => [
+      Class['aegir::dev'],
+      Drush::Run['drush-cc-drush:valkyrie'],
+    ]
   }
 
   include valkyrie::deploy_keys
