@@ -484,8 +484,10 @@ function drush_valkyrie_init_site($name, $makefile = FALSE, $git_repo = FALSE) {
   drush_invoke_process('@self', 'provision-save', array("@$name"), $options);
 
   // Install the new site.
-  $command = "drush @$name provision-install";
-  _valkyrie_invoke_remote_cmd($server, $command);
+  #$command = "drush @$name provision-install";
+  #_valkyrie_invoke_remote_cmd($server, $command);
+  drush_log('Waiting for platform to be ready.');
+  sleep(2);
 
   // Import the new site context into the Hostmaster site.
   $command = "drush @hostmaster hosting-import @$name";
