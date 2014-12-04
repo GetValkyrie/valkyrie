@@ -80,7 +80,7 @@ function valkyrie_drush_command() {
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap at all.
   );
 
-  $items['valkyrie-generate-platform'] = array(
+  $items['valkyrie-platform-generate'] = array(
     'description' => 'Generate a platform.',
     'arguments' => array(
       'name' => 'Name of the platform.',
@@ -91,14 +91,14 @@ function valkyrie_drush_command() {
       'verify' => 'Verify (and build) the platform before importing it into Aegir.',
     ),
     'examples' => array(
-      'drush vgp my_platform platform.make' => 'Create a platform built from the provided makefile.',
+      'drush vpg my_platform platform.make' => 'Create a platform built from the provided makefile.',
     ),
-    'aliases' => array('vgp'),
+    'aliases' => array('vpg'),
     'bootstrap' => DRUSH_BOOTSTRAP_NONE,
     'handle-remote-commands' => TRUE,
   );
 
-  $items['valkyrie-clone-site'] = array(
+  $items['valkyrie-site-clone'] = array(
     'description' => 'Clone a site from a git repo.',
     'arguments' => array(
       'URL' => 'The URL at which to create the site. Use of the production domain (e.g., example.com) is recommended. A local alias (e. g., example-com.local) will be created for you.',
@@ -111,45 +111,44 @@ function valkyrie_drush_command() {
       'profile' => 'The profile with which to install the site.',
     ),
     'examples' => array(
-      'drush vcs example.com http://github.com/example/example.com' => 'Install a site from the configration provided in the provided git repo.',
+      'drush vsc example.com http://github.com/example/example.com' => 'Install a site from the configration provided in the provided git repo.',
     ),
-    'aliases' => array('vcs'),
+    'aliases' => array('vsc'),
     'bootstrap' => DRUSH_BOOTSTRAP_NONE,
     'handle-remote-commands' => TRUE,
   );
 
-  $items['valkyrie-reinstall-site'] = array(
+  $items['valkyrie-site-reinstall'] = array(
     'description' => 'Reinstall a site.',
     'examples' => array(
-      'drush @example-com.local vrs' => 'Delete and then reinstall a site.',
+      'drush @example-com.local vsr' => 'Delete and then reinstall a site.',
     ),
-    'aliases' => array('vrs'),
+    'aliases' => array('vsr'),
     'bootstrap' => DRUSH_BOOTSTRAP_NONE,
     'handle-remote-commands' => TRUE,
   );
 
-  $items['valkyrie-init-site'] = array(
-    'description' => 'Initialize a new git-based site.',
+  $items['valkyrie-site-generate'] = array(
+    'description' => 'Create and install a new git-based site.',
     'arguments' => array(
       'URL' => 'The URL at which to create the site. Use of the production domain (e.g., example.com) is recommended. A local alias (e. g., example-com.local) will be created for you.',
-      'makefile' => "A makefile from which to build the site's platform.",
-      'git repo' => "The git repo from which to clone this site's configuration.",
     ),
     'required-arguments' => 1,
     'options' => array(
       'profile' => 'The profile with which to install the site.',
+      'makefile' => "A makefile from which to build the site's platform.",
     ),
     'examples' => array(
-      'drush vis example.com http://github.com/example/example.com' => 'Install a site from the configration provided in the provided git repo.',
+      'drush vsg example.com --makefile=example.make' => 'Install a site built on a platform using the provided makefile.',
     ),
-    'aliases' => array('vis'),
+    'aliases' => array('vsg'),
     'bootstrap' => DRUSH_BOOTSTRAP_NONE,
     'handle-remote-commands' => TRUE,
   );
 
-  $items['valkyrie-sql-snapshot'] = array(
+  $items['valkyrie-db-snapshot'] = array(
     'description' => "Cache a sql-dump for later diff'ing.",
-    'aliases' => array('vss'),
+    'aliases' => array('vds'),
     'options' => array(
       'snapshot-file' => 'Specify the file to which to write the snapshot.',
       'snapshot-dir' => 'Specify the directory to which to write snapshots.',
@@ -158,9 +157,9 @@ function valkyrie_drush_command() {
     'handle-remote-commands' => TRUE,
   );
 
-  $items['valkyrie-sql-diff'] = array(
+  $items['valkyrie-db-diff'] = array(
     'description' => 'Diff the current sql-dump with an earlier snapshot.',
-    'aliases' => array('vsd'),
+    'aliases' => array('vdd'),
     'options' => array(
       'prompt' => 'Choose from a list of previous snapshots.',
       'diff-cmd' => "Specify the command to use for diff'ing.",
@@ -175,7 +174,7 @@ function valkyrie_drush_command() {
     'description' => 'Tail the Apache error log.',
     'aliases' => array('vlog'),
     'arguments' => array(
-      'log-file' => 'Log file to tail (defaults to /var/log/apache2/error.log).'
+      'log-file' => 'Log file to tail (optional, defaults to /var/log/apache2/error.log).'
     ),
     'bootstrap' => DRUSH_BOOTSTRAP_NONE,
     'handle-remote-commands' => TRUE,
@@ -269,7 +268,7 @@ function drush_valkyrie_update() {
 /**
  * Command callback for the 'valkyrie-snapshot' command.
  */
-function drush_valkyrie_sql_snapshot() {
+function drush_valkyrie_db_snapshot() {
   $alias = drush_get_context('DRUSH_TARGET_SITE_ALIAS');
   $dir = drush_get_option('snapshot-dir', getcwd() . '/.valkyrie/cache/sql-snapshots');
   if (!is_dir($dir)) {
@@ -277,10 +276,13 @@ function drush_valkyrie_sql_snapshot() {
   }
   date_default_timezone_set("UTC");
   $filename = drush_get_option('snapshot-file', "$dir/snapshot-$alias-" . date('c'));
-  return _drush_valkyrie_sql_snapshot($alias, $filename);
+  return _drush_valkyrie_db_snapshot($alias, $filename);
 }
 
-function _drush_valkyrie_sql_snapshot($alias, $filename) {
+/**
+ * Wrapper to call sql-dump on remote site.
+ */
+function _drush_valkyrie_db_snapshot($alias, $filename) {
   $options = array(
     'skip-tables-key' => 'dev',
     'data-only' => TRUE,
@@ -288,7 +290,7 @@ function _drush_valkyrie_sql_snapshot($alias, $filename) {
   );
   $return = drush_invoke_process($alias, 'sql-dump', array(), $options, array('integrate' => FALSE));
   if ($return === FALSE || $return['error_status']) {
-    return drush_set_error('Unable to execute SQL snapshot: ' .  $return['output']);
+    return drush_set_error('Unable to execute database snapshot: ' .  $return['output']);
   }
   return file_put_contents($filename, $return['output']);
 }
@@ -296,13 +298,13 @@ function _drush_valkyrie_sql_snapshot($alias, $filename) {
 /**
  * Command callback for the 'valkyrie-snapshot' command.
  */
-function drush_valkyrie_sql_diff() {
+function drush_valkyrie_db_diff() {
   $alias = drush_get_context('DRUSH_TARGET_SITE_ALIAS');
   if (drush_get_option('snapshot-file', FALSE)) {
     $snapshot = drush_get_option('snapshot-file');
   }
   else {
-    $dir = drush_get_option('snapshot-dir', getcwd() . '/.valkyrie/cache/sql-snapshots');
+    $dir = drush_get_option('snapshot-dir', getcwd() . '/.valkyrie/cache/db-snapshots');
     $files = array_keys(drush_scan_directory($dir, "/$alias/"));
     if (!count($files)) {
       return drush_set_error('No snapshot file found.');
@@ -319,7 +321,7 @@ function drush_valkyrie_sql_diff() {
     }
     $snapshot = $files[$choice];
     $filename = drush_tempnam('valkyrie_tmp_sql_dump');
-    if (!_drush_valkyrie_sql_snapshot($alias, $filename)) {
+    if (!_drush_valkyrie_db_snapshot($alias, $filename)) {
       return FALSE;
     }
   }
@@ -347,9 +349,9 @@ function drush_valkyrie_logs($log_path = '/var/log/apache2/error.log') {
 }
 
 /**
- * Command callback for the 'valkyrie-reinstall-site' command.
+ * Command callback for the 'valkyrie-site-reinstall' command.
  */
-function drush_valkyrie_reinstall_site() {
+function drush_valkyrie_site_reinstall() {
   $server = _valkyrie_get_target_server_record();
   $alias = $server['alias'];
   $command = "drush $alias provision-reinstall";
@@ -357,9 +359,9 @@ function drush_valkyrie_reinstall_site() {
 }
 
 /**
- * Command callback for the 'valkyrie-generate-platform' command.
+ * Command callback for the 'valkyrie-platform-generate' command.
  */
-function drush_valkyrie_generate_platform($name, $makefile = FALSE) {
+function drush_valkyrie_platform_generate($name, $makefile = FALSE) {
   $server = _valkyrie_get_target_server_record();
 
   // Cache a lockfile from which to build the platform.
@@ -393,9 +395,9 @@ function drush_valkyrie_generate_platform($name, $makefile = FALSE) {
 }
 
 /**
- * Command callback for the 'valkyrie-clone-site' command.
+ * Command callback for the 'valkyrie-site-clone' command.
  */
-function drush_valkyrie_clone_site($name, $git_repo) {
+function drush_valkyrie_site_clone($name, $git_repo) {
   $server = _valkyrie_get_target_server_record();
 
   // Cache a copy of the site git repo, so we can retrieve the makefile.
@@ -419,7 +421,7 @@ function drush_valkyrie_clone_site($name, $git_repo) {
   $makefile = ".valkyrie/cache/site_repos/$name/platform.make";
   $platform_name = preg_replace("/[!\W\.\-]/", "", $name);
   drush_set_option('verify', TRUE);
-  drush_invoke('valkyrie-generate-platform', array($platform_name, $makefile));
+  drush_invoke('valkyrie-platform-generate', array($platform_name, $makefile));
   drush_unset_option('verify');
 
   // Write an Aegir context for the new site.
@@ -453,23 +455,23 @@ function drush_valkyrie_clone_site($name, $git_repo) {
 
 }
 
-
 /**
- * Command callback for the 'valkyrie-init-site' command.
+ * Command callback for the 'valkyrie-site-generate' command.
  */
-function drush_valkyrie_init_site($name, $makefile = 'default', $git_repo = FALSE) {
+function drush_valkyrie_site_generate($name) {
   $server = _valkyrie_get_target_server_record();
 
-  // Retrieve the profile option then clear it so that it doesn't interfere
-  // with later command invocations.
+  // Retrieve some options then clear them so that they don't interfere with
+  // later command invocations.
   $profile = drush_get_option('profile', 'minimal');
   drush_unset_option('profile');
+  $makefile = drush_get_option('makefile', dirname('_FILE__') . '/templates/platform.make');
+  drush_unset_option('makefile');
 
   // Build a platform.
-  $makefile = $makefile == 'default' ? dirname(__FILE__) . '/templates/platform.make' : $makefile;
   $platform_name = preg_replace("/[!\W\.\-]/", "", $name);
   drush_set_option('verify', TRUE);
-  drush_invoke('valkyrie-generate-platform', array($platform_name, $makefile));
+  drush_invoke('valkyrie-platform-generate', array($platform_name, $makefile));
   drush_unset_option('verify');
 
   // Write an Aegir context for the new site.
