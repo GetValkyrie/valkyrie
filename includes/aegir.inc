@@ -94,6 +94,9 @@ function _drush_valkyrie_get_site_aliasname() {
   if (count($aliases)) {
     return $aliases[0];
   }
+  elseif (d()->profile == 'hostmaster') {
+    return d()->uri;
+  }
   else {
     drush_log(dt('No URL aliases were defined for :name. Skipping Valkyrie alias creation.', array(':name' => d()->name)));
     return FALSE;
