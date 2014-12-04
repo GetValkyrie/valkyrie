@@ -407,6 +407,19 @@ function drush_valkyrie_platform_generate($name, $makefile = FALSE) {
  * Command callback for the 'valkyrie-platform-rebuild' command.
  */
 function drush_valkyrie_platform_rebuild() {
+  $arguments = array(
+    d()->site_path . '/platform.make',
+  );
+  chdir(d()->platform->root);
+  $options = array(
+    'force-complete' => TRUE,
+    'no-gitinfofile' => TRUE,
+    'no-gitprojectinfo' => TRUE,
+    'overwrite' => TRUE,
+    'working-copy' => TRUE,
+    'yes' => TRUE,
+  );
+  drush_invoke_process('@none','make', $arguments, $options);
 }
 
 /**
