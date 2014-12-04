@@ -98,6 +98,15 @@ function valkyrie_drush_command() {
     'handle-remote-commands' => TRUE,
   );
 
+  $items['valkyrie-platform-rebuild'] = array(
+    'description' => "Rebuild a site's platform.",
+    'examples' => array(
+      'drush @site.local vpr' => 'Rebuild the platform that the @site.local site is built atop.',
+    ),
+    'aliases' => array('vpr'),
+    'bootstrap' => DRUSH_BOOTSTRAP_NONE,
+  );
+
   $items['valkyrie-site-clone'] = array(
     'description' => 'Clone a site from a git repo.',
     'arguments' => array(
@@ -392,6 +401,12 @@ function drush_valkyrie_platform_generate($name, $makefile = FALSE) {
   $command = "drush @hostmaster hosting-import @platform_$name";
   _valkyrie_invoke_remote_cmd($server, $command);
 
+}
+
+/**
+ * Command callback for the 'valkyrie-platform-rebuild' command.
+ */
+function drush_valkyrie_platform_rebuild() {
 }
 
 /**
