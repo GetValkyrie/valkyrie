@@ -493,7 +493,7 @@ function drush_valkyrie_site_generate($name) {
   // later command invocations.
   $profile = drush_get_option('profile', 'minimal');
   drush_unset_option('profile');
-  $makefile = drush_get_option('makefile', dirname('_FILE__') . '/templates/platform.make');
+  $makefile = drush_get_option('makefile', dirname('__FILE__') . '/templates/platform.make');
   drush_unset_option('makefile');
 
   // Build a platform.
