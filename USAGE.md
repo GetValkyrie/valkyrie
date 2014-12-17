@@ -53,20 +53,6 @@ git, like so:
     $ git checkout .valkyrie/valkyrie
 
 
-### SSHFS
-
-We mount various directories using SSHFS. These can be re-mounted with the
-following command:
-
-    $ vagrant vsshfs
-
-In comparison to other options, such as NFS or rsync, we find SSHFS works very
-well for our use-cases. That said, we are trying to work out some rough edges.
-This FAQ may come in handy if you aren't already familiar with SSHFS:
-
- * http://sourceforge.net/p/fuse/wiki/SshfsFaq/
-
-
 ### Dotfiles
 
 In order to make working within the VM easier and more familiar, we copy in

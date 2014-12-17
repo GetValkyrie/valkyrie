@@ -36,7 +36,7 @@ Local codebase
 Having to SSH into a development VM and edit code using a terminal-based editor
 (such as vim) isn't everyone's cup of tea. Many IDEs support mounting remote
 filesystems, but this can be tricky and needlessly time-consuming. Valkyrie
-uses SSHFS to mount all your platforms directly on your host machine, which
+uses NFS to mount all your platforms directly on your host machine, which
 allows you to use the same editor you're used to without jumping through hoops.
 
 
