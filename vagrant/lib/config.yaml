@@ -6,7 +6,7 @@ dot_files:
   - .gitconfig
   - .vimrc
   - .bashrc
-ip: 10.42.0.5
+ip: 10.42.0.10
 tld: val
 name: valkyrie
 use_vagrant_dns: TRUE

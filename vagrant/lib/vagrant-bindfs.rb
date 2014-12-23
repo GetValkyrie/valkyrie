@@ -22,3 +22,23 @@ def create_bindfs_paths(bindfs_paths)
     end
   end
 end
+
+# Document steps to install valkyrie-sshfs plugin.
+# Params:
+# +conf+:: A Valkyrie project configuration array.
+def install_vagrant_bindfs(conf)
+  if conf['use_valkyrie_sshfs']
+    puts 'The valkyrie-sshfs plugin does not appear to be installed.'
+    puts 'To install it, run the following command:'
+    puts
+    puts '    vagrant plugin install valkyrie-sshfs'
+    puts
+    puts 'This error can be suppressed by adding the following line to config.yml at'
+    puts 'the root of your project:'
+    puts
+    puts '    use_valkyrie_sshfs: false'
+    puts
+    abort()
+  end
+end
+

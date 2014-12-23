@@ -33,6 +33,8 @@ Vagrant.configure(2) do |config|
     require "#{valkyrie_root}/lib/vagrant-bindfs"
     if Vagrant.has_plugin? 'vagrant-bindfs'
       configure_vagrant_bindfs(config, conf)
+    else
+      install_vagrant_bindfs(conf)
     end
 
     require "#{valkyrie_root}/lib/drush_aliases"
@@ -63,9 +65,11 @@ Vagrant.configure(2) do |config|
       config.ssh.username = 'aegir'
       config.ssh.private_key_path = '~/.ssh/id_rsa'
 
-      conf['bindfs_paths'].each do |guest_path, host_path|
-        config.vm.synced_folder host_path, "/bindfs/#{host_path}", type: "nfs"
-        config.bindfs.bind_folder "/bindfs/#{host_path}", guest_path, :perms => nil, :force_user => "aegir", :force_group => "www-data", :o => "nonempty"
+      if Vagrant.has_plugin? 'vagrant-bindfs'
+        conf['bindfs_paths'].each do |guest_path, host_path|
+          config.vm.synced_folder host_path, "/bindfs/#{host_path}", type: "nfs"
+          config.bindfs.bind_folder "/bindfs/#{host_path}", guest_path, :perms => nil, :force_user => "aegir", :force_group => "www-data", :o => "nonempty"
+        end
       end
 
       # Copy in some user-specific files to make the environment more familiar

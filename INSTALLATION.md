@@ -33,7 +33,7 @@ take advantage of newer features.
 Valkyrie also makes use of a couple Vagrant plugins: vagrant-bindfs and
 vagrant-dns (for Mac users only). Installing these should be as simple as:
 
-    $ vagrant plugin install valkyrie-bindfs
+    $ vagrant plugin install vagrant-bindfs
     $ vagrant plugin install vagrant-dns    # OSX only
 
 Valkyrie also uses git quite extensively. So if you don't already have it
