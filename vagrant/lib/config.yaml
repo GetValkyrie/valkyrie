@@ -1,7 +1,7 @@
-sshfs_paths:
-  /var/aegir/platforms: ./platforms
-  /var/aegir/config/valkyrie_aliases: ./.valkyrie/cache/aliases
-  /var/aegir/.cache/site_repos: ./.valkyrie/cache/site_repos
+bindfs_paths:
+  /var/aegir/platforms: platforms
+  /var/aegir/config/valkyrie_aliases: .valkyrie/cache/aliases
+  /var/aegir/.cache/site_repos: .valkyrie/cache/site_repos
 dot_files:
   - .gitconfig
   - .vimrc
@@ -10,4 +10,4 @@ ip: 10.42.0.10
 tld: val
 name: valkyrie
 use_vagrant_dns: TRUE
-use_valkyrie_sshfs: TRUE
+use_vagrant_bindfs: TRUE
