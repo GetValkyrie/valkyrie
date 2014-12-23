@@ -257,6 +257,8 @@ function drush_valkyrie_new($path = FALSE) {
     drush_log(dt('Launching new project VM.'));
     chdir($path);
     drush_shell_proc_open('vagrant up');
+    // We need to reload in order for bindfs mounts to work.
+    drush_shell_proc_open('vagrant reload');
   }
 }
 
