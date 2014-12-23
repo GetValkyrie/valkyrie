@@ -30,9 +30,11 @@ take advantage of newer features.
  * https://www.vagrantup.com/downloads.html
  * https://www.virtualbox.org/wiki/Downloads
 
-Valkyrie also makes use of a couple Vagrant plugins: vagrant-bindfs and
-vagrant-dns (for Mac users only). Installing these should be as simple as:
+Valkyrie also makes use of a couple Vagrant plugins: vagrant-triggers,
+vagrant-bindfs and (for Mac users only) vagrant-dns. Installing these should be
+as simple as:
 
+    $ vagrant plugin install vagrant-triggers
     $ vagrant plugin install vagrant-bindfs
     $ vagrant plugin install vagrant-dns    # OSX only
 
