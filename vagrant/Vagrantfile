@@ -77,6 +77,11 @@ Vagrant.configure(2) do |config|
         end
       end
 
+      # Re-generate Aegir site's Drush aliases, now that bindfs has mounted the
+      # aliases dir.
+      vm1.vm.provision 'shell',
+        inline: 'drush @hm provision-verify'
+
       # Copy in some user-specific files to make the environment more familiar
       conf['dot_files'].each do |dot_file|
         real_dotfile = ENV['HOME']+'/'+dot_file
