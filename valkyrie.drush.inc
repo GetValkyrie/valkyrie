@@ -65,6 +65,7 @@ function valkyrie_drush_command() {
     ),
     'options' => array(
       'commit' => 'Commit the project into a new git repo (defaults to true).',
+      'up' => 'Launch the VM immediately (defaults to true).',
     ),
     'examples' => array(
       'drush vnew my_project' => 'Create a project at ./my_new_project.',
@@ -241,13 +242,19 @@ function drush_valkyrie_new($path = FALSE) {
   chdir($old_path);
 
   if (drush_get_option('commit', TRUE)) {
-  drush_log(dt('Initializing git repo, and committing new platform.'));
+    drush_log(dt('Initializing git repo, and committing new platform.'));
     drush_shell_cd_and_exec($path, 'git init');
     drush_shell_cd_and_exec($path, 'git add .');
     drush_shell_cd_and_exec($path, 'git commit -m"Initialize new Valkyrie project."');
   }
 
   drush_log(dt('Valkyrie project initialized at: :path', array(':path' => $path)), 'ok');
+
+  if (drush_get_option('up', TRUE)) {
+    drush_log(dt('Launching new project VM.'));
+    chdir($path);
+    drush_shell_proc_open('vagrant up');
+  }
 }
 
 /**
