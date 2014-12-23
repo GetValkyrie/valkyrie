@@ -273,16 +273,14 @@ function drush_valkyrie_update() {
   if (drush_get_option('upstream', FALSE)) {
     $prompt = dt('Update the global Valkyrie extension with the code in this project?');
     if (drush_confirm($prompt)) {
-      drush_copy_dir($lib_path, $src);
+      drush_copy_dir($lib_path, $src, FILE_EXISTS_MERGE);
       drush_log(dt('Valkyrie extension updated.'), 'ok');
     }
   }
   else {
     $prompt = dt('Update the Valkyrie code in this project (at \'.valkyrie/valkyrie\') with the latest from :src?', array(':src' => $src));
     if (drush_confirm($prompt)) {
-      drush_log(dt('Removing existing Valkyrie code.'));
-      drush_delete_dir($lib_path, TRUE);
-      drush_copy_dir($src, $lib_path);
+      drush_copy_dir($src, $lib_path, FILE_EXISTS_OVERWRITE);
       drush_delete_dir($lib_path . '/.git', TRUE);
       drush_log(dt('Valkyrie code updated.'), 'ok');
     }
