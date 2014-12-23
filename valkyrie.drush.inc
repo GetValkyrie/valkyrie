@@ -79,6 +79,7 @@ function valkyrie_drush_command() {
     'description' => 'Update a project.',
     'options' => array(
       'upstream' => 'Update the global Valkyrie extension with code from a project.',
+    ),
     'aliases' => array('vup'),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap at all.
   );
