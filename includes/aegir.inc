@@ -24,6 +24,9 @@ function valkyrie_provision_drupal_create_directories_alter(&$mkdir, $url) {
   if (!in_array($url, array('all', AEGIR_FRONTEND_URL))) {
     drush_log("Setting the features export path (sites/$url/modules/custom) to be group-writeable.");
     $mkdir["sites/$url/modules/custom"] = 02770;
+    $profile = d()->profile;
+    drush_log("Setting the profile module path (profiles/$profile/modules/custom) to be group-writeable.");
+    $mkdir["profiles/$profile/modules"] = 02770;
   }
 }
 
@@ -34,6 +37,7 @@ function valkyrie_provision_drupal_chmod_not_recursive_alter(&$chmod_not_recursi
   if (!in_array($url, array('all', AEGIR_FRONTEND_URL))) {
     drush_log("Stopping recursion into custom Features modules on chmod operations.");
     $chmod_not_recursive[] = "sites/$url/modules/custom";
+    $chmod_not_recursive[] = "profiles/$url/modules/custom";
   }
 }
 
