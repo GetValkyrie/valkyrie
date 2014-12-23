@@ -77,6 +77,8 @@ function valkyrie_drush_command() {
 
   $items['valkyrie-update'] = array(
     'description' => 'Update a project.',
+    'options' => array(
+      'upstream' => 'Update the global Valkyrie extension with code from a project.',
     'aliases' => array('vup'),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap at all.
   );
@@ -258,7 +260,7 @@ function drush_valkyrie_new($path = FALSE) {
 }
 
 /**
- * Command callback for the 'valkyrie-snapshot' command.
+ * Command callback for the 'valkyrie-update' command.
  */
 function drush_valkyrie_update() {
   $lib_path = getcwd() . '/.valkyrie/valkyrie';
@@ -267,17 +269,26 @@ function drush_valkyrie_update() {
     return FALSE;
   }
   $src = dirname(__FILE__);
-  $prompt = dt('Update the Valkyrie code in this project (at \'.valkyrie/valkyrie\') with the latest from :src?', array(':src' => $src));
-  if (drush_confirm($prompt)) {
-    drush_log(dt('Removing existing Valkyrie code.'));
-    drush_delete_dir($lib_path, TRUE);
-    drush_copy_dir($src, $lib_path);
-    drush_delete_dir($lib_path . '/.git', TRUE);
-    drush_log(dt('Valkyrie code updated.'), 'ok');
+  if (drush_get_option('upstream', FALSE)) {
+    $prompt = dt('Update the global Valkyrie extension with the code in this project?');
+    if (drush_confirm($prompt)) {
+      drush_copy_dir($lib_path, $src);
+      drush_log(dt('Valkyrie extension updated.'), 'ok');
+    }
   }
   else {
-    drush_user_abort();
-    return;
+    $prompt = dt('Update the Valkyrie code in this project (at \'.valkyrie/valkyrie\') with the latest from :src?', array(':src' => $src));
+    if (drush_confirm($prompt)) {
+      drush_log(dt('Removing existing Valkyrie code.'));
+      drush_delete_dir($lib_path, TRUE);
+      drush_copy_dir($src, $lib_path);
+      drush_delete_dir($lib_path . '/.git', TRUE);
+      drush_log(dt('Valkyrie code updated.'), 'ok');
+    }
+    else {
+      drush_user_abort();
+      return;
+    }
   }
 }
 
