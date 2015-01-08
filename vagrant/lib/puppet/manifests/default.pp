@@ -67,6 +67,21 @@ node default {
   }
   include skynet
 
+  # Ensure our git code is running on our dev branch
+  #drush::git {'ergonlogic@git.drupal.org:project/hosting_git.git':
+  drush::git {'http://git.drupal.org/project/hosting_git.git':
+    path       => '/var/aegir/hostmaster-7.x-3.x/profiles/hostmaster/modules/aegir',
+    dir_name   => 'hosting_git',
+    git_branch => 'dev/2362437',
+    user       => $aegir_user,
+    #update     => true,
+    require    => Class['aegir::dev'],
+    before     => [
+      Drush::En['hosting_git'],
+      Drush::En['hosting_git_pull'],
+    ],
+  }
+
   drush::git {'http://git.drupal.org/sandbox/ergonlogic/2386543.git':
     path       => '/var/aegir/hostmaster-7.x-3.x/profiles/hostmaster/modules/aegir',
     dir_name   => 'hosting_reinstall',
@@ -124,17 +139,6 @@ node default {
     drush_user  => $aegir_user,
     drush_home  => '/var/aegir',
     refreshonly => true,
-  }
-
-  # Ensure our git code is running on our dev branch
-  #drush::git {'ergonlogic@git.drupal.org:project/hosting_git.git':
-  drush::git {'http://git.drupal.org/project/hosting_git.git':
-    path       => '/var/aegir/hostmaster-7.x-3.x/profiles/hostmaster/modules/aegir',
-    dir_name   => 'hosting_git',
-    git_branch => 'dev/2362437',
-    user       => $aegir_user,
-    #update     => true,
-    require    => Class['aegir::dev'],
   }
 
   # Set a default URL alias (based on the Facter-provided $domain)
