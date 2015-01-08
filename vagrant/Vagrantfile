@@ -9,6 +9,10 @@ ENV['valkyrie_root'] = valkyrie_root = "#{project_root}/.valkyrie/valkyrie/vagra
 semaphore = "#{project_root}/.valkyrie/cache/first_run_complete"
 
 Vagrant.configure(2) do |config|
+  # We need this so that Vagrant won't insert a generated key that conflicts
+  # with ours.
+  config.ssh.insert_key = false
+
   require "#{valkyrie_root}/lib/load_config"
   conf = load_config()
 
