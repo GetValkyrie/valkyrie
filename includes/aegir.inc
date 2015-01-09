@@ -88,6 +88,9 @@ function drush_valkyrie_post_provision_verify() {
     _valkyrie_fix_dev_perms();
     _valkyrie_add_default_drushrc();
   }
+  if (d()->type == 'platform') {
+    _drush_valkyrie_create_platform_alias();
+  }
 }
 
 /**
@@ -113,6 +116,7 @@ function _drush_valkyrie_get_site_aliasname() {
 function _drush_valkyrie_create_site_alias() {
   if ($aliasname = _drush_valkyrie_get_site_aliasname()) {
     $options = array(
+      'valkyrie-type' => 'site',
       'remote_host' => provision_fqdn(d()->server->remote_host),
       'remote-user' => d()->server->script_user,
       'uri' => $aliasname,
@@ -124,10 +128,24 @@ function _drush_valkyrie_create_site_alias() {
 }
 
 /**
+ * Helper function to create platform aliases for use on the host.
+ */
+function _drush_valkyrie_create_platform_alias() {
+  $options = array(
+    'valkyrie-type' => 'platform',
+    'remote_host' => provision_fqdn(d()->server->remote_host),
+    'remote-user' => d()->server->script_user,
+    'root' => d()->root,
+  );
+  //drush_valkyrie_create_alias($aliasname, $options);
+}
+
+/**
  * Helper function to create a server alias for use on the host.
  */
 function _drush_valkyrie_create_server_alias() {
   $options = array(
+    'valkyrie-type' => 'server',
     'remote_host' => provision_fqdn(d()->server->remote_host),
     'remote-user' => d()->server->script_user,
     'uri' => provision_fqdn(d()->server->remote_host),
