@@ -259,6 +259,9 @@ function drush_valkyrie_new($path = FALSE) {
     drush_shell_proc_open('vagrant up');
     // We need to reload in order for bindfs mounts to work.
     drush_shell_proc_open('vagrant reload');
+    // We need to run the inline shell provisioner in order to re-generate the
+    // Valkyrie aliases.
+    drush_shell_proc_open('vagrant provision --provision-with shell');
   }
 }
 
