@@ -14,6 +14,9 @@ class Provision_Context_Valkyrie extends Provision_Context {
         }
       }
     }
+    // Setting a 'remote-host' option would cause commands to be run on the
+    // remote. So we pass in an option that won't affect operations, in order
+    // to set it in the context here as 'remote-host'.
     if ($remote_host = drush_get_option('remote_host', FALSE)) {
       $this->setProperty('remote-host', $remote_host);
     }
