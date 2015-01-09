@@ -11,3 +11,6 @@ tld: val
 name: valkyrie
 use_vagrant_dns: TRUE
 use_vagrant_bindfs: TRUE
+manage_drushrc_alias_path: TRUE
+vm_memory: 1024
+vm_box: hashicorp/precise64
