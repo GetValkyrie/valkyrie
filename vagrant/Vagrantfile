@@ -56,6 +56,7 @@ Vagrant.configure(2) do |config|
     # Mount /vagrant via NFS (for performance, since we're now running code for
     # the Valkyrie Drush extension directly from there.
     config.vm.synced_folder '.', '/vagrant', type: 'nfs'
+    config.bindfs.bind_folder "/vagrant", "/vagrant"
 
     if first_run
       vm1.vm.provision 'file',

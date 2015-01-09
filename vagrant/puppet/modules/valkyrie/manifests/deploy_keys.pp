@@ -63,8 +63,8 @@ Host ${ssh_host_alias}
   # Store backups of keys.
   file { $host_key_dir:
     ensure => directory,
-    #owner  => 'vagrant',
-    #group  => 'vagrant',
+    owner  => 'vagrant',
+    group  => 'vagrant',
   }
 
   file { 'Backup keys script' :
