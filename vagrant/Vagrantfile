@@ -63,6 +63,10 @@ Vagrant.configure(2) do |config|
         source: '~/.ssh/id_rsa.pub',
         destination: '/vagrant/.valkyrie/ssh/authorized_keys'
     else
+      # SSH as the 'aegir' user
+      config.ssh.username = 'aegir'
+      config.ssh.private_key_path = '~/.ssh/id_rsa'
+
       if Vagrant.has_plugin? 'vagrant-bindfs'
         config.bindfs.default_options :perms => nil,
           :force_user => "aegir",
