@@ -9,6 +9,11 @@ def configure_vagrant_bindfs(config, conf)
       # Create local bindfs paths. This avoids superfluous prompts.
       create_bindfs_paths(conf['bindfs_paths'])
     end
+    config.trigger.after [:destroy] do
+      # Clean up local bindfs paths. If we don't explicitely remove these, then
+      # they persist across restarts and cause issues with zombie aliases.
+      delete_bindfs_paths(conf['bindfs_paths'])
+    end
   end
 end
 
@@ -22,6 +27,18 @@ def create_bindfs_paths(bindfs_paths)
     end
   end
 end
+
+# Delete local bindfs paths.
+# Params:
+# +bindfs_paths+:: A hash of paths to be created
+def delete_bindfs_paths(bindfs_paths)
+  bindfs_paths.each do |guest_path, host_path|
+    if Dir.exists?(host_path)
+      system 'rm', '-rf', host_path
+    end
+  end
+end
+
 
 # Document steps to install valkyrie-sshfs plugin.
 # Params:
