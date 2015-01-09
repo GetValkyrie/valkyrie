@@ -3,13 +3,11 @@
 
 ENV['project_root'] = project_root = File.expand_path(File.dirname(__FILE__))
 ENV['valkyrie_root'] = valkyrie_root = "#{project_root}/.valkyrie/valkyrie/vagrant"
-# Check that our required plugins are installed.
-#require "#{valkyrie_root}/lib/plugins/plugins"
 
 semaphore = "#{project_root}/.valkyrie/cache/first_run_complete"
 
 Vagrant.configure(2) do |config|
-  require "#{valkyrie_root}/lib/load_config"
+  require "#{valkyrie_root}/load_config"
   conf = load_config()
 
   # Since we change the SSH user, we need to first install a public key. This
@@ -30,17 +28,17 @@ Vagrant.configure(2) do |config|
 
   config.vm.define 'default' do |vm1|
 
-    require "#{valkyrie_root}/lib/vagrant-bindfs"
+    require "#{valkyrie_root}/vagrant-bindfs"
     if Vagrant.has_plugin? 'vagrant-bindfs'
       configure_vagrant_bindfs(config, conf)
     else
       install_vagrant_bindfs(conf)
     end
 
-    require "#{valkyrie_root}/lib/drush_aliases"
+    require "#{valkyrie_root}/drush_aliases"
     drush_aliases(config, project_root)
 
-    require "#{valkyrie_root}/lib/vagrant-dns"
+    require "#{valkyrie_root}/vagrant-dns"
     if Vagrant.has_plugin? 'vagrant-dns'
       configure_vagrant_dns(config, conf)
     else
@@ -103,8 +101,8 @@ Vagrant.configure(2) do |config|
     end
 
     vm1.vm.provision 'puppet',
-      module_path: "#{valkyrie_root}/lib/puppet/modules",
-      manifests_path: "#{valkyrie_root}/lib/puppet/manifests",
+      module_path: "#{valkyrie_root}/puppet/modules",
+      manifests_path: "#{valkyrie_root}/puppet/manifests",
       facter: facter
 
   end
