@@ -588,3 +588,19 @@ function _valkyrie_invoke_remote_cmd($server, $command) {
   }
   return $status;
 }
+
+/**
+ * Implements drush_HOOK_pre_COMMAND().
+ */
+function drush_valkyrie_pre_user_login() {
+  # Only operate on Valkyrie sites.
+  $type = drush_get_option('valkyrie-type', FALSE);
+  if ($type == 'site') {
+    if ($login_uri = drush_get_option('login_uri', FALSE)) {
+      # Alter the cached alias that will be re-dispatched to use our alternate
+      # uri.
+      $alias = &drush_get_context('alias');
+      $alias['uri'] = $login_uri;
+    }
+  }
+}

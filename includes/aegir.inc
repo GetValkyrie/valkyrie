@@ -119,7 +119,8 @@ function _drush_valkyrie_create_site_alias() {
       'valkyrie-type' => 'site',
       'remote_host' => provision_fqdn(d()->server->remote_host),
       'remote-user' => d()->server->script_user,
-      'uri' => $aliasname,
+      'uri' => d()->uri,
+      'login_uri' => $aliasname,
       'root' => d()->root,
       'alias' => d()->name,
     );
