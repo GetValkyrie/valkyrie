@@ -12,5 +12,5 @@ name: valkyrie
 use_vagrant_dns: TRUE
 use_vagrant_bindfs: TRUE
 manage_drushrc_aliases: TRUE
-vm_memory: 1024
+vm_memory: 2048
 vm_box: hashicorp/precise64

@@ -292,6 +292,9 @@ function drush_valkyrie_new($path = FALSE) {
     drush_log(dt('Launching new project VM.'));
     chdir($path);
     drush_shell_proc_open('vagrant up');
+    // Wait for import/verify tasks to complete, or they might fail during the
+    // reload that follows.
+    sleep(10);
     // We need to reload in order for bindfs mounts to work.
     drush_shell_proc_open('vagrant reload');
     // We need to run the inline shell provisioner in order to re-generate the
