@@ -78,7 +78,6 @@ Vagrant.configure(2) do |config|
           :force_group => "www-data",
           :o => "nonempty",
           :'chown-ignore' => true,
-          :'chmod-ignore' => true,
           :'chgrp-ignore' => true
         conf['bindfs_paths'].each do |guest_path, host_path|
           config.vm.synced_folder host_path, guest_path, type: "nfs"
