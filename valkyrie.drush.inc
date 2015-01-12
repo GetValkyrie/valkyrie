@@ -580,7 +580,7 @@ function drush_valkyrie_site_generate($name) {
   #$command = "drush @$name provision-install";
   #_valkyrie_invoke_remote_cmd($server, $command);
   drush_log('Waiting for platform to be ready.');
-  sleep(2);
+  sleep(5);
 
   # copy platform.make into place
   # copy gitignore into place
