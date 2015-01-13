@@ -481,6 +481,11 @@ function drush_valkyrie_platform_generate($name) {
     _valkyrie_invoke_remote_cmd($server, $command);
   }
 
+  // Copy the makefile and lockfile into the platform.
+  drush_log(dt('Copying makefile and lockfile into platform drush directory.'));
+  copy($makefile_path, getcwd() . "/platforms/$name/sites/all/drush/platform.make");
+  copy($lockfile_path, getcwd() . "/platforms/$name/sites/all/drush/platform.lock");
+
   // Import the new platform context into the Hostmaster site.
   $command = "drush @hostmaster hosting-import @platform_$name";
   _valkyrie_invoke_remote_cmd($server, $command);
@@ -600,7 +605,6 @@ function drush_valkyrie_site_generate($name) {
   drush_log('Waiting for platform to be ready.');
   _valkyrie_wait_for_queue();
 
-  # copy platform.make into place
   # copy gitignore into place
   # git init
   # git add .
@@ -614,6 +618,13 @@ function drush_valkyrie_site_generate($name) {
   // Import the new site context into the Hostmaster site.
   $command = "drush @hostmaster hosting-import @$name";
   _valkyrie_invoke_remote_cmd($server, $command);
+
+  drush_log('Waiting for site to be ready.');
+  _valkyrie_wait_for_queue();
+
+  drush_log(dt('Copying makefile into site directory.'));
+  $sites_dir = getcwd() . "/platforms/$platform_name/sites";
+  copy("$sites_dir/all/drush/platform.make", "$sites_dir/$name/platform.make");
 
 }
 
