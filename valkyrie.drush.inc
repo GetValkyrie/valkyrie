@@ -123,11 +123,12 @@ function valkyrie_drush_command() {
     'description' => 'Generate a platform.',
     'arguments' => array(
       'name' => 'Name of the platform.',
-      'makefile' => 'Path to a makefile.',
     ),
     'required-arguments' => 1,
     'options' => array(
       'verify' => 'Verify (and build) the platform before importing it into Aegir.',
+      'makefile' => "A makefile from which to build the platform. If not specified, one will be generated.",
+      'profile' => 'An install profile to include in a generated platform. This option will be ignored if the --makefile option was specified.'
     ),
     'examples' => array(
       'drush vpg my_platform platform.make' => 'Create a platform built from the provided makefile.',
@@ -183,7 +184,7 @@ function valkyrie_drush_command() {
     ),
     'required-arguments' => 1,
     'options' => array(
-      'profile' => 'The profile with which to install the site.',
+      'profile' => 'An installation profile with which to install the site.',
       'makefile' => "A makefile from which to build the site's platform.",
     ),
     'examples' => array(
@@ -430,24 +431,47 @@ function drush_valkyrie_site_reinstall() {
 /**
  * Command callback for the 'valkyrie-platform-generate' command.
  */
-function drush_valkyrie_platform_generate($name, $makefile = FALSE) {
+function drush_valkyrie_platform_generate($name) {
   $server = _valkyrie_get_target_server_record();
 
+  $makefile_dir = getcwd() . '/.valkyrie/cache/makefiles';
+  drush_mkdir($makefile_dir, FALSE);
+  $makefile_path = $makefile_dir . "/$name.make";
+  $lockfile_path = $makefile_dir . "/$name.lock";
+
+  if ($makefile = drush_get_option('makefile', FALSE)) {
+    if (is_readable($makefile)) {
+      drush_log(dt('Caching makefile to: ' . $makefile_path));
+      copy($makefile, $makefile_path);
+    }
+    else {
+      drush_set_error('VALKYRIE_MISSING_MAKEFILE', dt('Cannot read a makefile at the specified path: ' . $makefile));
+      return;
+    }
+  }
+  else {
+    // No makefile was specified, so we generate one from our template.
+    $template = dirname(__FILE__) . '/templates/platform.make';
+    $variables = array(
+      'profile' => drush_get_option('profile', FALSE),
+    );
+    drush_log(dt('Generating makefile at: ' . $makefile_path));
+    valkyrie_template($template, $makefile_path, $variables);
+  }
+
   // Cache a lockfile from which to build the platform.
-  $makefile = $makefile ? $makefile : dirname(__FILE__) . '/templates/platform.make';
-  drush_mkdir(getcwd() . '/.valkyrie/cache/makefiles', FALSE);
   $options = array(
-    'lock' => getcwd() . "/.valkyrie/cache/makefiles/$name.make",
+    'lock' => $lockfile_path,
     'no-build' => 1,
   );
-  drush_invoke_process('@none', 'make', array($makefile), $options);
+  drush_invoke_process('@none', 'make', array($makefile_path), $options);
 
   // Write an Aegir context for the new platform.
   $options = array(
     'context_type' => 'platform',
     'web_server' => '@server_master',
     'root' => "/var/aegir/platforms/$name",
-    'makefile' => "/vagrant/.valkyrie/cache/makefiles/$name.make",
+    'makefile' => "/vagrant/.valkyrie/cache/makefiles/$name.lock",
   );
   drush_invoke_process('@self', 'provision-save', array("@platform_$name"), $options);
 
@@ -549,17 +573,10 @@ function drush_valkyrie_site_clone($name, $git_repo) {
 function drush_valkyrie_site_generate($name) {
   $server = _valkyrie_get_target_server_record();
 
-  // Retrieve some options then clear them so that they don't interfere with
-  // later command invocations.
-  $profile = drush_get_option('profile', 'minimal');
-  drush_unset_option('profile');
-  $makefile = drush_get_option('makefile', dirname(__FILE__) . '/templates/platform.make');
-  drush_unset_option('makefile');
-
   // Build a platform.
   $platform_name = preg_replace("/[!\W\.\-]/", "", $name);
   drush_set_option('verify', TRUE);
-  drush_invoke('valkyrie-platform-generate', array($platform_name, $makefile));
+  drush_invoke('valkyrie-platform-generate', array($platform_name));
   drush_unset_option('verify');
 
   // Write an Aegir context for the new site.
@@ -567,12 +584,13 @@ function drush_valkyrie_site_generate($name) {
     'context_type' => 'site',
     'platform' => "@platform_$platform_name",
     'db_server' => '@server_localhost',
+    // TODO: $git_repo will always be blank, at this point.
     'repo_url' => $git_repo,
     'deploy_from_git' => false,  # We're creating a new repo, not cloning an existing one.
     'git_ref' => 'master',
     'uri' => $name,
     'root' => "/var/aegir/platforms/$platform_name",
-    'profile' => $profile,
+    'profile' => drush_get_option('profile', 'minimal'),
   );
   drush_invoke_process('@self', 'provision-save', array("@$name"), $options);
 
