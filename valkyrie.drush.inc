@@ -295,7 +295,7 @@ function drush_valkyrie_new($path = FALSE) {
     drush_shell_proc_open('vagrant up');
     // Wait for import/verify tasks to complete, or they might fail during the
     // reload that follows.
-    sleep(10);
+    _valkyrie_wait_for_queue();
     // We need to reload in order for bindfs mounts to work.
     drush_shell_proc_open('vagrant reload');
     // We need to run the inline shell provisioner in order to re-generate the
@@ -557,7 +557,7 @@ function drush_valkyrie_site_clone($name, $git_repo) {
   // TODO: Figure out a way to poll the Aegir queue for outstanding tasks.
   // Perhaps a hidden task we can run on the VM...
   drush_log('Waiting for platform to be ready.');
-  sleep(2);
+  _valkyrie_wait_for_queue();
 
   # enable $enable module or 'keystone' if it exists
 
@@ -598,7 +598,7 @@ function drush_valkyrie_site_generate($name) {
   #$command = "drush @$name provision-install";
   #_valkyrie_invoke_remote_cmd($server, $command);
   drush_log('Waiting for platform to be ready.');
-  sleep(5);
+  _valkyrie_wait_for_queue();
 
   # copy platform.make into place
   # copy gitignore into place
@@ -659,4 +659,23 @@ function drush_valkyrie_pre_user_login() {
       $alias['uri'] = $login_uri;
     }
   }
+}
+
+/**
+ * Pause execution until the Aegir queue is no longer processing tasks.
+ */
+function _valkyrie_wait_for_queue() {
+  while (_valkyrie_get_pending_task_count() > 0) {
+    sleep(1);
+  }
+}
+
+/**
+ * Return the number of pending and processing tasks in the Aegir queue.
+ */
+function _valkyrie_get_pending_task_count() {
+  $server = _valkyrie_get_target_server_record();
+  $sql = "SELECT count(t.nid) FROM hosting_task t INNER JOIN node n ON t.vid = n.vid WHERE t.task_status = 0 OR task_status = -1";
+  $result = drush_invoke_process($server, 'sql-query', array($sql), array(), FALSE);
+  return $result['output'];
 }
