@@ -114,18 +114,27 @@ function _drush_valkyrie_get_site_aliasname() {
  * Helper function to create site aliases for use on the host.
  */
 function _drush_valkyrie_create_site_alias() {
-  if ($aliasname = _drush_valkyrie_get_site_aliasname()) {
+  if ($login_uri = _drush_valkyrie_get_site_aliasname()) {
     $options = array(
       'valkyrie-type' => 'site',
       'remote_host' => provision_fqdn(d()->server->remote_host),
       'remote-user' => d()->server->script_user,
       'uri' => d()->uri,
-      'login_uri' => $aliasname,
+      'login_uri' => $login_uri,
       'root' => d()->root,
       'alias' => d()->name,
     );
-    drush_valkyrie_create_alias($aliasname, $options);
+    drush_valkyrie_create_alias(_valkyrie_strip_tld($login_uri), $options);
   }
+}
+
+/**
+ * Helper function to remove the TLD from a URL.
+ */
+function _valkyrie_strip_tld($url) {
+  $url = explode('.', $url);
+  array_pop($url);
+  return implode('.', $url);
 }
 
 /**
@@ -151,7 +160,7 @@ function _drush_valkyrie_create_server_alias() {
     'remote-user' => d()->server->script_user,
     'uri' => provision_fqdn(d()->server->remote_host),
   );
-  drush_valkyrie_create_alias(gethostname(), $options);
+  drush_valkyrie_create_alias('vm_' . gethostname(), $options);
 }
 
 /**
