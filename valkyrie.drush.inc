@@ -629,14 +629,23 @@ function drush_valkyrie_site_generate($name) {
 }
 
 /**
- * Load and validate a Valkyrie server alias record.
+ * Load and validate a Valkyrie server alias record, or generate a default one.
  */
-function _valkyrie_get_target_server_record() {
-  // We only accept remote aliases, since we run operations in a VM.
-  if (!$alias = drush_get_context('DRUSH_TARGET_SITE_ALIAS')) {
+function _valkyrie_get_target_server_record($url = FALSE, $remote_user = 'aegir') {
+  if ($url) {
+    // We've been passed a URL, so we need to build our own alias.
+    $server = array(
+      'remote-host' => $url,
+      'remote-user' => $remote_user,
+    );
+  }
+  elseif (!$alias = drush_get_context('DRUSH_TARGET_SITE_ALIAS')) {
     drush_die(dt('A remote server alias is required. The way you call this Valkyrie command is: `drush @vm_alias valkyrie-cmd ... `.'));
   }
-  $server = drush_sitealias_get_record($alias);
+  else {
+    $server = drush_sitealias_get_record($alias);
+  }
+  // We only accept remote aliases, since we run operations in a VM.
   if (empty($server['remote-host'])) {
     drush_die(dt('@alias does not specify a remote-host.', array('@alias' => $alias)));
   }
@@ -685,8 +694,17 @@ function _valkyrie_wait_for_queue() {
  * Return the number of pending and processing tasks in the Aegir queue.
  */
 function _valkyrie_get_pending_task_count() {
-  $server = _valkyrie_get_target_server_record();
   $sql = "SELECT count(t.nid) FROM hosting_task t INNER JOIN node n ON t.vid = n.vid WHERE t.task_status = 0 OR task_status = -1";
+  $server = _valkyrie_get_target_server_record(_valkyrie_get_aegir_vm_address());
   $result = drush_invoke_process($server, 'sql-query', array($sql), array(), FALSE);
   return $result['output'];
+}
+
+/**
+ * Helper function to look up Aegir VM address.
+ */
+function _valkyrie_get_aegir_vm_address() {
+  // TODO: as part of multi-vm/project support, figure out a way to look this
+  // up.
+  return 'valkyrie.local';
 }
