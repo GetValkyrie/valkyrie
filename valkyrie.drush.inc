@@ -706,5 +706,20 @@ function _valkyrie_get_pending_task_count() {
 function _valkyrie_get_aegir_vm_address() {
   // TODO: as part of multi-vm/project support, figure out a way to look this
   // up.
-  return 'valkyrie.local';
+  return 'valkyrie.' . _valkyrie_get_local_tld();
+}
+
+/**
+ * Helper function to figure out the appropriate TLD to use.
+ */
+function _valkyrie_get_local_tld() {
+  switch (PHP_OS) {
+    case 'Darwin':
+      return 'val';
+    case 'Linux':
+      return 'local';
+    default:
+      drush_log(dt('Unsupported operating system. Assuming compatibility with Linux.'), 'warning');
+      return 'local';
+  }
 }
