@@ -146,12 +146,8 @@ alert($first_run)
       user       => $aegir_user,
       #update     => true,
       require    => Class['aegir::dev'],
-      before     => [
-        Drush::En['hosting_git'],
-        Drush::En['hosting_git_pull'],
-      ],
+      before     => Drush::En['hosting_alias'],
     }
-
     drush::git {'http://git.drupal.org/sandbox/ergonlogic/2386543.git':
       path       => '/var/aegir/hostmaster-7.x-3.x/profiles/hostmaster/modules/aegir',
       dir_name   => 'hosting_reinstall',
@@ -159,8 +155,7 @@ alert($first_run)
       user       => $aegir_user,
       #update     => true,
       require    => Class['aegir::dev'],
-      before     => Drush::En['hosting_reinstall'],
-      #notify     => Drush::Run['drush-cc-drush:valkyrie'],
+      before     => Drush::En['hosting_alias'],
     }
     /*
     drush::git {'http://git.poeticsystems.com/valkyrie/hosting-storage.git':
@@ -171,18 +166,17 @@ alert($first_run)
       user       => $aegir_user,
       #update     => true,
       require    => Class['aegir::dev'],
-      notify     => Drush::Run['drush-cc-drush:valkyrie'],
+      before     => Drush::En['hosting_alias'],
     }
     */
 
-    drush::en {[
-      'hosting_alias',
-      'hosting_git',
-      'hosting_git_pull',
-      'hosting_platform_pathauto',
-      'hosting_reinstall',
-      #'hosting_storage',  # Not ready for default usage.
-    ]:
+    $valkyrie_modules = 'hosting_alias hosting_git hosting_git_pull hosting_platform_pathauto hosting_reinstall'
+    #'hosting_storage',  # Not ready for default usage.
+    drush::en { 'hosting_alias':
+      # Here we trick Puppet into enabling all our modules at once, to avoid
+      # running a 'verify' task for each one. We name this resource after one of
+      # them, so that Drush::En's 'unless' clause doesn't block its running.
+      arguments  => $valkyrie_modules,
       site_alias => '@hm',
       drush_user => $aegir_user,
       drush_home => $aegir_root,
