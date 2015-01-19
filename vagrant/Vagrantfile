@@ -55,50 +55,46 @@ Vagrant.configure(2) do |config|
         destination: '/vagrant/.valkyrie/ssh/authorized_keys'
     else
       # SSH as the 'aegir' user
-      config.ssh.username = 'aegir'
+      #config.ssh.username = 'aegir'
+      config.ssh.username = 'ubuntu'
       config.ssh.private_key_path = '~/.ssh/id_rsa'
 
-      if Vagrant.has_plugin? 'vagrant-bindfs'
-        # Mount /vagrant via NFS (for performance, since we're now running code
-        # for the Valkyrie Drush extension directly from there.
-        config.vm.synced_folder '.', '/vagrant', type: 'nfs'
-        config.bindfs.bind_folder "/vagrant", "/vagrant"
+      # Mount /vagrant via NFS (for performance, since we're now running code
+      # for the Valkyrie Drush extension directly from there.
+      config.vm.synced_folder '.', '/vagrant', type: 'nfs'
 
-        config.bindfs.default_options :perms => nil,
-          :force_user => "aegir",
-          :force_group => "www-data",
-          :o => "nonempty",
-          :'chown-ignore' => true,
-          :'chgrp-ignore' => true
-        conf['bindfs_paths'].each do |guest_path, host_path|
-          config.vm.synced_folder host_path, guest_path, type: "nfs"
-          config.bindfs.bind_folder guest_path, guest_path
-        end
+      conf['nfs_paths'].each do |guest_path, host_path|
+        config.vm.synced_folder host_path, guest_path, type: 'nfs', create: true
       end
 
       # Re-generate Aegir site's Drush aliases, now that bindfs has mounted the
       # aliases dir.
-      vm1.vm.provision 'shell',
-        inline: 'sudo -H -u aegir drush @hm provision-verify 2&>1 /dev/null'
+#      vm1.vm.provision 'shell',
+#        inline: 'sudo -H -u aegir drush @hm provision-verify 2&>1 /dev/null'
 
       # Copy in some user-specific files to make the environment more familiar
-      conf['dot_files'].each do |dot_file|
-        real_dotfile = ENV['HOME']+'/'+dot_file
-        if File.file?(real_dotfile)
-          vm1.vm.provision 'file', source: real_dotfile,
-            destination: "/var/aegir/#{dot_file}"
-        end
-      end
+#      conf['dot_files'].each do |dot_file|
+#        real_dotfile = ENV['HOME']+'/'+dot_file
+#        if File.file?(real_dotfile)
+#          vm1.vm.provision 'file', source: real_dotfile,
+#            destination: "/var/aegir/#{dot_file}"
+#        end
+#      end
     end
 
-    facter = { 'fqdn' => config.vm.hostname }
-    # Facter cannot determine the domain under vagrant-dns, so we set it
-    # directly.
-    if Vagrant.has_plugin? 'vagrant-dns'
-      facter['domain'] = conf['tld']
-    else
-      facter['domain'] = 'local'
-    end
+    facter = {
+      # Facter doesn't determine the FQDN properly in Debian and derivatives.
+      'fqdn' => config.vm.hostname,
+      # We use these to re-map the 'aegir' user's uid and the 'www-data'
+      # group's gid, so that NFS works properly.
+      'host_uid' => Process.uid,
+      'host_gid' => Process.gid,
+      # We apply slightly different configs in the VM depending on the host OS.
+      'host_os' => RUBY_PLATFORM,
+      'first_run' => first_run,
+    }
+    # Facter cannot determine the domain under vagrant-dns.
+    facter['domain'] = Vagrant.has_plugin?('vagrant-dns') ? conf['tld'] : 'local'
 
     vm1.vm.provision 'puppet',
       module_path: "#{valkyrie_root}/puppet/modules",
