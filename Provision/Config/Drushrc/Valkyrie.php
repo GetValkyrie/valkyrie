@@ -11,6 +11,6 @@ class Provision_Config_Drushrc_Valkyrie extends Provision_Config_Drushrc_Alias {
   public $template = 'provision_drushrc_alias.tpl.php';
 
   function filename() {
-    return drush_server_home() . '/config/valkyrie_aliases/' . $this->data['aliasname'] . '.alias.drushrc.php';
+    return drush_server_home() . '/.cache/aliases/' . $this->data['aliasname'] . '.alias.drushrc.php';
   }
 }

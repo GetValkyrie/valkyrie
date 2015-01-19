@@ -5,7 +5,7 @@
  */
 
 define('AEGIR_FRONTEND_URL', provision_fqdn());
-define('VALKYRIE_ALIASES_PATH', '/var/aegir/config/valkyrie_aliases');
+define('VALKYRIE_ALIASES_PATH', '/var/aegir/.cache/aliases');
 
 /**
  * Implements hook_provision_drupal_config().
