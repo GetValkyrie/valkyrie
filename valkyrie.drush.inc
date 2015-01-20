@@ -649,6 +649,7 @@ function _valkyrie_get_target_server_record($url = FALSE, $remote_user = 'aegir'
   if (empty($server['remote-host'])) {
     drush_die(dt('@alias does not specify a remote-host.', array('@alias' => $alias)));
   }
+  $server['ssh-options'] = '-o StrictHostKeyChecking=no';
   return $server;
 }
 

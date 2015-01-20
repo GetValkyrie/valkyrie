@@ -117,8 +117,6 @@ function _drush_valkyrie_create_site_alias() {
   if ($login_uri = _drush_valkyrie_get_site_aliasname()) {
     $options = array(
       'valkyrie-type' => 'site',
-      'remote_host' => provision_fqdn(d()->server->remote_host),
-      'remote-user' => d()->server->script_user,
       'uri' => d()->uri,
       'login_uri' => $login_uri,
       'root' => d()->root,
@@ -143,8 +141,6 @@ function _valkyrie_strip_tld($url) {
 function _drush_valkyrie_create_platform_alias() {
   $options = array(
     'valkyrie-type' => 'platform',
-    'remote_host' => provision_fqdn(d()->server->remote_host),
-    'remote-user' => d()->server->script_user,
     'root' => d()->root,
   );
   //drush_valkyrie_create_alias($aliasname, $options);
@@ -156,8 +152,6 @@ function _drush_valkyrie_create_platform_alias() {
 function _drush_valkyrie_create_server_alias() {
   $options = array(
     'valkyrie-type' => 'server',
-    'remote_host' => provision_fqdn(d()->server->remote_host),
-    'remote-user' => d()->server->script_user,
     'uri' => provision_fqdn(d()->server->remote_host),
   );
   drush_valkyrie_create_alias('vm_' . gethostname(), $options);
@@ -167,8 +161,11 @@ function _drush_valkyrie_create_server_alias() {
  * Create an alias with arbitrary options.
  */
 function drush_valkyrie_create_alias($aliasname, $options) {
+  $options['remote-user'] = d()->server->script_user;
+  $options['remote_host'] = provision_fqdn(d()->server->remote_host);
+  $options['ssh-options'] = '-o StrictHostKeyChecking=no';
   // Let Provision_Context_Valkyrie know which options to write to the alias.
-  $options['options'] = implode(',',array_keys($options));
+  $options['options'] = implode(',', array_keys($options));
   $options['context_type'] = 'Valkyrie';
   drush_log(dt('Creating Valkyrie alias `:alias`',array(':alias' => $aliasname)));
   provision_backend_invoke('@hostmaster', 'provision-save', array($aliasname), $options);
