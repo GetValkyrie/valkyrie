@@ -162,6 +162,15 @@ node default {
       require    => Class['aegir::dev'],
       before     => Drush::En['hosting_alias'],
     }
+    drush::git {'http://github.com/GetValkyrie/hosting_valkyrie.git':
+      path       => '/var/aegir/hostmaster-7.x-3.x/profiles/hostmaster/modules/aegir',
+      git_branch => 'master',
+      user       => $aegir_user,
+      #update     => true,
+      require    => Class['aegir::dev'],
+      before     => Drush::En['hosting_alias'],
+    }
+
     /*
     drush::git {'http://git.poeticsystems.com/valkyrie/hosting-storage.git':
       path       => '/var/aegir/hostmaster-7.x-3.x/profiles/hostmaster/modules/aegir',
@@ -175,7 +184,7 @@ node default {
     }
     */
 
-    $valkyrie_modules = 'hosting_alias hosting_git hosting_git_pull hosting_platform_pathauto hosting_reinstall'
+    $valkyrie_modules = 'hosting_alias hosting_git hosting_git_pull hosting_platform_pathauto hosting_reinstall hosting_valkyrie'
     #'hosting_storage',  # Not ready for default usage.
     drush::en { 'hosting_alias':
       # Here we trick Puppet into enabling all our modules at once, to avoid
