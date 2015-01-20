@@ -46,7 +46,7 @@ Site Configuration
 Keeping site configuration and content separate can be a challenge. The
 Features module goes a long way towards solving this issue, but it isn't always
 obvious what to export to code. We've found that comparing database dumps is a
-pretty good way to visualize these chnges, and so we've added some commands to
+pretty good way to visualize these changes, and so we've added some commands to
 make this quick and easy.
 
 
@@ -66,6 +66,6 @@ Platform Management
 The codebase of a modern Drupal site is complex. Maintaining the security
 of the codebase requires frequent updates. We are striving to fully automate
 such updates. While we aren't there yet, we've made things pretty easy. You can
-expect significant further improvements here in the coming weeks.
+expect significant further improvements in these features.
 
 

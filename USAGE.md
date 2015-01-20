@@ -40,7 +40,7 @@ you may want to update your projects to use some if the new code. Within a
 project, this will affect mostly the Vagrantfile (and associated code) and the
 Puppet code used to configure the VM. To update the Valkyrie code cached in a
 project, run 'drush valkyrie-update' (or 'vup') from the project root. This
-will copy in a fresh version of Valkyrie from the recently update Drush
+will copy in a fresh version of Valkyrie from the recently updated Drush
 entension.
 
 To apply any changes in VM configuration, re-run the provisioners in Vagrant:
@@ -70,6 +70,10 @@ Building platforms and sites
 ----------------------------
 
 valkyrie-generate-platform (vgp)  Generate a platform.
+valkyrie-platform-rebuild (vpr)   Rebuild a site's platform.
+valkyrie-site-clone (vsc)         Clone a site from a git repo.
+valkyrie-site-generate (vsg)      Create and install a new git-based site.
+valkyrie-site-reinstall (vsr)     Reinstall a site.
 
 
 Development extras
