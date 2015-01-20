@@ -24,6 +24,8 @@ Vagrant.configure(2) do |config|
   config.trigger.after [:destroy] do
     # Remove semaphore file
     system "rm #{semaphore} > /dev/null 2>&1; echo '==> Removed semaphore file: #{semaphore}'"
+    system "ssh-keygen -f ~/.ssh/known_hosts -R valkyrie.local"
+    system "ssh-keygen -f ~/.ssh/known_hosts -R 10.42.0.10"
   end
 
   config.vm.define 'default' do |vm1|
