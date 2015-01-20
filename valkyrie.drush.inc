@@ -9,15 +9,17 @@ require_once(dirname(__FILE__) . '/vendor/autoload.php');
 define('MAKEFILE_NAME', 'platform.make');
 require_once(dirname(__FILE__) . '/includes/templates.inc');
 
-// Only include Aegir hooks when on an Aegir server.
-if (function_exists('provision_fqdn')) {
-  require_once(dirname(__FILE__) . '/includes/aegir.inc');
-}
-
 /**
  * Implements hook_drush_init().
  */
 function valkyrie_drush_init() {
+  // Only include Aegir hooks when Provision is installed.
+  $commandfiles = drush_commandfile_list();
+  if (array_key_exists('provision', $commandfiles)) {
+    require_once($commandfiles['provision']);
+    require_once(dirname(__FILE__) . '/includes/aegir.inc');
+  }
+
   $command = drush_get_command();
   if (isset($command['requires_vagrant'])) {
     // Load our cached data.
@@ -44,10 +46,10 @@ function valkyrie_drush_init() {
       // TODO: load this array from a YAML file, so we can maintain a single
       // source of truth for required plugins. We can then re-use this list
       // when checking from the Vagrantfile.
-      $required = array(
-        'vagrant-bindfs',
-        'vagrant-triggers',
-      );
+      $required = array('vagrant-triggers');
+      if (PHP_OS == 'Darwin') {
+        $required[] = 'vagrant-dns';
+      }
       $vagrant_plugins = drush_shell_exec_output(drush_shell_exec('vagrant plugin list'));
       foreach ($vagrant_plugins as $haystack) {
         foreach ($required as $index => $needle) {
@@ -293,11 +295,11 @@ function drush_valkyrie_new($path = FALSE) {
     drush_log(dt('Launching new project VM.'));
     chdir($path);
     drush_shell_proc_open('vagrant up');
-    // Wait for import/verify tasks to complete, or they might fail during the
-    // reload that follows.
+    // We need to reload in order for NFS mounts to be properly mapped to
+    // uid/gid.
+    drush_shell_proc_open('vagrant reload --provision');
+    // Wait for import/verify tasks to complete.
     _valkyrie_wait_for_queue();
-    // We need to reload in order for bindfs mounts to work.
-    drush_shell_proc_open('vagrant reload');
     // We need to run the inline shell provisioner in order to re-generate the
     // Valkyrie aliases.
     drush_shell_proc_open('vagrant provision --provision-with shell');
