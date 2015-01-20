@@ -3,6 +3,11 @@ node default {
   $aegir_user = 'aegir'
   $aegir_root = '/var/aegir'
 
+  # Suppress spurious warning.
+  file {'/etc/puppet/hiera.yaml':
+    ensure => file,
+  }
+
   if $first_run == 'True' {
     user {$aegir_user :
       shell => '/bin/bash',
