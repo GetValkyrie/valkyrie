@@ -188,16 +188,6 @@ alert($first_run)
 
     include valkyrie::deploy_keys
 
-    # Symlink to the Valkyrie Drush extension in the VM, to allow changes to
-    # (1) persist VM rebuilds and (2) reflect results of 'drush vup' on the host.
-    file {"${aegir_root}/.drush/valkyrie":
-      ensure  => link,
-      owner   => $aegir_user,
-      target  => '/vagrant/.valkyrie/valkyrie/',
-      notify  => Drush::Run['drush-cc-drush:valkyrie'],
-      require => User[$aegir_user],
-    }
-
     drush::run {"drush-cc-drush:valkyrie":
       command     => 'cache-clear drush',
       drush_user  => $aegir_user,
