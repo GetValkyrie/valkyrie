@@ -66,7 +66,7 @@ node default {
 
     $alt_id = 1010
     case $host_os {
-      'darwin': {
+      /darwin/: {
         # Move the 'dialout' group out of the way on OSX hosts.
         group { "dialout":
           gid    => $alt_id,
