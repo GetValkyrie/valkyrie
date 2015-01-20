@@ -56,32 +56,26 @@ Vagrant.configure(2) do |config|
         source: '~/.ssh/id_rsa.pub',
         destination: '/vagrant/.valkyrie/ssh/authorized_keys'
     else
-      # SSH as the 'aegir' user
-      #config.ssh.username = 'aegir'
       config.ssh.username = 'ubuntu'
       config.ssh.private_key_path = '~/.ssh/id_rsa'
-
-      # Mount /vagrant via NFS (for performance, since we're now running code
-      # for the Valkyrie Drush extension directly from there.
-      config.vm.synced_folder '.', '/vagrant', type: 'nfs'
 
       conf['nfs_paths'].each do |guest_path, host_path|
         config.vm.synced_folder host_path, guest_path, type: 'nfs', create: true
       end
 
-      # Re-generate Aegir site's Drush aliases, now that bindfs has mounted the
-      # aliases dir.
-#      vm1.vm.provision 'shell',
-#        inline: 'sudo -H -u aegir drush @hm provision-verify 2&>1 /dev/null'
-
       # Copy in some user-specific files to make the environment more familiar
-#      conf['dot_files'].each do |dot_file|
-#        real_dotfile = ENV['HOME']+'/'+dot_file
-#        if File.file?(real_dotfile)
-#          vm1.vm.provision 'file', source: real_dotfile,
-#            destination: "/var/aegir/#{dot_file}"
-#        end
-#      end
+      conf['dot_files'].each do |dot_file|
+        real_dotfile = ENV['HOME']+'/'+dot_file
+        if File.file?(real_dotfile)
+          vm1.vm.provision 'file',
+            source: real_dotfile,
+            destination: "/home/ubuntu/#{dot_file}"
+          vm1.vm.provision 'shell',
+            inline: "cp /home/ubuntu/#{dot_file} /var/aegir/#{dot_file}"
+          vm1.vm.provision 'shell',
+            inline: "cp /home/ubuntu/#{dot_file} /root/#{dot_file}"
+        end
+      end
     end
 
     facter = {

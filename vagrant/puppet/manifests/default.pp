@@ -2,7 +2,7 @@ node default {
 
   $aegir_user = 'aegir'
   $aegir_root = '/var/aegir'
-alert($first_run)
+
   if $first_run == 'True' {
     user {$aegir_user :
       shell => '/bin/bash',
