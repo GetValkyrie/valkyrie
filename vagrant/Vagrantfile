@@ -60,7 +60,10 @@ Vagrant.configure(2) do |config|
       config.ssh.private_key_path = '~/.ssh/id_rsa'
 
       conf['nfs_paths'].each do |guest_path, host_path|
-        config.vm.synced_folder host_path, guest_path, type: 'nfs', create: true
+        config.vm.synced_folder host_path, guest_path,
+          type: 'nfs',
+          create: true,
+          nfs_version: 3
       end
 
       # Copy in some user-specific files to make the environment more familiar
