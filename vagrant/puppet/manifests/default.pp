@@ -229,6 +229,15 @@ node default {
       require    => Class['aegir::dev'],
     }
 
+    # Disable the cron-based Aegir queue.
+    drush::run {'disable Aegir cron queue':
+      command    => "hosting-pause dummy.site",
+      site_alias => '@hm',
+      drush_user => $aegir_user,
+      drush_home => '/var/aegir',
+      require    => Class['aegir::dev'],
+    }
+
   }
 
 }
