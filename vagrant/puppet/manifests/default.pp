@@ -202,11 +202,28 @@ node default {
 
     include valkyrie::deploy_keys
 
-    drush::run {"drush-cc-drush:valkyrie":
-      command     => 'cache-clear drush',
-      drush_user  => $aegir_user,
-      drush_home  => '/var/aegir',
-      refreshonly => true,
+    # Ensure Drush sees the Valkyrie extension.
+    drush::run {'drush-cc-drush:valkyrie':
+      command    => 'cache-clear drush',
+      drush_user => $aegir_user,
+      drush_home => '/var/aegir',
+      require    => Class['aegir::dev'],
+    }
+    # Ensure Drush knows that the Hosting module is enabled.
+    drush::run {'drush-cc-drush:hostmaster':
+      command    => 'cache-clear drush',
+      site_alias => '@hm',
+      drush_user => $aegir_user,
+      drush_home => '/var/aegir',
+      require    => Drush::Run['drush-cc-drush:valkyrie'],
+    }
+    # Disable the cron-based Aegir queue.
+    drush::run {'disable Aegir cron queue':
+      command    => "hosting-pause dummy.site",
+      site_alias => '@hm',
+      drush_user => $aegir_user,
+      drush_home => '/var/aegir',
+      require    => Drush::Run['drush-cc-drush:hostmaster'],
     }
 
     # Set a default URL alias (based on the Facter-provided $domain)
@@ -226,15 +243,6 @@ node default {
       drush_user => $aegir_user,
       drush_home => '/var/aegir',
       unless     => "/usr/bin/drush @hm vget hosting_require_disable_before_delete|/bin/grep 0",
-      require    => Class['aegir::dev'],
-    }
-
-    # Disable the cron-based Aegir queue.
-    drush::run {'disable Aegir cron queue':
-      command    => "hosting-pause dummy.site",
-      site_alias => '@hm',
-      drush_user => $aegir_user,
-      drush_home => '/var/aegir',
       require    => Class['aegir::dev'],
     }
 

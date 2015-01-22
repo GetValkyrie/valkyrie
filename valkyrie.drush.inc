@@ -300,13 +300,6 @@ function drush_valkyrie_new($path = FALSE) {
     drush_shell_proc_open('vagrant reload --provision');
     // Wait for import/verify tasks to complete.
     _valkyrie_wait_for_queue();
-    // Clear the Drush cache so that it picks up the Valkyrie extension.
-    $server = _valkyrie_get_target_server_record(_valkyrie_get_aegir_vm_address());
-    drush_invoke_process($server, 'cache-clear', array('drush'));
-    // Generate the initial Valkyrie Drush aliases.
-    // Note that we cannot use drush_invoke_process(), since we need Drush to
-    // call the command against another alias.
-    _valkyrie_invoke_remote_cmd($server, 'drush @hm provision-verify');
   }
 }
 
