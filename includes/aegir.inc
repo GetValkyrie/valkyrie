@@ -154,7 +154,11 @@ function _drush_valkyrie_create_server_alias() {
     'valkyrie-type' => 'server',
     'uri' => provision_fqdn(d()->server->remote_host),
   );
-  drush_valkyrie_create_alias('vm_' . gethostname(), $options);
+  $aliasname = '@vm_' . gethostname();
+  // Generate a matching alias on the guest, so we can call Drush commands on
+  // the host, and have them executed on the guest.
+  drush_invoke_process('@none', 'provision-save', array($aliasname));
+  drush_valkyrie_create_alias($aliasname, $options);
 }
 
 /**
