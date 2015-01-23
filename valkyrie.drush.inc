@@ -130,7 +130,6 @@ function valkyrie_drush_command() {
     'required-arguments' => 1,
     'aliases' => array('vpa'),
     'bootstrap' => DRUSH_BOOTSTRAP_NONE,
-    'handle-remote-commands' => TRUE,
   );
 
   $items['valkyrie-platform-generate'] = array(
@@ -444,8 +443,6 @@ function drush_valkyrie_site_reinstall() {
  * Command callback for the 'valkyrie-platform-add' command.
  */
 function drush_valkyrie_platform_add($name, $path = NULL) {
-  $server = _valkyrie_get_target_server_record();
-
   if (is_null($path)) {
     //TODO: Sanitize $name here.
     $path = '/var/aegir/platforms/' . $name;
@@ -457,12 +454,10 @@ function drush_valkyrie_platform_add($name, $path = NULL) {
     'web_server' => '@server_master',
     'root' => $path,
   );
-  #drush_invoke_process('@none', 'provision-save', array("@platform_$name"), $options);
-  _valkyrie_invoke_remote_cmd($server, "drush @none provision-save @platform_$name --context_type=platform --web_server=@server_master --root=$path");
+  drush_invoke_process('@none', 'provision-save', array("@platform_$name"), $options);
 
   // Import the new platform context into the Hostmaster site.
-  #drush_invoke_process('@hostmaster', 'hosting-import', array("@platform_$name"));
-  _valkyrie_invoke_remote_cmd($server, "drush @hostmaster hosting-import @platform_$name");
+  drush_invoke_process('@hostmaster', 'hosting-import', array("@platform_$name"));
 }
 
 /**
