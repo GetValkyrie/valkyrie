@@ -456,6 +456,9 @@ function drush_valkyrie_platform_add($name, $path = NULL) {
   );
   drush_invoke_process('@none', 'provision-save', array("@platform_$name"), $options);
 
+  // Verify the platform, so that the drushrc.php is populated with projects.
+  drush_invoke_process("@platform_$name", 'provision-verify');
+
   // Import the new platform context into the Hostmaster site.
   drush_invoke_process('@hostmaster', 'hosting-import', array("@platform_$name"));
 }
