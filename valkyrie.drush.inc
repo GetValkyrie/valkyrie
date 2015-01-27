@@ -456,11 +456,11 @@ function drush_valkyrie_platform_add($name, $path = NULL) {
   );
   drush_invoke_process('@none', 'provision-save', array("@platform_$name"), $options);
 
-  // Verify the platform, so that the drushrc.php is populated with projects.
-  drush_invoke_process("@platform_$name", 'provision-verify');
-
   // Import the new platform context into the Hostmaster site.
-  drush_invoke_process('@hostmaster', 'hosting-import', array("@platform_$name"));
+  drush_shell_exec("drush @hm hosting-import @platform_$name");
+  // TODO: figure out why this doesn't work instead. 'root' appears to be
+  // getting inherited from '@hm'
+  #drush_invoke_process('@hm', 'hosting-import', array("@platform_$name"));
 }
 
 /**
