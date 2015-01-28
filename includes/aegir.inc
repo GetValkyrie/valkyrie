@@ -173,7 +173,7 @@ function drush_valkyrie_create_alias($aliasname, $options) {
   // and are then set to their 'real' option names in
   // Provision_Context_Valkyrie::init_Valkyrie().
   $options['remote_host'] = provision_fqdn(d()->server->remote_host);
-  $options['ssh_options'] = '-o StrictHostKeyChecking=no';
+  $options['ssh_options'] = '-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=quiet';
   // Let Provision_Context_Valkyrie know which options to write to the alias.
   $options['options'] = implode(',', array_keys($options));
   $options['context_type'] = 'Valkyrie';
