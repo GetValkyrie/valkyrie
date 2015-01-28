@@ -84,6 +84,8 @@ function drush_valkyrie_post_provision_verify() {
     _drush_valkyrie_create_site_alias();
     if (d()->profile == 'hostmaster') {
       _drush_valkyrie_create_server_alias();
+      _drush_valkyrie_create_server_alias('vm');
+      _drush_valkyrie_create_site_alias('v');
     }
     _valkyrie_fix_dev_perms();
     _valkyrie_add_default_drushrc();
@@ -113,17 +115,19 @@ function _drush_valkyrie_get_site_aliasname() {
 /**
  * Helper function to create site aliases for use on the host.
  */
-function _drush_valkyrie_create_site_alias() {
-  if ($login_uri = _drush_valkyrie_get_site_aliasname()) {
-    $options = array(
-      'valkyrie-type' => 'site',
-      'uri' => d()->uri,
-      'login_uri' => $login_uri,
-      'root' => d()->root,
-      'alias' => d()->name,
-    );
-    drush_valkyrie_create_alias(_valkyrie_strip_tld($login_uri), $options);
+function _drush_valkyrie_create_site_alias($aliasname = NULL) {
+  $login_uri = _drush_valkyrie_get_site_aliasname();
+  if (is_null($aliasname)) {
+    $aliasname = _valkyrie_strip_tld($login_uri);
   }
+  $options = array(
+    'valkyrie-type' => 'site',
+    'uri' => d()->uri,
+    'login_uri' => $login_uri,
+    'root' => d()->root,
+    'alias' => d()->name,
+  );
+  drush_valkyrie_create_alias($aliasname, $options);
 }
 
 /**
@@ -149,15 +153,14 @@ function _drush_valkyrie_create_platform_alias() {
 /**
  * Helper function to create a server alias for use on the host.
  */
-function _drush_valkyrie_create_server_alias() {
+function _drush_valkyrie_create_server_alias($aliasname = NULL) {
   $options = array(
     'valkyrie-type' => 'server',
     'uri' => provision_fqdn(d()->server->remote_host),
   );
-  $aliasname = '@vm_' . gethostname();
-  // Generate a matching alias on the guest, so we can call Drush commands on
-  // the host, and have them executed on the guest.
-  drush_invoke_process('@none', 'provision-save', array($aliasname));
+  if (is_null($aliasname)) {
+    $aliasname = '@vm_' . gethostname();
+  }
   drush_valkyrie_create_alias($aliasname, $options);
 }
 
