@@ -516,15 +516,16 @@ function drush_valkyrie_platform_generate($name) {
     _valkyrie_invoke_remote_cmd($server, $command);
   }
 
-  // Copy the makefile and lockfile into the platform.
-  drush_log(dt('Copying makefile and lockfile into platform drush directory.'));
-  copy($makefile_path, getcwd() . "/platforms/$name/sites/all/drush/platform.make");
-  copy($lockfile_path, getcwd() . "/platforms/$name/sites/all/drush/platform.lock");
-
   // Import the new platform context into the Hostmaster site.
   $command = "drush @hostmaster hosting-import @platform_$name";
   _valkyrie_invoke_remote_cmd($server, $command);
 
+  _valkyrie_wait_for_queue();
+
+  // Copy the makefile and lockfile into the platform.
+  drush_log(dt('Copying makefile and lockfile into platform drush directory.'));
+  copy($makefile_path, getcwd() . "/platforms/$name/sites/all/drush/platform.make");
+  copy($lockfile_path, getcwd() . "/platforms/$name/sites/all/drush/platform.lock");
 }
 
 /**
@@ -738,8 +739,13 @@ function _valkyrie_wait_for_queue() {
  */
 function _valkyrie_get_pending_task_count() {
   $sql = "SELECT count(t.nid) FROM hosting_task t INNER JOIN node n ON t.vid = n.vid WHERE t.task_status = 0 OR task_status = -1";
-  $server = _valkyrie_get_target_server_record(_valkyrie_get_aegir_vm_address());
-  $result = drush_invoke_process($server, 'sql-query', array($sql), array(), FALSE);
+  // we need to be able to find the site even if we don't have the alias in
+  // the host yet, because this is called from vnew
+  $alias = _valkyrie_get_target_server_record(_valkyrie_get_aegir_vm_address());
+  // XXX: dehardcode this
+  $alias['root'] = '/var/aegir/hostmaster-7.x-3.x';
+  $alias['uri'] = _valkyrie_get_aegir_vm_address();
+  $result = drush_invoke_process($alias, 'sql-query', array($sql), array(), FALSE);
   return $result['output'];
 }
 
