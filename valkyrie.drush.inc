@@ -595,9 +595,6 @@ function drush_valkyrie_site_clone($name, $git_repo) {
   );
   drush_invoke_process('@self', 'provision-save', array("@$name"), $options);
 
-  // TODO: Figure out a way to poll the Aegir queue for outstanding tasks.
-  // Perhaps a hidden task we can run on the VM...
-  drush_log('Waiting for platform to be ready.');
   _valkyrie_wait_for_queue();
 
   # enable $enable module or 'keystone' if it exists
@@ -638,7 +635,6 @@ function drush_valkyrie_site_generate($name) {
   // Install the new site.
   #$command = "drush @$name provision-install";
   #_valkyrie_invoke_remote_cmd($server, $command);
-  drush_log('Waiting for platform to be ready.');
   _valkyrie_wait_for_queue();
 
   # copy gitignore into place
@@ -655,7 +651,6 @@ function drush_valkyrie_site_generate($name) {
   $command = "drush @hostmaster hosting-import @$name";
   _valkyrie_invoke_remote_cmd($server, $command);
 
-  drush_log('Waiting for site to be ready.');
   _valkyrie_wait_for_queue();
 
   drush_log(dt('Copying makefile into site directory.'));
@@ -729,8 +724,10 @@ function drush_valkyrie_pre_user_login() {
  * Pause execution until the Aegir queue is no longer processing tasks.
  */
 function _valkyrie_wait_for_queue() {
+  drush_log('Waiting for tasks to finish');
   while (_valkyrie_get_pending_task_count() > 0) {
     sleep(1);
+    drush_log('Waiting for tasks to finish');
   }
 }
 
