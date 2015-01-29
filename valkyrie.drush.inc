@@ -681,13 +681,6 @@ function _valkyrie_get_target_server_record($url = FALSE, $remote_user = 'aegir'
   if (empty($server['remote-host'])) {
     drush_die(dt('@alias does not specify a remote-host.', array('@alias' => $alias)));
   }
-  // Ensure StrictHostKeyChecking is disabled in the alias.
-  if (!isset($server['ssh-options'])) {
-    $server['ssh-options'] = '-o StrictHostKeyChecking=no';
-  }
-  elseif (strpos($server['ssh-options'], 'StrictHostKeyChecking') === FALSE) {
-    $server['ssh-options'] .= ' -o StrictHostKeyChecking=no';
-  }
   return $server;
 }
 
