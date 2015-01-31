@@ -1,46 +1,43 @@
 VALKYRIE
 ========
 
-Valkyrie is an opinionated local dev stack that makes features/git based Drupal development easy.
+Valkyrie is an opinionated development stack that makes features/git based Drupal development easy.
 
 
-Local codebase
---------------
+Features
+--------
 
-Having to SSH into a development VM and edit code using a terminal-based editor
-(such as vim) isn't everyone's cup of tea. Many IDEs support mounting remote
-filesystems, but this can be tricky and needlessly time-consuming. Valkyrie
-uses NFS to mount all your platforms directly on your host machine, which
-allows you to use the same editor you're used to without jumping through hoops.
+* Everything is wrapped up neatly in a VM. This keeps your computer tidy and Valkyrie consistent across various machines.
+* Folders in the VM are mounted on your computer via NFS to make developing with your favorite editor easy (we like Vim).
+* Automatic domain resolution using vagrant-dns on Macs or Avahi on Linux systems (we haven't tested this on Windows, sorry). Each site you create on Valkyrie will get an automatically resovling domain name which keeps you from needing to hack your /etc/hosts file.
+* Drush extensions to make all kinds of common devleopment tasks easy.
+* Automatic Drush aliases for running commands against sites inside the VM.
 
+Prerequisites
+-------------
 
-Local Domain Resolution
------------------------
+We've tested this on OS X (Yosemite) and some flavor of linux that @ergonlogic uses. You'll need to have the following:
 
-When building websites locally, it's common practice to add development domains
-to /etc/hosts. This is fine, as far as it goes. But when you can spin up new
-platforms and sites as easily as Valkyrie allows, that extra step starts to be
-a hassle. Through the magic of Avahi (on Linux systems) or a vagrant-dns plugin (on
-Macs), every site provisioned on Valkyrie automatically resolves to a local alias.
+* [VirtualBox](https://www.virtualbox.org)
+* [Vagrant](https://www.vagrantup.com)
+* [vagrant-triggers](https://github.com/emyl/vagrant-triggers)
+* [vagrant-dns](https://github.com/BerlinVagrant/vagrant-dns) *Mac only
+* [Drush 7.0-dev](https://github.com/drush-ops/drush)
 
-
-Site Configuration
-------------------
-
-Keeping site configuration and content separate can be a challenge. The
-Features module goes a long way towards solving this issue, but it isn't always
-obvious what to export to code. We've found that comparing database dumps is a
-pretty good way to visualize these changes, and so we've added some commands to
-make this quick and easy.
+The latest versions of all of the above are recommended. To install Drush on OS X, we recommend using [Homebrew](http://brew.sh/). You'll need to install the HEAD version of Drush: `brew install drush --HEAD`.
 
 
-Platform Management
--------------------
+Installation
+------------
 
-The codebase of a modern Drupal site is complex. Maintaining the security
-of the codebase requires frequent updates. We are striving to fully automate
-such updates. While we aren't there yet, we've made things pretty easy. You can
-expect significant further improvements in these features.
+Make sure you have a .drush folder in your home diretory. If you don't, run the `drush` command and it should create one. To get Valkyrie installed, clone the repo inside ~/.drush like so: `git clone https://github.com/GetValkyrie/valkyrie.git ~/.drush/valkyrie`.
+
+
+Upcoming Features
+-----------------
+
+* Platform management
+* ??? - Request additional features in a PR. Even better, implement it in PR as well :)
 
 
 Free Software
