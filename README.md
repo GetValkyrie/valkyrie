@@ -33,6 +33,21 @@ Installation
 Make sure you have a .drush folder in your home diretory. If you don't, run the `drush` command and it should create one. To get Valkyrie installed, clone the repo inside ~/.drush like so: `git clone https://github.com/GetValkyrie/valkyrie.git ~/.drush/valkyrie`.
 
 
+Usage
+-----
+
+Valkyrie provides a number of Drush commands, which are well documented within Drush itself. Run the following to review these commands:
+
+`drush help --filter=valkyrie`
+
+### Creating a project
+
+To begin using Valkyrie you'll need to create a project. A project is a VM provisioned with the entire dev stack. You really only need one project since it will be running [Aegir](http://www.aegirproject.org) which supports multiple platforms/sites.
+
+To create a project run `drush vnew [name]`. We usually name our project "valkyrie" since we only need one `drush vnew valkyrie`. This will create a folder named "valkyrie" in the current working directory and will spin up and provision a VM. This will take a while so go grab a coffee/beer.
+
+During the provisioning process you should see a couple red notices. One is an SSH key for the VM in case you need to add it as a deploy key to private repos. The other is a login link for accessing Aegir.
+
 Upcoming Features
 -----------------
 
