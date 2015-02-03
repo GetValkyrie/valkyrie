@@ -116,6 +116,7 @@ function valkyrie_drush_command() {
     'description' => 'Update a project.',
     'options' => array(
       'upstream' => 'Update the global Valkyrie extension with code from a project.',
+      'reload' => 'Reload and run provisioners after updating code. Default to TRUE.',
     ),
     'aliases' => array('vup'),
     'bootstrap' => DRUSH_BOOTSTRAP_DRUSH, // No bootstrap at all.
@@ -338,6 +339,10 @@ function drush_valkyrie_update() {
       drush_copy_dir($src, $lib_path, FILE_EXISTS_MERGE);
       drush_delete_dir($lib_path . '/.git', TRUE);
       drush_log(dt('Valkyrie code updated.'), 'ok');
+      if (drush_get_option('reload', TRUE)) {
+        drush_log(dt('Reloading VM and running provisioners.'), 'ok');
+        drush_shell_proc_open('vagrant reload --provision');
+      }
     }
     else {
       drush_user_abort();
