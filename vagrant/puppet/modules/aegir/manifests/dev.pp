@@ -254,30 +254,26 @@ class aegir::dev (
     timeout    => 0,
   }
 
-  drush::en { 'hosting_queued':
-    site_alias => '@hostmaster',
-    require    => File['queue daemon init script'],
-  }
   if $queued_service {
-    $queued_script_ensure = 'present'
+    drush::en { 'hosting_queued':
+      site_alias => '@hostmaster',
+      require => Drush::Run['hostmaster-install'],
+    }
+    file { 'queue daemon init script':
+      ensure  => present,
+      source  => 'puppet:///modules/aegir/init.d.example-new',
+      path    => '/etc/init.d/hosting-queued',
+      owner   => 'root',
+      mode    => 0755,
+      require => Drush::Run['hostmaster-install'],
+    }
     service { 'hosting-queued':
       ensure  => 'running',
       require => [
-        File['queue daemon init script'],
         Drush::En['hosting_queued'],
+        File['queue daemon init script'],
       ],
     }
-  }
-  else {
-    $queued_script_ensure = 'absent'
-  }
-  file { 'queue daemon init script':
-    ensure  => $queued_script_ensure,
-    source  => 'puppet:///modules/aegir/init.d.example-new',
-    path    => '/etc/init.d/hosting-queued',
-    owner   => 'root',
-    mode    => 0755,
-    require => Drush::Run['hostmaster-install'],
   }
 
   exec {'aegir-dev login':
