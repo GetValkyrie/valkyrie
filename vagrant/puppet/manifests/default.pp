@@ -67,6 +67,11 @@ node default {
       ensure => present
     }
 
+    service {'apache2':
+      ensure => running,
+      enable => true,
+    }
+
     $web_group  = 'www-data'
 
     $alt_id = 1010
