@@ -48,6 +48,10 @@ To create a project run `drush vnew [name]`. We usually name our project "valkyr
 
 During the provisioning process you should see a couple red notices. One is an SSH key for the VM in case you need to add it as a deploy key to private repos. The other is a login link for accessing Aegir.
 
+### If Hosting Queue not running
+
+`drush @vm cc drush; drush @v hosting-dispatch`
+
 Upcoming Features
 -----------------
 
