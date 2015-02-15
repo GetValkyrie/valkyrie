@@ -1,6 +1,8 @@
 VALKYRIE
 ========
 
+[![Join the chat at https://gitter.im/GetValkyrie/valkyrie](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/GetValkyrie/valkyrie?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Valkyrie is an opinionated development stack that makes features/git based Drupal development easy.
 
 
