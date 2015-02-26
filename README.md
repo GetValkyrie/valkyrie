@@ -1,6 +1,8 @@
 VALKYRIE
 ========
 
+![valkyrie_logo](https://github.com/GetValkyrie/valkyrie/blob/0.3.x/assets/valkyrie_logo.png)
+
 Valkyrie is an opinionated development stack that makes features/git based Drupal development easy.
 
 
