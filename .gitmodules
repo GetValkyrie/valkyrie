@@ -1,0 +1,3 @@
+[submodule "vagrant/lib/drush-aliases"]
+	path = vagrant/lib/drush-aliases
+	url = https://github.com/GetValkyrie/valkyrie-drush-aliases

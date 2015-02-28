@@ -31,8 +31,8 @@ Vagrant.configure(2) do |config|
   config.vm.define 'default' do |vm1|
 
     # Register our project as a place for Drush to find aliases.
-    require "#{valkyrie_root}/drush_aliases"
-    drush_aliases(config, conf)
+    ENV['VALKYRIE_PROJECT_PATH'] = File.dirname(File.expand_path(__FILE__))
+    require "#{valkyrie_root}/lib/drush-aliases/drush-aliases"
 
     # Setup a DNS server to help the host resolve domains on the guest.
     require "#{valkyrie_root}/vagrant-dns"
