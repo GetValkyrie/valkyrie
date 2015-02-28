@@ -2,6 +2,7 @@ VALKYRIE
 ========
 
 ![valkyrie_logo](https://github.com/GetValkyrie/valkyrie/blob/0.3.x/assets/valkyrie_logo.png)
+[![Join the chat at https://gitter.im/GetValkyrie/valkyrie](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/GetValkyrie/valkyrie?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 Valkyrie is an opinionated development stack that makes features/git based Drupal development easy.
 
@@ -49,6 +50,16 @@ To begin using Valkyrie you'll need to create a project. A project is a VM provi
 To create a project run `drush vnew [name]`. We usually name our project "valkyrie" since we only need one `drush vnew valkyrie`. This will create a folder named "valkyrie" in the current working directory and will spin up and provision a VM. This will take a while so go grab a coffee/beer.
 
 During the provisioning process you should see a couple red notices. One is an SSH key for the VM in case you need to add it as a deploy key to private repos. The other is a login link for accessing Aegir.
+
+### Help
+
+* If Hosting Queue not running
+
+	* `drush @vm cc drush; drush @v hosting-dispatch`
+
+* If frontend does not generate properly
+
+	* `drush @v provision-verify`
 
 Upcoming Features
 -----------------
