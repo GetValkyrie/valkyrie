@@ -4,11 +4,6 @@
 ENV['project_root'] = project_root = File.expand_path(File.dirname(__FILE__))
 ENV['valkyrie_root'] = valkyrie_root = "#{project_root}/.valkyrie/valkyrie/vagrant"
 
-# Many things need to happen after initial provisioning. This file helps keep
-# track of whether this is the first run of the guest.
-semaphore = "#{project_root}/.valkyrie/cache/first_run_complete"
-first_run = !File.file?(semaphore)
-
 Vagrant.configure(2) do |config|
   # Required since we are using our own keys.
   config.ssh.insert_key = false
@@ -17,37 +12,31 @@ Vagrant.configure(2) do |config|
 
   config.ssh.forward_agent = true
 
-  require "#{valkyrie_root}/lib/config/config"
+  require "#{valkyrie_root}/lib/mount/mount"   # Allows for seamless NFS usage.
+
+  require "#{valkyrie_root}/lib/config/config" # Load and merge settings.
   conf_paths = [
     ".valkyrie/valkyrie/vagrant/config.yml",   # Default Valkyrie settings
     ".valkyrie/config.yml",                    # Project-specific overrides
     "config.yml",                              # Local overrides
   ]
   conf = load_config(conf_paths, project_root)
-  conf['project_root'] = project_root
 
-  config.trigger.after [:destroy] do
-    # Remove semaphore file
-    system "rm #{semaphore} > /dev/null 2>&1; echo '==> Removed semaphore file: #{semaphore}'"
-    system "ssh-keygen -f ~/.ssh/known_hosts -R valkyrie.local"
-    system "ssh-keygen -f ~/.ssh/known_hosts -R 10.42.0.10"
+  # Register our project as a place for Drush to find aliases.
+  ENV['VALKYRIE_PROJECT_PATH'] = File.dirname(File.expand_path(__FILE__))
+  require "#{valkyrie_root}/lib/drush-aliases/drush-aliases"
+
+  # Setup a DNS server to help the host resolve domains on the guest.
+  require "#{valkyrie_root}/vagrant-dns"
+  if Vagrant.has_plugin? 'vagrant-dns'
+    configure_vagrant_dns(config, conf)
+  else
+    install_vagrant_dns(conf)
+    # On Linux hosts, use Avahi to broadcast domains via mDNS from the guest
+    avahi_fallback(config, conf)
   end
 
   config.vm.define 'default' do |vm1|
-
-    # Register our project as a place for Drush to find aliases.
-    ENV['VALKYRIE_PROJECT_PATH'] = File.dirname(File.expand_path(__FILE__))
-    require "#{valkyrie_root}/lib/drush-aliases/drush-aliases"
-
-    # Setup a DNS server to help the host resolve domains on the guest.
-    require "#{valkyrie_root}/vagrant-dns"
-    if Vagrant.has_plugin? 'vagrant-dns'
-      configure_vagrant_dns(config, conf)
-    else
-      install_vagrant_dns(conf)
-      # On Linux hosts, use Avahi to broadcast domains via mDNS from the guest
-      avahi_fallback(config, conf)
-    end
 
     vm1.vm.network 'private_network', ip: conf['ip']
     vm1.vm.box = conf['vm_box']
@@ -56,33 +45,25 @@ Vagrant.configure(2) do |config|
       vbox.memory = conf['vm_memory']
     end
 
-    if first_run
-      vm1.vm.provision 'file',
-        source: '~/.ssh/id_rsa.pub',
-        destination: '/vagrant/.valkyrie/ssh/authorized_keys'
-    else
-      config.ssh.username = 'ubuntu'
-      config.ssh.private_key_path = '~/.ssh/id_rsa'
+    conf['nfs_paths'].each do |guest_path, host_path|
+      vm1.vm.synced_folder host_path, guest_path,
+        type: 'nfs',
+        create: true,
+        #nfs_version: 3
+        nfs: 3
+    end
 
-      conf['nfs_paths'].each do |guest_path, host_path|
-        config.vm.synced_folder host_path, guest_path,
-          type: 'nfs',
-          create: true,
-          nfs_version: 3
-      end
-
-      # Copy in some user-specific files to make the environment more familiar
-      conf['dot_files'].each do |dot_file|
-        real_dotfile = ENV['HOME']+'/'+dot_file
-        if File.file?(real_dotfile)
-          vm1.vm.provision 'file',
-            source: real_dotfile,
-            destination: "/home/ubuntu/#{dot_file}"
-          vm1.vm.provision 'shell',
-            inline: "cp /home/ubuntu/#{dot_file} /var/aegir/#{dot_file}"
-          vm1.vm.provision 'shell',
-            inline: "cp /home/ubuntu/#{dot_file} /root/#{dot_file}"
-        end
+    # Copy in some user-specific files to make the environment more familiar
+    conf['dot_files'].each do |dot_file|
+      real_dotfile = ENV['HOME']+'/'+dot_file
+      if File.file?(real_dotfile)
+        vm1.vm.provision 'file',
+          source: real_dotfile,
+          destination: "/home/ubuntu/#{dot_file}"
+        vm1.vm.provision 'shell',
+          inline: "cp /home/ubuntu/#{dot_file} /var/aegir/#{dot_file}"
+        vm1.vm.provision 'shell',
+          inline: "cp /home/ubuntu/#{dot_file} /root/#{dot_file}"
       end
     end
 
@@ -104,6 +85,5 @@ Vagrant.configure(2) do |config|
       module_path: "#{valkyrie_root}/puppet/modules",
       manifests_path: "#{valkyrie_root}/puppet/manifests",
       facter: facter
-
   end
 end

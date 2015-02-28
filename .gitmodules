@@ -4,3 +4,6 @@
 [submodule "vagrant/lib/config"]
 	path = vagrant/lib/config
 	url = https://github.com/GetValkyrie/valkyrie-config
+[submodule "vagrant/lib/mount"]
+	path = vagrant/lib/mount
+	url = https://github.com/GetValkyrie/valkyrie-mount
