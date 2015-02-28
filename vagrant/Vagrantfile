@@ -17,8 +17,13 @@ Vagrant.configure(2) do |config|
 
   config.ssh.forward_agent = true
 
-  require "#{valkyrie_root}/load_config"
-  conf = load_config()
+  require "#{valkyrie_root}/lib/config/config"
+  conf_paths = [
+    ".valkyrie/valkyrie/vagrant/config.yml",   # Default Valkyrie settings
+    ".valkyrie/config.yml",                    # Project-specific overrides
+    "config.yml",                              # Local overrides
+  ]
+  conf = load_config(conf_paths, project_root)
   conf['project_root'] = project_root
 
   config.trigger.after [:destroy] do
