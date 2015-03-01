@@ -7,3 +7,24 @@
 [submodule "vagrant/lib/mount"]
 	path = vagrant/lib/mount
 	url = https://github.com/GetValkyrie/valkyrie-mount
+[submodule "vagrant/ansible/roles/getvalkyrie.aegir"]
+	path = vagrant/ansible/roles/getvalkyrie.aegir
+	url = https://github.com/GetValkyrie/ansible-role-aegir
+[submodule "vagrant/ansible/roles/geerlingguy.drush"]
+	path = vagrant/ansible/roles/geerlingguy.drush
+	url = https://github.com/GetValkyrie/ansible-role-drush
+[submodule "vagrant/ansible/roles/geerlingguy.git"]
+	path = vagrant/ansible/roles/geerlingguy.git
+	url = https://github.com/geerlingguy/ansible-role-git
+[submodule "vagrant/ansible/roles/geerlingguy.php"]
+	path = vagrant/ansible/roles/geerlingguy.php
+	url = https://github.com/geerlingguy/ansible-role-php
+[submodule "vagrant/ansible/roles/geerlingguy.composer"]
+	path = vagrant/ansible/roles/geerlingguy.composer
+	url = https://github.com/geerlingguy/ansible-role-composer
+[submodule "vagrant/ansible/roles/geerlingguy.mysql"]
+	path = vagrant/ansible/roles/geerlingguy.mysql
+	url = https://github.com/geerlingguy/ansible-role-mysql
+[submodule "vagrant/ansible/roles/getvalkyrie.valkyrie"]
+	path = vagrant/ansible/roles/getvalkyrie.valkyrie
+	url = https://github.com/GetValkyrie/ansible-role-valkyrie

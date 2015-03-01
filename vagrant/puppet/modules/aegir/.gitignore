@@ -1,5 +1,0 @@
-.vagrant
-Vagrantfile
-!*/**/Vagrantfile
-tests/functional_tests/*/modules/*
-tmp/*

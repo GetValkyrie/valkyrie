@@ -49,7 +49,6 @@ Vagrant.configure(2) do |config|
       vm1.vm.synced_folder host_path, guest_path,
         type: 'nfs',
         create: true,
-        #nfs_version: 3
         nfs: 3
     end
 
@@ -67,23 +66,9 @@ Vagrant.configure(2) do |config|
       end
     end
 
-    facter = {
-      # Facter doesn't determine the FQDN properly in Debian and derivatives.
-      'fqdn' => config.vm.hostname,
-      # We use these to re-map the 'aegir' user's uid and the 'www-data'
-      # group's gid, so that NFS works properly.
-      'host_uid' => Process.uid,
-      'host_gid' => Process.gid,
-      # We apply slightly different configs in the VM depending on the host OS.
-      'host_os' => RUBY_PLATFORM,
-      'first_run' => first_run,
-    }
-    # Facter cannot determine the domain under vagrant-dns.
-    facter['domain'] = Vagrant.has_plugin?('vagrant-dns') ? conf['tld'] : 'local'
+    config.vm.provision "shell",
+      inline: "PYTHONUNBUFFERED=1 ANSIBLE_FORCE_COLOR=true ansible-playbook /vagrant/.valkyrie/valkyrie/vagrant/ansible/site.yml -i /vagrant/.valkyrie/valkyrie/vagrant/ansible/inventory --connection=local --sudo --extra-vars 'valkyrie_frontend_url=#{config.vm.hostname}'",
+      keep_color: true
 
-    vm1.vm.provision 'puppet',
-      module_path: "#{valkyrie_root}/puppet/modules",
-      manifests_path: "#{valkyrie_root}/puppet/manifests",
-      facter: facter
   end
 end

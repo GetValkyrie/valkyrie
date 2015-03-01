@@ -1,2 +1,0 @@
-aegir ALL=NOPASSWD:/usr/bin/supervisorctl restart avahi-aliases
-

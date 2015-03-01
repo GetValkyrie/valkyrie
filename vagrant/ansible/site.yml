@@ -1,0 +1,11 @@
+---
+- hosts: localhost
+  vars:
+    - host_uid: 1000
+  pre_tasks:
+    - name: Create 'aegir' user to map to host user
+      user:
+        name: aegir
+        uid: "{{ host_uid }}"
+  roles:
+    - getvalkyrie.valkyrie
