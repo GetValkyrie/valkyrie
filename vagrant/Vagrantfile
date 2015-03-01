@@ -58,11 +58,11 @@ Vagrant.configure(2) do |config|
       if File.file?(real_dotfile)
         vm1.vm.provision 'file',
           source: real_dotfile,
-          destination: "/home/ubuntu/#{dot_file}"
+          destination: "/home/vagrant/#{dot_file}"
         vm1.vm.provision 'shell',
-          inline: "cp /home/ubuntu/#{dot_file} /var/aegir/#{dot_file}"
+          inline: "sudo cp /home/vagrant/#{dot_file} /var/aegir/#{dot_file}"
         vm1.vm.provision 'shell',
-          inline: "cp /home/ubuntu/#{dot_file} /root/#{dot_file}"
+          inline: "sudo cp /home/vagrant/#{dot_file} /root/#{dot_file}"
       end
     end
 
