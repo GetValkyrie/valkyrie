@@ -33,7 +33,7 @@ The latest versions of all of the above are recommended. To install Drush on OS 
 Installation
 ------------
 
-Make sure you have a .drush folder in your home diretory. If you don't, run the `drush` command and it should create one. To get Valkyrie installed, clone the repo inside ~/.drush like so: `git clone https://github.com/GetValkyrie/valkyrie.git ~/.drush/valkyrie`.
+Make sure you have a .drush folder in your home diretory. If you don't, run the `drush` command and it should create one. To get Valkyrie installed, clone the repo inside ~/.drush like so: `git clone https://github.com/GetValkyrie/valkyrie.git ~/.drush/valkyrie --recursive`.
 
 
 Usage
