@@ -36,17 +36,17 @@ Vagrant.configure(2) do |config|
     avahi_fallback(config, conf)
   end
 
-  config.vm.define 'default' do |vm1|
+  config.vm.define 'valkyrie' do |v|
 
-    vm1.vm.network 'private_network', ip: conf['ip']
-    vm1.vm.box = conf['vm_box']
-    vm1.vm.provider 'virtualbox' do |vbox|
+    v.vm.network 'private_network', ip: conf['ip']
+    v.vm.box = conf['vm_box']
+    v.vm.provider 'virtualbox' do |vbox|
       vbox.cpus = conf['cpus']
       vbox.memory = conf['vm_memory']
     end
 
     conf['nfs_paths'].each do |guest_path, host_path|
-      vm1.vm.synced_folder host_path, guest_path,
+      v.vm.synced_folder host_path, guest_path,
         type: 'nfs',
         create: true,
         nfs: 3
@@ -56,17 +56,17 @@ Vagrant.configure(2) do |config|
     conf['dot_files'].each do |dot_file|
       real_dotfile = ENV['HOME']+'/'+dot_file
       if File.file?(real_dotfile)
-        vm1.vm.provision 'file',
+        v.vm.provision 'file',
           source: real_dotfile,
           destination: "/home/vagrant/#{dot_file}"
-        vm1.vm.provision 'shell',
+        v.vm.provision 'shell',
           inline: "sudo cp /home/vagrant/#{dot_file} /var/aegir/#{dot_file}"
-        vm1.vm.provision 'shell',
+        v.vm.provision 'shell',
           inline: "sudo cp /home/vagrant/#{dot_file} /root/#{dot_file}"
       end
     end
 
-    config.vm.provision "shell",
+    v.vm.provision "shell",
       inline: "PYTHONUNBUFFERED=1 ANSIBLE_FORCE_COLOR=true ansible-playbook /vagrant/.valkyrie/valkyrie/vagrant/ansible/site.yml -i /vagrant/.valkyrie/valkyrie/vagrant/ansible/inventory --connection=local --sudo --extra-vars 'valkyrie_frontend_url=#{config.vm.hostname} host_uid=#{Process.uid}'",
       keep_color: true
 
