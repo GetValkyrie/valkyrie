@@ -307,10 +307,6 @@ function drush_valkyrie_new($path = FALSE) {
     drush_log(dt('Launching new project VM.'));
     chdir($path);
     drush_shell_proc_open('vagrant up');
-    // We need to reload in order for NFS mounts to be properly mapped to
-    // uid/gid.
-    drush_shell_proc_open('vagrant reload --provision');
-    // Wait for import/verify tasks to complete.
     _valkyrie_wait_for_queue();
   }
 }
