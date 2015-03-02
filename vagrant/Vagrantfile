@@ -4,25 +4,25 @@
 ENV['project_root'] = project_root = File.expand_path(File.dirname(__FILE__))
 ENV['valkyrie_root'] = valkyrie_root = "#{project_root}/.valkyrie/valkyrie/vagrant"
 
+require "#{valkyrie_root}/lib/mount/mount"   # Allows for seamless NFS usage.
+
+require "#{valkyrie_root}/lib/config/config" # Load and merge settings.
+conf_paths = [
+  ".valkyrie/valkyrie/vagrant/config.yml",   # Default Valkyrie settings
+  ".valkyrie/config.yml",                    # Project-specific overrides
+  "config.yml",                              # Local overrides
+]
+conf = load_config(conf_paths, project_root)
+
+# Register our project as a place for Drush to find aliases.
+ENV['VALKYRIE_PROJECT_PATH'] = File.dirname(File.expand_path(__FILE__))
+require "#{valkyrie_root}/lib/drush-aliases/drush-aliases"
+
 Vagrant.configure(2) do |config|
   # Silence annoying and spurious warnings
   config.ssh.shell = 'bash -c "BASH_ENV=/etc/profile exec bash"'
 
   config.ssh.forward_agent = true
-
-  require "#{valkyrie_root}/lib/mount/mount"   # Allows for seamless NFS usage.
-
-  require "#{valkyrie_root}/lib/config/config" # Load and merge settings.
-  conf_paths = [
-    ".valkyrie/valkyrie/vagrant/config.yml",   # Default Valkyrie settings
-    ".valkyrie/config.yml",                    # Project-specific overrides
-    "config.yml",                              # Local overrides
-  ]
-  conf = load_config(conf_paths, project_root)
-
-  # Register our project as a place for Drush to find aliases.
-  ENV['VALKYRIE_PROJECT_PATH'] = File.dirname(File.expand_path(__FILE__))
-  require "#{valkyrie_root}/lib/drush-aliases/drush-aliases"
 
   # Setup a DNS server to help the host resolve domains on the guest.
   require "#{valkyrie_root}/vagrant-dns"
