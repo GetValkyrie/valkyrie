@@ -64,6 +64,11 @@ Vagrant.configure(2) do |config|
       end
     end
 
+    # Make the host user's SSH key available in the VM.
+    v.vm.provision 'file',
+      source: '~/.ssh/id_rsa.pub',
+      destination: '/vagrant/.valkyrie/ssh/authorized_keys'
+
     v.vm.provision "shell",
       inline: "PYTHONUNBUFFERED=1 ANSIBLE_FORCE_COLOR=true ansible-playbook /vagrant/.valkyrie/valkyrie/vagrant/ansible/site.yml -i /vagrant/.valkyrie/valkyrie/vagrant/ansible/inventory --connection=local --sudo --extra-vars 'valkyrie_frontend_url=#{config.vm.hostname} host_uid=#{Process.uid}'",
       keep_color: true
