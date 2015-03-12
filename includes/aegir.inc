@@ -81,11 +81,12 @@ function _valkyrie_fix_dev_perms() {
  */
 function drush_valkyrie_post_provision_verify() {
   if (d()->type == 'site') {
-    _drush_valkyrie_create_site_alias();
     if (d()->profile == 'hostmaster') {
-      _drush_valkyrie_create_server_alias();
       _drush_valkyrie_create_server_alias('vm');
       _drush_valkyrie_create_site_alias('v');
+    }
+    else {
+      _drush_valkyrie_create_site_alias();
     }
     _valkyrie_fix_dev_perms();
     _valkyrie_add_default_drushrc();
