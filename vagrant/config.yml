@@ -2,10 +2,6 @@ nfs_paths:
   /var/aegir/platforms: platforms
   /var/aegir/.cache: .valkyrie/cache
   /var/aegir/.drush/valkyrie: .valkyrie/valkyrie
-dot_files:
-  - .gitconfig
-  - .vimrc
-  - .bashrc
 ip: 10.42.0.10
 tld: val
 name: valkyrie

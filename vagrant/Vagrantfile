@@ -50,20 +50,6 @@ Vagrant.configure(2) do |config|
         nfs: 3
     end
 
-    # Copy in some user-specific files to make the environment more familiar
-    conf['dot_files'].each do |dot_file|
-      real_dotfile = ENV['HOME']+'/'+dot_file
-      if File.file?(real_dotfile)
-        v.vm.provision 'file',
-          source: real_dotfile,
-          destination: "/home/vagrant/#{dot_file}"
-        v.vm.provision 'shell',
-          inline: "sudo cp /home/vagrant/#{dot_file} /var/aegir/#{dot_file}"
-        v.vm.provision 'shell',
-          inline: "sudo cp /home/vagrant/#{dot_file} /root/#{dot_file}"
-      end
-    end
-
     # Make the host user's SSH key available in the VM.
     v.vm.provision 'file',
       source: '~/.ssh/id_rsa.pub',

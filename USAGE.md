@@ -53,19 +53,6 @@ git, like so:
     $ git checkout .valkyrie/valkyrie
 
 
-### Dotfiles
-
-In order to make working within the VM easier and more familiar, we copy in
-various dotfiles from the host machine. These can be overridden in a
-config.yaml at your project root. The default list of dotfiles looks like this:
-
-    dot_files:
-      - .gitconfig
-      - .vimrc
-      - .bashrc
-
-
-
 Building platforms and sites
 ----------------------------
 
