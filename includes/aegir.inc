@@ -178,6 +178,8 @@ function drush_valkyrie_create_alias($aliasname, $options) {
   // Let Provision_Context_Valkyrie know which options to write to the alias.
   $options['options'] = implode(',', array_keys($options));
   $options['context_type'] = 'Valkyrie';
+  // Ensure $aliasname starts with a '@'.
+  $aliasname = $aliasname[0] == '@' ? $aliasname : '@' . $aliasname;
   drush_log(dt('Creating Valkyrie alias `:alias`',array(':alias' => $aliasname)));
   provision_backend_invoke('@hostmaster', 'provision-save', array($aliasname), $options);
 }
