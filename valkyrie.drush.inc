@@ -572,11 +572,16 @@ function drush_valkyrie_site_clone($name, $git_repo) {
   drush_unset_option('profile');
 
   // Build a platform.
-  $makefile = ".valkyrie/cache/site_repos/$name/platform.make";
+  $makefile = drush_get_option('makefile', ".valkyrie/cache/site_repos/$name/platform.make");
+  drush_set_option('makefile', $makefile);
   $platform_name = preg_replace("/[!\W\.\-]/", "", $name);
   drush_set_option('verify', TRUE);
-  drush_invoke('valkyrie-platform-generate', array($platform_name, $makefile));
+  drush_invoke('valkyrie-platform-generate', array($platform_name));
   drush_unset_option('verify');
+
+  // Ensure the platform is fully imported, so that the profile package is
+  // registered.
+  _valkyrie_wait_for_queue();
 
   // Write an Aegir context for the new site.
   $options = array(
@@ -594,9 +599,11 @@ function drush_valkyrie_site_clone($name, $git_repo) {
     # drush_valkyrie_pre_provision_install_backend().
     # FWIW, passing --client_email to hosting-import doesn't work either.
   );
-  drush_invoke_process('@self', 'provision-save', array("@$name"), $options);
-
-  _valkyrie_wait_for_queue();
+  foreach ($options as $option => $value) {
+    $options_str .= " --$option='$value'";
+  }
+  $command = "drush provision-save @$name $options_str";
+  _valkyrie_invoke_remote_cmd($server, $command);
 
   # enable $enable module or 'keystone' if it exists
 
@@ -604,6 +611,7 @@ function drush_valkyrie_site_clone($name, $git_repo) {
   $command = "drush @hostmaster hosting-import @$name";
   _valkyrie_invoke_remote_cmd($server, $command);
 
+  _valkyrie_wait_for_queue();
 }
 
 /**
