@@ -73,4 +73,4 @@ Free Software
 
 We are firm proponents of Free Software. Valkyrie only exists because of the
 ongoing efforts of many other projects including: Aegir, Drupal, Drush, Git,
-GNU/Linux, Puppet, Vagrant and VirtualBox.
+GNU/Linux, Ansible, Vagrant and VirtualBox.
