@@ -1,14 +1,5 @@
 {
   "require": {
     "symfony/yaml": "2.*"
-  },
-
-  "require-dev": {
-    "drupal/drupal-extension": "~3.0",
-    "sanpi/behatch-contexts": "*"
-  },
-  "config": {
-    "bin-dir": "bin/"
   }
-
 }
