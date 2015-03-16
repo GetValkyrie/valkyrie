@@ -1,0 +1,37 @@
+# Debian/Ubuntu sudoers entries to allow password-less NFS mounts in Vagrant.
+# See: http://docs.vagrantup.com/v2/synced-folders/nfs.html
+
+# WARNING: Modifying sudoers files can easily result in locking you out of your
+#          system. Only attempt this is you are already familiar with these
+#          dangers, and follow the instructions exactly.
+
+# To install these sudo entries, start by getting yourself a root shell. This
+# will allow you to recover should sudo not like the syntax of this file on
+# your OS. So:
+#
+#    $ sudo -s
+#
+# Then copy this file to your sudoers directory:
+#
+#    # cp ./sudoers.debian /etc/sudoers.d/valkyrie
+#
+# Test that sudo doesn't choke on this files syntax:
+#
+#    # sudo
+#
+# This should result in a help/usage message for the 'sudo' command. If
+# anything went wrong, it'll throw a parse error. Remove the sudoers file to
+# allow sudo access again:
+#
+#    # rm /etc/sudoers.d/valkyrie
+#
+# WARNING: Do not log out of your root shell until you can successfully run
+# sudo. If you do, you're already ignoring our instructions, so you're on your
+# own.
+
+Cmnd_Alias VAGRANT_EXPORTS_ADD = /usr/bin/tee -a /etc/exports
+Cmnd_Alias VAGRANT_NFSD_CHECK = /etc/init.d/nfs-kernel-server status
+Cmnd_Alias VAGRANT_NFSD_START = /etc/init.d/nfs-kernel-server start
+Cmnd_Alias VAGRANT_NFSD_APPLY = /usr/sbin/exportfs -ar
+Cmnd_Alias VAGRANT_EXPORTS_REMOVE = /bin/sed -r -e * d -ibak /etc/exports
+%sudo ALL=(root) NOPASSWD: VAGRANT_EXPORTS_ADD, VAGRANT_NFSD_CHECK, VAGRANT_NFSD_START, VAGRANT_NFSD_APPLY, VAGRANT_EXPORTS_REMOVE
