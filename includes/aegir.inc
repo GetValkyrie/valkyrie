@@ -55,7 +55,7 @@ function valkyrie_provision_drupal_chgrp_directories_alter(&$chgrp, $url) {
 /**
  * Allow the web user to write to custom features.
  *
- * WARNING: This is insecure, and *MUST ONLY BE USED IN DEVELOPMENT* 
+ * WARNING: This is insecure, and *MUST ONLY BE USED IN DEVELOPMENT*
  */
 function _valkyrie_fix_dev_perms() {
   // Only run on hosted sites, not the Aegir front-end.
@@ -227,6 +227,7 @@ function drush_valkyrie_post_provision_delete() {
  */
 function _drush_valkyrie_delete_alias() {
   $aliasname = _drush_valkyrie_get_site_aliasname();
+  $aliasname = _valkyrie_strip_tld($aliasname);
   $alias_path = VALKYRIE_ALIASES_PATH . "/$aliasname.alias.drushrc.php";
   if (file_exists($alias_path)) {
     if (unlink($alias_path)) {
