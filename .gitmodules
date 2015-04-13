@@ -28,3 +28,6 @@
 [submodule "vagrant/ansible/roles/getvalkyrie.valkyrie"]
 	path = vagrant/ansible/roles/getvalkyrie.valkyrie
 	url = https://github.com/GetValkyrie/ansible-role-valkyrie
+[submodule "vagrant/ansible/roles/getvalkyrie.skynet"]
+	path = vagrant/ansible/roles/getvalkyrie.skynet
+	url = https://github.com/GetValkyrie/ansible-role-skynet
