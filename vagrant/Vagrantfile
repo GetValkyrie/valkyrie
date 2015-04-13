@@ -37,6 +37,10 @@ Vagrant.configure(2) do |config|
   config.vm.define 'valkyrie' do |v|
 
     v.vm.network 'private_network', ip: conf['ip']
+    if conf['public_network']
+      v.vm.network 'public_network'
+    end
+
     v.vm.box = conf['vm_box']
     v.vm.provider 'virtualbox' do |vbox|
       vbox.cpus = conf['cpus']

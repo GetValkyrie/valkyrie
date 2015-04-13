@@ -10,3 +10,4 @@ manage_drushrc_aliases: TRUE
 cpus: 2
 vm_memory: 2048
 vm_box: ubuntu/trusty64
+public_network: FALSE
