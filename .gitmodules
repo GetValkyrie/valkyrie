@@ -24,7 +24,7 @@
 	url = https://github.com/geerlingguy/ansible-role-composer
 [submodule "vagrant/ansible/roles/geerlingguy.mysql"]
 	path = vagrant/ansible/roles/geerlingguy.mysql
-	url = https://github.com/geerlingguy/ansible-role-mysql
+	url = https://github.com/GetValkyrie/ansible-role-mysql
 [submodule "vagrant/ansible/roles/getvalkyrie.valkyrie"]
 	path = vagrant/ansible/roles/getvalkyrie.valkyrie
 	url = https://github.com/GetValkyrie/ansible-role-valkyrie
