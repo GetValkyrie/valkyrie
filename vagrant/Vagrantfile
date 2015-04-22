@@ -3,6 +3,8 @@
 
 ENV['project_root'] = project_root = File.expand_path(File.dirname(__FILE__))
 ENV['valkyrie_root'] = valkyrie_root = "#{project_root}/.valkyrie/valkyrie/vagrant"
+# List of VMs (comma-separated) on which to run plugins.
+#ENV['VALKYRIE_VMS'] = 'valkyrie'
 
 require "#{valkyrie_root}/lib/mount/mount"   # Allows for seamless NFS usage.
 
