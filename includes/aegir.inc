@@ -148,6 +148,8 @@ function _drush_valkyrie_create_platform_alias() {
     'valkyrie-type' => 'platform',
     'root' => d()->root,
   );
+  // TODO: Once we start creating platform aliases, we'll need to delete them
+  // in drush_valkyrie_post_provision_delete().
   //drush_valkyrie_create_alias($aliasname, $options);
 }
 
@@ -218,8 +220,10 @@ function drush_valkyrie_post_provision_reinstall() {
  * Implements drush_hook_post_COMMAND().
  */
 function drush_valkyrie_post_provision_delete() {
-  // Remove the alias we generated.
-  _drush_valkyrie_delete_alias();
+  if (d()->type == 'site') {
+    // Remove the alias we generated.
+    _drush_valkyrie_delete_alias();
+  }
 }
 
 /**
