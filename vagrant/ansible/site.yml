@@ -1,6 +1,7 @@
 ---
 - hosts: localhost
   vars:
+    - drush_version: 7.x
     - host_uid: 1000
   pre_tasks:
     - name: Create 'aegir' user to map to host user
