@@ -1,7 +1,7 @@
-release_tag=7.x-0.4-rc2
+release_tag=7.x-0.4-rc3
 release_branch=7.x-0.4
 dev_branch=0.4.x
-semver_tag=0.4.2
+semver_tag=0.4.3
 username=ergonlogic
 
 # Clone the release repo from drupal.org into a temporary directory
