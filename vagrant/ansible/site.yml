@@ -10,4 +10,4 @@
         uid: "{{ host_uid }}"
   roles:
     - geerlingguy.mysql
-    - geerlingguy.valkyrie
+    - getvalkyrie.valkyrie
