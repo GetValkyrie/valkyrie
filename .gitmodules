@@ -25,9 +25,9 @@
 [submodule "vagrant/ansible/roles/getvalkyrie.skynet"]
 	path = vagrant/ansible/roles/getvalkyrie.skynet
 	url = https://github.com/GetValkyrie/ansible-role-skynet
-[submodule "vagrant/ansible/roles/getvalkyrie.mysql"]
-	path = vagrant/ansible/roles/getvalkyrie.mysql
-	url = https://github.com/GetValkyrie/ansible-role-mysql.git
+[submodule "vagrant/ansible/roles/geerlingguy.mysql"]
+	path = vagrant/ansible/roles/geerlingguy.mysql
+	url = https://github.com/geerlingguy/ansible-role-mysql.git
 [submodule "vagrant/ansible/roles/getvalkyrie.drush"]
 	path = vagrant/ansible/roles/getvalkyrie.drush
 	url = https://github.com/GetValkyrie/ansible-role-drush.git
