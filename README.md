@@ -30,6 +30,11 @@ We've tested this on OS X (Yosemite) and some flavor of linux that @ergonlogic u
 
 The latest versions of all of the above are recommended. To install Drush on OS X, we recommend using [Homebrew](http://brew.sh/). You'll need to install the HEAD version of Drush: `brew install drush --HEAD`.
 
+Documentation
+--------------
+- [Installation](/docs/INSTALLATION.md)
+- [Usage](/docs/USAGE.md)
+- [Testing](/docs/TESTING.md)
 
 Installation
 ------------
