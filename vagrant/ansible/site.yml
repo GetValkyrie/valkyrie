@@ -9,5 +9,5 @@
         name: aegir
         uid: "{{ host_uid }}"
   roles:
-    - getvalkyrie.mysql
+    - geerlingguy.mysql
     - getvalkyrie.valkyrie
