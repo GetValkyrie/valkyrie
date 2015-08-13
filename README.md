@@ -26,7 +26,7 @@ We've tested this on OS X (Yosemite) and some flavor of linux that @ergonlogic u
 * [vagrant-triggers](https://github.com/emyl/vagrant-triggers)
 * [vagrant-dns](https://github.com/BerlinVagrant/vagrant-dns) *Mac only
 * [Drush 7.0-dev](https://github.com/drush-ops/drush)
-* NFS *Pre-installed on OS-X, install the `nfs-kernel-server` and `nfs-common` packages on Ubuntu Linux.
+* NFS *Pre-installed on OS-X, install the `nfs-kernel-server` and `nfs-common` packages on Debian and derivatives, like Ubuntu Linux.
 
 The latest versions of all of the above are recommended. To install Drush on OS X, we recommend using [Homebrew](http://brew.sh/). You'll need to install the HEAD version of Drush: `brew install drush --HEAD`.
 
