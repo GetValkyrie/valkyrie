@@ -25,7 +25,6 @@ function valkyrie_drush_init() {
     // Load our cached data.
     $checks = array(
       'vagrant_installed',
-      'vagrant_plugins_installed',
     );
     $cache = drush_cache_get_multiple($checks, 'valkyrie');
     // Check if Vagrant is installed.
@@ -39,34 +38,6 @@ function valkyrie_drush_init() {
       }
       else {
         drush_cache_set('vagrant_installed', TRUE, 'valkyrie', DRUSH_CACHE_PERMANENT);
-      }
-    }
-    // Check if Vagrant plugins are installed.
-    if (!$cache['vagrant_plugins_installed']) {
-      // TODO: load this array from a YAML file, so we can maintain a single
-      // source of truth for required plugins. We can then re-use this list
-      // when checking from the Vagrantfile.
-      $required = array('vagrant-triggers');
-      if (PHP_OS == 'Darwin') {
-        $required[] = 'vagrant-dns';
-      }
-      $vagrant_plugins = drush_shell_exec_output(drush_shell_exec('vagrant plugin list'));
-      foreach ($vagrant_plugins as $haystack) {
-        foreach ($required as $index => $needle) {
-          // TODO: We may need to require minimal versions of certain plugins.
-          // We could maintain a hash of 'name' => 'version' for plugins, and
-          // check that here, since versions are also listed in the output.
-          if (strpos($haystack, $needle) !== FALSE) {
-            unset($required[$index]);
-            break;
-          }
-        }
-      }
-      if (count($required)) {
-        drush_die(dt("Valkyrie requires some Vagrant plugins to operate properly. The following plugins were not found on your system (using 'vagrant plugin list'), and will need to be installed to proceed: " .  implode(',', $required)));
-      }
-      else {
-        drush_cache_set('vagrant_plugins_installed', TRUE, 'valkyrie', DRUSH_CACHE_PERMANENT);
       }
     }
   }
