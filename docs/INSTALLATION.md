@@ -30,12 +30,6 @@ take advantage of newer features.
  * https://www.vagrantup.com/downloads.html
  * https://www.virtualbox.org/wiki/Downloads
 
-Valkyrie also makes use of some Vagrant plugins: vagrant-triggers, and (for Mac
-users only) vagrant-dns. Installing these should be as simple as:
-
-    $ vagrant plugin install vagrant-triggers
-    $ vagrant plugin install vagrant-dns    # OSX only
-
 Valkyrie also uses git quite extensively. So if you don't already have it
 installed, go ahead and do that next.
 

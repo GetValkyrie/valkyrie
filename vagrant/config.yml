@@ -5,7 +5,6 @@ nfs_paths:
 ip: 10.42.0.10
 tld: val
 name: valkyrie
-use_vagrant_dns: TRUE
 manage_drushrc_aliases: TRUE
 cpus: 2
 vm_memory: 2048

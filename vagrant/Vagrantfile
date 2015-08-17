@@ -26,15 +26,7 @@ Vagrant.configure(2) do |config|
 
   config.ssh.forward_agent = true
 
-  # Setup a DNS server to help the host resolve domains on the guest.
-  require "#{valkyrie_root}/vagrant-dns"
-  if Vagrant.has_plugin? 'vagrant-dns'
-    configure_vagrant_dns(config, conf)
-  else
-    install_vagrant_dns(conf)
-    # On Linux hosts, use Avahi to broadcast domains via mDNS from the guest
-    avahi_fallback(config, conf)
-  end
+  config.vm.hostname = conf['name']+'.local'
 
   config.vm.define 'valkyrie' do |v|
 
