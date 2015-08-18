@@ -16,6 +16,9 @@ conf_paths = [
 ]
 conf = load_config(conf_paths, project_root)
 
+require "#{valkyrie_root}/lib/pub-key/pub-key"
+pub_key = find_pub_key()
+
 # Register our project as a place for Drush to find aliases.
 ENV['VALKYRIE_PROJECT_PATH'] = File.dirname(File.expand_path(__FILE__))
 require "#{valkyrie_root}/lib/drush-aliases/drush-aliases"
@@ -52,9 +55,11 @@ Vagrant.configure(2) do |config|
     end
 
     # Make the host user's SSH key available in the VM.
-    v.vm.provision 'file',
-      source: '~/.ssh/id_rsa.pub',
-      destination: '/vagrant/.valkyrie/ssh/authorized_keys'
+    if pub_key
+      v.vm.provision 'file',
+        source: pub_key,
+        destination: '/vagrant/.valkyrie/ssh/authorized_keys'
+    end
 
     v.vm.provision "shell",
       inline: "PYTHONUNBUFFERED=1 ANSIBLE_FORCE_COLOR=true ansible-playbook /vagrant/.valkyrie/valkyrie/vagrant/ansible/site.yml -i /vagrant/.valkyrie/valkyrie/vagrant/ansible/inventory --connection=local --sudo --extra-vars 'valkyrie_frontend_url=#{config.vm.hostname} host_uid=#{Process.uid}'",
