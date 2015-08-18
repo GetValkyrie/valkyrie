@@ -1,7 +1,7 @@
 VALKYRIE
 ========
 
-![valkyrie_logo](https://github.com/GetValkyrie/valkyrie/blob/0.3.x/assets/valkyrie_logo.png)
+![valkyrie_logo](https://github.com/GetValkyrie/valkyrie/blob/0.5.x/assets/valkyrie_logo.png)
 [![Join the chat at https://gitter.im/GetValkyrie/valkyrie](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/GetValkyrie/valkyrie?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 Valkyrie is an opinionated development stack that makes features/git based Drupal development easy.
@@ -12,27 +12,33 @@ Features
 
 * Everything is wrapped up neatly in a VM. This keeps your computer tidy and Valkyrie consistent across various machines.
 * Folders in the VM are mounted on your computer via NFS to make developing with your favorite editor easy (we like Vim).
-* Automatic domain resolution using Avahi (we haven't tested this on Windows, sorry). Each site you create on Valkyrie will get an automatically resolving domain name which keeps you from needing to hack your /etc/hosts file.
-* Drush extensions to make all kinds of common devleopment tasks easy.
+* Automatic domain resolution using Avahi. Each site you create on Valkyrie will get an automatically resolving domain name which keeps you from needing to hack your /etc/hosts file.
+* Drush extensions to make all kinds of common development tasks easy.
 * Automatic Drush aliases for running commands against sites inside the VM.
+
 
 Prerequisites
 -------------
 
-We've tested this on OS X (requires 10.10.4 or higher) and some flavor of linux that @ergonlogic uses. You'll need to have the following:
+We've tested this on OS X (requires 10.10.4 or higher) and Debian GNU/Linux. You'll need to have the following:
 
 * [VirtualBox](https://www.virtualbox.org)
 * [Vagrant](https://www.vagrantup.com)
 * [Drush 7.0-dev](https://github.com/drush-ops/drush)
-* NFS *Pre-installed on OS-X, install the `nfs-kernel-server` and `nfs-common` packages on Debian and derivatives, like Ubuntu Linux.
+* NFS
 
 The latest versions of all of the above are recommended. To install Drush on OS X, we recommend using [Homebrew](http://brew.sh/). You'll need to install the HEAD version of Drush: `brew install drush --HEAD`.
 
+NFS comes pre-installed on OS-X. Install the `nfs-kernel-server` and `nfs-common` packages on Debian and derivatives, like Ubuntu Linux.
+
+
 Documentation
---------------
-- [Installation](/docs/INSTALLATION.md)
-- [Usage](/docs/USAGE.md)
-- [Testing](/docs/TESTING.md)
+-------------
+
+- [Installation](/docs/docs/installation.md)
+- [Usage](/docs/docs/usage.md)
+- [Testing](/docs/docs/testing.md)
+
 
 Installation
 ------------
@@ -89,3 +95,5 @@ Free Software
 We are firm proponents of Free Software. Valkyrie only exists because of the
 ongoing efforts of many other projects including: Aegir, Drupal, Drush, Git,
 GNU/Linux, Ansible, Vagrant and VirtualBox.
+
+

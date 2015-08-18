@@ -31,3 +31,6 @@
 [submodule "vagrant/ansible/roles/getvalkyrie.drush"]
 	path = vagrant/ansible/roles/getvalkyrie.drush
 	url = https://github.com/GetValkyrie/ansible-role-drush.git
+[submodule "docs"]
+	path = docs
+	url = https://github.com/GetValkyrie/valkyrie-docs.git
