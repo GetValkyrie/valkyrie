@@ -1,17 +1,23 @@
-release_tag=7.x-0.4-rc3
-release_branch=7.x-0.4
-dev_branch=0.4.x
-semver_tag=0.4.3
+release_tag=7.x-0.5-rc0
+release_branch=7.x-0.5
+dev_branch=0.5.x
+semver_tag=0.5.0
 username=ergonlogic
 
 # Clone the release repo from drupal.org into a temporary directory
 mkdir tmp && cd tmp
-git clone $username@git.drupal.org:project/valkyrie.git --branch=$release_branch --recursive
+git clone $username@git.drupal.org:project/valkyrie.git --recursive
 cd valkyrie
 
-# Add upstream remote and pull in all changes
+# Add upstream remote and fetch relevant branch
 git remote add github https://github.com/getvalkyrie/valkyrie.git
 git fetch github $dev_branch
+git checkout $dev_branch
+
+# Checkout or create the d.o release branch
+git checkout -B $release_branch
+
+# Merge changes and update submodules
 git merge -s ours github/$dev_branch
 git submodule update --init --recursive
 
