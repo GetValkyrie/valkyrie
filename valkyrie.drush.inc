@@ -6,7 +6,6 @@
 // Use Composer's autoloader
 require_once(dirname(__FILE__) . '/vendor/autoload.php');
 
-define('MAKEFILE_NAME', 'platform.make');
 require_once(dirname(__FILE__) . '/includes/templates.inc');
 
 /**
@@ -517,6 +516,18 @@ function drush_valkyrie_platform_rebuild() {
     'yes' => TRUE,
   );
   drush_invoke_process('@none','make', $arguments, $options);
+}
+
+/**
+ * Implements drush_hook_COMMAND_rollback().
+ */
+function drush_valkyrie_site_clone_rollback($name, $git_repo) {
+  // Remove the cached copy of the site git repo.
+  $repo_dir = "/var/aegir/.cache/site_repos/$name";
+  drush_log("Attempting to remove $repo_dir in rollback.");
+  if (drush_delete_dir($repo_dir, TRUE)) {
+    drush_log("Removed $repo_dir in rollback.", 'success');
+  }
 }
 
 /**
