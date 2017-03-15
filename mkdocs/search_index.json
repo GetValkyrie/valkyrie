@@ -1,0 +1,114 @@
+{
+    "docs": [
+        {
+            "location": "/", 
+            "text": "VALKYRIE\n\n\n\n\n\n\nValkyrie is an opinionated development stack that makes features/git based Drupal development easy.\n\n\nFeatures\n\n\n\n\nEverything is wrapped up neatly in a VM. This keeps your computer tidy and Valkyrie consistent across various machines.\n\n\nFolders in the VM are mounted on your computer via NFS to make developing with your favorite editor easy (we like Vim).\n\n\nAutomatic domain resolution using vagrant-dns on Macs or Avahi on Linux systems (we haven't tested this on Windows, sorry). Each site you create on Valkyrie will get an automatically resovling domain name which keeps you from needing to hack your /etc/hosts file.\n\n\nDrush extensions to make all kinds of common development tasks easy.\n\n\nAutomatic Drush aliases for running commands against sites inside the VM.\n\n\n\n\nPrerequisites\n\n\nWe've tested this on OS X (Yosemite) and various flavours of Debian/Ubuntu. You'll need to have the following:\n\n\n\n\nVirtualBox\n\n\nVagrant\n\n\nvagrant-dns\n \nMac only\n\n\nDrush 8\n\n\n\n\nThe latest versions of all of the above are recommended. To install Drush on OS X, we recommend using \nHomebrew\n.\n\n\nInstallation\n\n\nMake sure you have a \n.drush\n folder in your home directory. If you don't, run the \ndrush\n command and it should create one. To install Valkyrie, you should be able to simply run:\n\n\ndrush dl valkyrie\n\n\n\nIf you prefer to work with the bleeding edge version, clone the repo inside \n~/.drush\n:\n\n\ngit clone https://github.com/GetValkyrie/valkyrie.git ~/.drush/valkyrie --recursive\n\n\n\nUsage\n\n\nValkyrie provides a number of Drush commands, which are well documented within Drush itself. Run the following to review these commands:\n\n\ndrush help --filter=valkyrie\n\n\n\nCreating a project\n\n\nTo begin using Valkyrie you'll need to create a project. A project is a VM provisioned with the entire dev stack. You really only need one project since it will be running \nAegir\n which supports multiple platforms/sites.\n\n\nTo create a project run \ndrush vnew [name]\n. For simplicity, we usually name our project \"valkyrie\":\n\n\ndrush vnew valkyrie\n\n\n\nThis will create a folder named \"valkyrie\" in the current working directory and will spin up and provision a VM. This will take a while so go grab a coffee/beer.\n\n\nDuring the provisioning process you should see a couple highlighter notices. One is an SSH key for the \naegir\n user within VM (in case you want to add it as a deploy key to private repos.) The other is a login link for accessing your locally installed Aegir that forms the backbone of Valkyrie. An easier way to access the front-end is to simply run:\n\n\ndrush @v uli\n\n\n\nHelp\n\n\n\n\n\n\nIf Hosting Queue not running\n\n\n\n\ndrush @vm cc drush; drush @v hosting-dispatch\n\n\n\n\n\n\n\n\nIf frontend does not generate properly\n\n\n\n\ndrush @v provision-verify\n\n\n\n\n\n\n\n\nUpcoming Features\n\n\n\n\nPlatform management\n\n\n??? - Request additional features in a PR. Even better, implement it in PR as well :)\n\n\n\n\nFree Software\n\n\nWe are firm proponents of Free Software. Valkyrie only exists because of the\nongoing efforts of many other projects including: Aegir, Ansible, Drupal, Drush, Git,\nGNU/Linux, Vagrant and VirtualBox.", 
+            "title": "Home"
+        }, 
+        {
+            "location": "/#valkyrie", 
+            "text": "Valkyrie is an opinionated development stack that makes features/git based Drupal development easy.", 
+            "title": "VALKYRIE"
+        }, 
+        {
+            "location": "/#features", 
+            "text": "Everything is wrapped up neatly in a VM. This keeps your computer tidy and Valkyrie consistent across various machines.  Folders in the VM are mounted on your computer via NFS to make developing with your favorite editor easy (we like Vim).  Automatic domain resolution using vagrant-dns on Macs or Avahi on Linux systems (we haven't tested this on Windows, sorry). Each site you create on Valkyrie will get an automatically resovling domain name which keeps you from needing to hack your /etc/hosts file.  Drush extensions to make all kinds of common development tasks easy.  Automatic Drush aliases for running commands against sites inside the VM.", 
+            "title": "Features"
+        }, 
+        {
+            "location": "/#prerequisites", 
+            "text": "We've tested this on OS X (Yosemite) and various flavours of Debian/Ubuntu. You'll need to have the following:   VirtualBox  Vagrant  vagrant-dns   Mac only  Drush 8   The latest versions of all of the above are recommended. To install Drush on OS X, we recommend using  Homebrew .", 
+            "title": "Prerequisites"
+        }, 
+        {
+            "location": "/#installation", 
+            "text": "Make sure you have a  .drush  folder in your home directory. If you don't, run the  drush  command and it should create one. To install Valkyrie, you should be able to simply run:  drush dl valkyrie  If you prefer to work with the bleeding edge version, clone the repo inside  ~/.drush :  git clone https://github.com/GetValkyrie/valkyrie.git ~/.drush/valkyrie --recursive", 
+            "title": "Installation"
+        }, 
+        {
+            "location": "/#usage", 
+            "text": "Valkyrie provides a number of Drush commands, which are well documented within Drush itself. Run the following to review these commands:  drush help --filter=valkyrie", 
+            "title": "Usage"
+        }, 
+        {
+            "location": "/#creating-a-project", 
+            "text": "To begin using Valkyrie you'll need to create a project. A project is a VM provisioned with the entire dev stack. You really only need one project since it will be running  Aegir  which supports multiple platforms/sites.  To create a project run  drush vnew [name] . For simplicity, we usually name our project \"valkyrie\":  drush vnew valkyrie  This will create a folder named \"valkyrie\" in the current working directory and will spin up and provision a VM. This will take a while so go grab a coffee/beer.  During the provisioning process you should see a couple highlighter notices. One is an SSH key for the  aegir  user within VM (in case you want to add it as a deploy key to private repos.) The other is a login link for accessing your locally installed Aegir that forms the backbone of Valkyrie. An easier way to access the front-end is to simply run:  drush @v uli", 
+            "title": "Creating a project"
+        }, 
+        {
+            "location": "/#help", 
+            "text": "If Hosting Queue not running   drush @vm cc drush; drush @v hosting-dispatch     If frontend does not generate properly   drush @v provision-verify", 
+            "title": "Help"
+        }, 
+        {
+            "location": "/#upcoming-features", 
+            "text": "Platform management  ??? - Request additional features in a PR. Even better, implement it in PR as well :)", 
+            "title": "Upcoming Features"
+        }, 
+        {
+            "location": "/#free-software", 
+            "text": "We are firm proponents of Free Software. Valkyrie only exists because of the\nongoing efforts of many other projects including: Aegir, Ansible, Drupal, Drush, Git,\nGNU/Linux, Vagrant and VirtualBox.", 
+            "title": "Free Software"
+        }, 
+        {
+            "location": "/installation/", 
+            "text": "Installation\n\n\nInstalling Valkyrie is as simple as:\n\n\n$ drush dl valkyrie\n\n\n\nN.B.\n Valkyrie supports both Linux and OSX operating systems. We have no plans\nto support Windows.\n\n\nDependencies\n\n\nValkyrie is (largely) a Drush extension, and thus requires a recent version of\nDrush. We currently recommend using the latest Drush 7.x. Earlier versions\n\nmay\n work, but are not currently well-tested or supported. Note that Drush can\nbe installed stand- alone, if you are unable or unwilling to upgrade your\nsystem install.\n\n\n\n\nhttps://github.com/drush-ops/drush#installupdate---a-global-drush-for-all-projects\n\n\n\n\nValkyrie depends on Vagrant, which in turn requires Virtualbox. These projects\npublish their own packages for most operating systems. We recommend installing\nthese, as it will ensure that you are running on recent versions, and thus can\ntake advantage of newer features.\n\n\n\n\nhttps://www.vagrantup.com/downloads.html\n\n\nhttps://www.virtualbox.org/wiki/Downloads\n\n\n\n\nValkyrie also uses git quite extensively. So if you don't already have it\ninstalled, go ahead and do that next.\n\n\n\n\nhttp://git-scm.com/downloads", 
+            "title": "Installation"
+        }, 
+        {
+            "location": "/installation/#installation", 
+            "text": "Installing Valkyrie is as simple as:  $ drush dl valkyrie  N.B.  Valkyrie supports both Linux and OSX operating systems. We have no plans\nto support Windows.", 
+            "title": "Installation"
+        }, 
+        {
+            "location": "/installation/#dependencies", 
+            "text": "Valkyrie is (largely) a Drush extension, and thus requires a recent version of\nDrush. We currently recommend using the latest Drush 7.x. Earlier versions may  work, but are not currently well-tested or supported. Note that Drush can\nbe installed stand- alone, if you are unable or unwilling to upgrade your\nsystem install.   https://github.com/drush-ops/drush#installupdate---a-global-drush-for-all-projects   Valkyrie depends on Vagrant, which in turn requires Virtualbox. These projects\npublish their own packages for most operating systems. We recommend installing\nthese, as it will ensure that you are running on recent versions, and thus can\ntake advantage of newer features.   https://www.vagrantup.com/downloads.html  https://www.virtualbox.org/wiki/Downloads   Valkyrie also uses git quite extensively. So if you don't already have it\ninstalled, go ahead and do that next.   http://git-scm.com/downloads", 
+            "title": "Dependencies"
+        }, 
+        {
+            "location": "/usage/", 
+            "text": "VALKYRIE\n\n\nUSAGE\n\n\nValkyrie provides a number of Drush commands, which are well documented within\nDrush itself. Run the following to review these commands:\n\n\n$ drush help --filter=valkyrie\n\n\n\nThese break down into three categories:\n\n\n\n\nSetting up a project\n\n\nBuilding a platform (Drupal code-base) and site.\n\n\nTools to ease development\n\n\n\n\nProject setup\n\n\nOnce you've installed Valkyrie and its dependencies, the first things you'll\nwant to do is create a new project. In this context, a 'project' is a directory\ncontaining all the components required to launch and configure a local VM.\n\n\nThe 'drush valkyrie-new' command (aliased to 'vnew') will create such a\nproject. Besides creating the directory, this command will copy Valkyrie itself\ninto a hidden folder within the project. This ensures that the project will\nkeep running, regardless of updates to the Valkyrie Drush extension. This\ndirectory's contents are committed into a git repository to make tracking\nchanges easier. Any customizations can be done here, in isolation from the\nsystem install, and shared with other team members via git.\n\n\nTo launch the VM, just use Vagrant as normal:\n\n\n$ vagrant up\n\n\n\nIf you've updated the Valkyrie Drush extension (i.e., via 'drush dl valkyrie'),\nyou may want to update your projects to use some if the new code. Within a\nproject, this will affect mostly the Vagrantfile (and associated code) and the\nPuppet code used to configure the VM. To update the Valkyrie code cached in a\nproject, run 'drush valkyrie-update' (or 'vup') from the project root. This\nwill copy in a fresh version of Valkyrie from the recently updated Drush\nentension.\n\n\nTo apply any changes in VM configuration, re-run the provisioners in Vagrant:\n\n\n$ vagrant provision\n\n\n\nIf there is any reason to rollback from an update, you should be able to use\ngit, like so:\n\n\n$ git checkout .valkyrie/valkyrie\n\n\n\nBuilding platforms and sites\n\n\nvalkyrie-generate-platform (vgp)  Generate a platform.\nvalkyrie-platform-rebuild (vpr)   Rebuild a site's platform.\nvalkyrie-site-clone (vsc)         Clone a site from a git repo.\nvalkyrie-site-generate (vsg)      Create and install a new git-based site.\nvalkyrie-site-reinstall (vsr)     Reinstall a site.\n\n\nDevelopment extras\n\n\nvalkyrie-logs (vlog)              Tail the Apache error log.\nvalkyrie-sql-snapshot (vss)       Cache a sql-dump for later diffing.\nvalkyrie-sql-diff (vsd)           Diff the current sql-dump with an earlier\n                                  snapshot.", 
+            "title": "Usage"
+        }, 
+        {
+            "location": "/usage/#valkyrie", 
+            "text": "", 
+            "title": "VALKYRIE"
+        }, 
+        {
+            "location": "/usage/#usage", 
+            "text": "Valkyrie provides a number of Drush commands, which are well documented within\nDrush itself. Run the following to review these commands:  $ drush help --filter=valkyrie  These break down into three categories:   Setting up a project  Building a platform (Drupal code-base) and site.  Tools to ease development", 
+            "title": "USAGE"
+        }, 
+        {
+            "location": "/usage/#project-setup", 
+            "text": "Once you've installed Valkyrie and its dependencies, the first things you'll\nwant to do is create a new project. In this context, a 'project' is a directory\ncontaining all the components required to launch and configure a local VM.  The 'drush valkyrie-new' command (aliased to 'vnew') will create such a\nproject. Besides creating the directory, this command will copy Valkyrie itself\ninto a hidden folder within the project. This ensures that the project will\nkeep running, regardless of updates to the Valkyrie Drush extension. This\ndirectory's contents are committed into a git repository to make tracking\nchanges easier. Any customizations can be done here, in isolation from the\nsystem install, and shared with other team members via git.  To launch the VM, just use Vagrant as normal:  $ vagrant up  If you've updated the Valkyrie Drush extension (i.e., via 'drush dl valkyrie'),\nyou may want to update your projects to use some if the new code. Within a\nproject, this will affect mostly the Vagrantfile (and associated code) and the\nPuppet code used to configure the VM. To update the Valkyrie code cached in a\nproject, run 'drush valkyrie-update' (or 'vup') from the project root. This\nwill copy in a fresh version of Valkyrie from the recently updated Drush\nentension.  To apply any changes in VM configuration, re-run the provisioners in Vagrant:  $ vagrant provision  If there is any reason to rollback from an update, you should be able to use\ngit, like so:  $ git checkout .valkyrie/valkyrie", 
+            "title": "Project setup"
+        }, 
+        {
+            "location": "/usage/#building-platforms-and-sites", 
+            "text": "valkyrie-generate-platform (vgp)  Generate a platform.\nvalkyrie-platform-rebuild (vpr)   Rebuild a site's platform.\nvalkyrie-site-clone (vsc)         Clone a site from a git repo.\nvalkyrie-site-generate (vsg)      Create and install a new git-based site.\nvalkyrie-site-reinstall (vsr)     Reinstall a site.", 
+            "title": "Building platforms and sites"
+        }, 
+        {
+            "location": "/usage/#development-extras", 
+            "text": "valkyrie-logs (vlog)              Tail the Apache error log.\nvalkyrie-sql-snapshot (vss)       Cache a sql-dump for later diffing.\nvalkyrie-sql-diff (vsd)           Diff the current sql-dump with an earlier\n                                  snapshot.", 
+            "title": "Development extras"
+        }, 
+        {
+            "location": "/testing/", 
+            "text": "VALKYRIE\n\n\nTESTING\n\n\nWe use Behat/Mink with the Drupal extension to run our tests.\n\n\nTo get started, install Composer and the require-dev components:\n\n\n$ curl http://getcomposer.org/installer | php\n$ php composer.phar install\n\n\n\nTo run the entire test suite, run:\n\n\n$ bin/behat\n\n\n\nTests for each command can be run individually using tags:\n\n\n$ bin/behat --tags @vnew", 
+            "title": "Testing"
+        }, 
+        {
+            "location": "/testing/#valkyrie", 
+            "text": "", 
+            "title": "VALKYRIE"
+        }, 
+        {
+            "location": "/testing/#testing", 
+            "text": "We use Behat/Mink with the Drupal extension to run our tests.  To get started, install Composer and the require-dev components:  $ curl http://getcomposer.org/installer | php\n$ php composer.phar install  To run the entire test suite, run:  $ bin/behat  Tests for each command can be run individually using tags:  $ bin/behat --tags @vnew", 
+            "title": "TESTING"
+        }
+    ]
+}

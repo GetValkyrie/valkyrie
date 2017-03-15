@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  
+  <title>Usage - Valkyrie</title>
+  
+
+  <link rel="shortcut icon" href="../img/favicon.ico">
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../css/highlight.css">
+
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Usage";
+    var mkdocs_page_input_path = "usage.md";
+    var mkdocs_page_url = "/usage/";
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js"></script>
+  <script src="../js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="../js/highlight.pack.js"></script>
+  <script src="../js/theme.js"></script> 
+
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> Valkyrie</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        <ul class="current">
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="..">Home</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../installation/">Installation</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 current">
+        <a class="current" href="./">Usage</a>
+        
+            <ul>
+            
+                <li class="toctree-l3"><a href="#valkyrie">VALKYRIE</a></li>
+                
+                    <li><a class="toctree-l4" href="#usage">USAGE</a></li>
+                
+                    <li><a class="toctree-l4" href="#project-setup">Project setup</a></li>
+                
+                    <li><a class="toctree-l4" href="#building-platforms-and-sites">Building platforms and sites</a></li>
+                
+                    <li><a class="toctree-l4" href="#development-extras">Development extras</a></li>
+                
+            
+            </ul>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../testing/">Testing</a>
+        
+    </li>
+<li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">Valkyrie</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>Usage</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="valkyrie">VALKYRIE</h1>
+<h2 id="usage">USAGE</h2>
+<p>Valkyrie provides a number of Drush commands, which are well documented within
+Drush itself. Run the following to review these commands:</p>
+<pre><code>$ drush help --filter=valkyrie
+</code></pre>
+<p>These break down into three categories:</p>
+<ul>
+<li>Setting up a project</li>
+<li>Building a platform (Drupal code-base) and site.</li>
+<li>Tools to ease development</li>
+</ul>
+<h2 id="project-setup">Project setup</h2>
+<p>Once you've installed Valkyrie and its dependencies, the first things you'll
+want to do is create a new project. In this context, a 'project' is a directory
+containing all the components required to launch and configure a local VM.</p>
+<p>The 'drush valkyrie-new' command (aliased to 'vnew') will create such a
+project. Besides creating the directory, this command will copy Valkyrie itself
+into a hidden folder within the project. This ensures that the project will
+keep running, regardless of updates to the Valkyrie Drush extension. This
+directory's contents are committed into a git repository to make tracking
+changes easier. Any customizations can be done here, in isolation from the
+system install, and shared with other team members via git.</p>
+<p>To launch the VM, just use Vagrant as normal:</p>
+<pre><code>$ vagrant up
+</code></pre>
+<p>If you've updated the Valkyrie Drush extension (i.e., via 'drush dl valkyrie'),
+you may want to update your projects to use some if the new code. Within a
+project, this will affect mostly the Vagrantfile (and associated code) and the
+Puppet code used to configure the VM. To update the Valkyrie code cached in a
+project, run 'drush valkyrie-update' (or 'vup') from the project root. This
+will copy in a fresh version of Valkyrie from the recently updated Drush
+entension.</p>
+<p>To apply any changes in VM configuration, re-run the provisioners in Vagrant:</p>
+<pre><code>$ vagrant provision
+</code></pre>
+<p>If there is any reason to rollback from an update, you should be able to use
+git, like so:</p>
+<pre><code>$ git checkout .valkyrie/valkyrie
+</code></pre>
+<h2 id="building-platforms-and-sites">Building platforms and sites</h2>
+<p>valkyrie-generate-platform (vgp)  Generate a platform.
+valkyrie-platform-rebuild (vpr)   Rebuild a site's platform.
+valkyrie-site-clone (vsc)         Clone a site from a git repo.
+valkyrie-site-generate (vsg)      Create and install a new git-based site.
+valkyrie-site-reinstall (vsr)     Reinstall a site.</p>
+<h2 id="development-extras">Development extras</h2>
+<p>valkyrie-logs (vlog)              Tail the Apache error log.
+valkyrie-sql-snapshot (vss)       Cache a sql-dump for later diffing.
+valkyrie-sql-diff (vsd)           Diff the current sql-dump with an earlier
+                                  snapshot.</p>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../testing/" class="btn btn-neutral float-right" title="Testing">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../installation/" class="btn btn-neutral" title="Installation"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+	  
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+<div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../installation/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../testing/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+
+</body>
+</html>
