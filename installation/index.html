@@ -11,7 +11,8 @@
   <title>Installation - Valkyrie</title>
   
 
-  <link rel="shortcut icon" href="../img/favicon.ico">
+  <link rel="shortcut icon" href="../_images/favicon.ico">
+  
 
   
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
@@ -19,6 +20,7 @@
   <link rel="stylesheet" href="../css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
   <link rel="stylesheet" href="../css/highlight.css">
+  <link href="../_css/header.css" rel="stylesheet">
 
   
   <script>
@@ -71,6 +73,8 @@
                 
                     <li><a class="toctree-l4" href="#dependencies">Dependencies</a></li>
                 
+                    <li><a class="toctree-l4" href="#bleeding-edge">Bleeding Edge</a></li>
+                
             
             </ul>
         
@@ -87,6 +91,13 @@
             <li>
     <li class="toctree-l1 ">
         <a class="" href="../testing/">Testing</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../troubleshooting/">Troubleshooting</a>
         
     </li>
 <li>
@@ -130,10 +141,18 @@
 <p><em>N.B.</em> Valkyrie supports both Linux and OSX operating systems. We have no plans
 to support Windows.</p>
 <h2 id="dependencies">Dependencies</h2>
+<p>We've tested this on OS X (Yosemite) and various flavours of Debian/Ubuntu. You'll need to have the following:</p>
+<ul>
+<li><a href="https://www.virtualbox.org">VirtualBox</a></li>
+<li><a href="https://www.vagrantup.com">Vagrant</a></li>
+<li><a href="https://github.com/BerlinVagrant/vagrant-dns">vagrant-dns</a> <em>Mac only</em></li>
+<li><a href="https://github.com/drush-ops/drush">Drush 8</a></li>
+</ul>
+<p>The latest versions of all of the above are recommended. To install Drush on OS X, we recommend using <a href="http://brew.sh/">Homebrew</a>.</p>
 <p>Valkyrie is (largely) a Drush extension, and thus requires a recent version of
-Drush. We currently recommend using the latest Drush 7.x. Earlier versions
+Drush. We currently recommend using the latest Drush 8.x. Earlier versions
 <em>may</em> work, but are not currently well-tested or supported. Note that Drush can
-be installed stand- alone, if you are unable or unwilling to upgrade your
+be installed stand-alone, if you are unable or unwilling to upgrade your
 system install.</p>
 <ul>
 <li>https://github.com/drush-ops/drush#installupdate---a-global-drush-for-all-projects</li>
@@ -151,6 +170,10 @@ installed, go ahead and do that next.</p>
 <ul>
 <li>http://git-scm.com/downloads</li>
 </ul>
+<h2 id="bleeding-edge">Bleeding Edge</h2>
+<p>If you're adventurous and prefer to work with the bleeding edge version, clone the repo inside <code>~/.drush</code>:</p>
+<pre><code>git clone https://github.com/GetValkyrie/valkyrie.git ~/.drush/valkyrie --recursive
+</code></pre>
               
             </div>
           </div>

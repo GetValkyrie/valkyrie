@@ -1,0 +1,22 @@
+.wy-side-nav-search {
+  background-color: #0A1F36;
+  background:url('../_images/header-background.jpg');
+  background-size: 298px 139px;
+  background-repeat: no-repeat;
+  margin-bottom: 0;
+}
+
+a.icon.icon-home:before {
+  background:url('../_images/valkyrie-logo.png');
+  background-size: 208px 59px;
+  width: 208px;
+  height: 59px;
+  content: '';
+  background-repeat: no-repeat;
+}
+
+a.icon.icon-home {
+  font-size: 0;
+}
+
+

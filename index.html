@@ -11,7 +11,8 @@
   <title>Valkyrie</title>
   
 
-  <link rel="shortcut icon" href="./img/favicon.ico">
+  <link rel="shortcut icon" href="_images/favicon.ico">
+  
 
   
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
@@ -19,6 +20,7 @@
   <link rel="stylesheet" href="./css/theme.css" type="text/css" />
   <link rel="stylesheet" href="./css/theme_extra.css" type="text/css" />
   <link rel="stylesheet" href="./css/highlight.css">
+  <link href="./_css/header.css" rel="stylesheet">
 
   
   <script>
@@ -60,15 +62,11 @@
         
             <ul>
             
-                <li class="toctree-l3"><a href="#valkyrie">VALKYRIE</a></li>
+                <li class="toctree-l3"><a href="#valkyrie">Valkyrie</a></li>
                 
                     <li><a class="toctree-l4" href="#features">Features</a></li>
                 
-                    <li><a class="toctree-l4" href="#prerequisites">Prerequisites</a></li>
-                
-                    <li><a class="toctree-l4" href="#installation">Installation</a></li>
-                
-                    <li><a class="toctree-l4" href="#usage">Usage</a></li>
+                    <li><a class="toctree-l4" href="#getting-started">Getting Started</a></li>
                 
                     <li><a class="toctree-l4" href="#upcoming-features">Upcoming Features</a></li>
                 
@@ -97,6 +95,13 @@
             <li>
     <li class="toctree-l1 ">
         <a class="" href="testing/">Testing</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="troubleshooting/">Troubleshooting</a>
         
     </li>
 <li>
@@ -133,10 +138,9 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="valkyrie">VALKYRIE</h1>
-<p><img alt="valkyrie_logo" src="./_images/valkyrie_logo.png" />
-<a href="https://gitter.im/GetValkyrie/valkyrie?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img alt="Join the chat at https://gitter.im/GetValkyrie/valkyrie" src="https://badges.gitter.im/Join%20Chat.svg" /></a></p>
-<p>Valkyrie is an opinionated development stack that makes features/git based Drupal development easy.</p>
+                <h1 id="valkyrie">Valkyrie</h1>
+<p><a href="https://gitter.im/GetValkyrie/valkyrie?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img alt="Join the chat at https://gitter.im/GetValkyrie/valkyrie" src="https://badges.gitter.im/Join%20Chat.svg" /></a></p>
+<p>Valkyrie is an opinionated development stack that makes Features/git based Drupal development easy.</p>
 <h2 id="features">Features</h2>
 <ul>
 <li>Everything is wrapped up neatly in a VM. This keeps your computer tidy and Valkyrie consistent across various machines.</li>
@@ -145,50 +149,19 @@
 <li>Drush extensions to make all kinds of common development tasks easy.</li>
 <li>Automatic Drush aliases for running commands against sites inside the VM.</li>
 </ul>
-<h2 id="prerequisites">Prerequisites</h2>
-<p>We've tested this on OS X (Yosemite) and various flavours of Debian/Ubuntu. You'll need to have the following:</p>
-<ul>
-<li><a href="https://www.virtualbox.org">VirtualBox</a></li>
-<li><a href="https://www.vagrantup.com">Vagrant</a></li>
-<li><a href="https://github.com/BerlinVagrant/vagrant-dns">vagrant-dns</a> <em>Mac only</em></li>
-<li><a href="https://github.com/drush-ops/drush">Drush 8</a></li>
-</ul>
-<p>The latest versions of all of the above are recommended. To install Drush on OS X, we recommend using <a href="http://brew.sh/">Homebrew</a>.</p>
-<h2 id="installation">Installation</h2>
-<p>Make sure you have a <code>.drush</code> folder in your home directory. If you don't, run the <code>drush</code> command and it should create one. To install Valkyrie, you should be able to simply run:</p>
+<h2 id="getting-started">Getting Started</h2>
+<p>To <a href="installation/">install Valkyrie</a>, you should be able to simply run:</p>
 <pre><code>drush dl valkyrie
 </code></pre>
-<p>If you prefer to work with the bleeding edge version, clone the repo inside <code>~/.drush</code>:</p>
-<pre><code>git clone https://github.com/GetValkyrie/valkyrie.git ~/.drush/valkyrie --recursive
-</code></pre>
-<h2 id="usage">Usage</h2>
 <p>Valkyrie provides a number of Drush commands, which are well documented within Drush itself. Run the following to review these commands:</p>
 <pre><code>drush help --filter=valkyrie
 </code></pre>
-<h3 id="creating-a-project">Creating a project</h3>
-<p>To begin using Valkyrie you'll need to create a project. A project is a VM provisioned with the entire dev stack. You really only need one project since it will be running <a href="http://www.aegirproject.org">Aegir</a> which supports multiple platforms/sites.</p>
-<p>To create a project run <code>drush vnew [name]</code>. For simplicity, we usually name our project "valkyrie":</p>
+<p>To begin using Valkyrie you'll need to <a href="usage/#project-setup">create a project</a>:</p>
 <pre><code>drush vnew valkyrie
 </code></pre>
-<p>This will create a folder named "valkyrie" in the current working directory and will spin up and provision a VM. This will take a while so go grab a coffee/beer.</p>
-<p>During the provisioning process you should see a couple highlighter notices. One is an SSH key for the <code>aegir</code> user within VM (in case you want to add it as a deploy key to private repos.) The other is a login link for accessing your locally installed Aegir that forms the backbone of Valkyrie. An easier way to access the front-end is to simply run:</p>
+<p>This will take a while so go grab a coffee/beer. Once that process is complete, you should be able tp access the front-end:</p>
 <pre><code>drush @v uli
 </code></pre>
-<h3 id="help">Help</h3>
-<ul>
-<li>
-<p>If Hosting Queue not running</p>
-<ul>
-<li><code>drush @vm cc drush; drush @v hosting-dispatch</code></li>
-</ul>
-</li>
-<li>
-<p>If frontend does not generate properly</p>
-<ul>
-<li><code>drush @v provision-verify</code></li>
-</ul>
-</li>
-</ul>
 <h2 id="upcoming-features">Upcoming Features</h2>
 <ul>
 <li>Platform management</li>
@@ -243,5 +216,5 @@ GNU/Linux, Vagrant and VirtualBox.</p>
 
 <!--
 MkDocs version : 0.15.3
-Build Date UTC : 2017-03-15 13:42:34.951223
+Build Date UTC : 2017-03-15 17:18:15.114076
 -->

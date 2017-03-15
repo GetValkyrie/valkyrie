@@ -11,7 +11,8 @@
   <title>Usage - Valkyrie</title>
   
 
-  <link rel="shortcut icon" href="../img/favicon.ico">
+  <link rel="shortcut icon" href="../_images/favicon.ico">
+  
 
   
   <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
@@ -19,6 +20,7 @@
   <link rel="stylesheet" href="../css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
   <link rel="stylesheet" href="../css/highlight.css">
+  <link href="../_css/header.css" rel="stylesheet">
 
   
   <script>
@@ -74,11 +76,11 @@
         
             <ul>
             
-                <li class="toctree-l3"><a href="#valkyrie">VALKYRIE</a></li>
-                
-                    <li><a class="toctree-l4" href="#usage">USAGE</a></li>
+                <li class="toctree-l3"><a href="#usage">Usage</a></li>
                 
                     <li><a class="toctree-l4" href="#project-setup">Project setup</a></li>
+                
+                    <li><a class="toctree-l4" href="#updating-a-project">Updating a Project</a></li>
                 
                     <li><a class="toctree-l4" href="#building-platforms-and-sites">Building platforms and sites</a></li>
                 
@@ -93,6 +95,13 @@
             <li>
     <li class="toctree-l1 ">
         <a class="" href="../testing/">Testing</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../troubleshooting/">Troubleshooting</a>
         
     </li>
 <li>
@@ -129,8 +138,7 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="valkyrie">VALKYRIE</h1>
-<h2 id="usage">USAGE</h2>
+                <h1 id="usage">Usage</h1>
 <p>Valkyrie provides a number of Drush commands, which are well documented within
 Drush itself. Run the following to review these commands:</p>
 <pre><code>$ drush help --filter=valkyrie
@@ -142,9 +150,10 @@ Drush itself. Run the following to review these commands:</p>
 <li>Tools to ease development</li>
 </ul>
 <h2 id="project-setup">Project setup</h2>
-<p>Once you've installed Valkyrie and its dependencies, the first things you'll
-want to do is create a new project. In this context, a 'project' is a directory
-containing all the components required to launch and configure a local VM.</p>
+<p>Once you've <a href="../installation/">installed Valkyrie</a> and its dependencies, the
+first things you'll want to do is create a new project. In this context, a
+'project' is a directory containing all the components required to launch and
+configure a local VM.</p>
 <p>The 'drush valkyrie-new' command (aliased to 'vnew') will create such a
 project. Besides creating the directory, this command will copy Valkyrie itself
 into a hidden folder within the project. This ensures that the project will
@@ -152,17 +161,33 @@ keep running, regardless of updates to the Valkyrie Drush extension. This
 directory's contents are committed into a git repository to make tracking
 changes easier. Any customizations can be done here, in isolation from the
 system install, and shared with other team members via git.</p>
-<p>To launch the VM, just use Vagrant as normal:</p>
-<pre><code>$ vagrant up
+<p>To create a project run <code>drush vnew [name]</code>. You may only need one project
+since it will be running <a href="http://www.aegirproject.org">Aegir</a> which supports
+multiple platforms/sites. For simplicity, we suggest naming your first project
+"valkyrie":</p>
+<pre><code>drush vnew valkyrie
 </code></pre>
+<p>This will create a folder named "valkyrie" in the current working directory and
+will spin up and provision a VM. This will take a while so go grab a
+coffee/beer.</p>
+<p>During the provisioning process you should see a couple highlighter notices.
+One is an SSH key for the <code>aegir</code> user within VM (in case you want to add it as
+a deploy key to private repos.) The other is a login link for accessing your
+locally installed Aegir that forms the backbone of Valkyrie. An easier way to
+access the front-end is to simply run:</p>
+<pre><code>drush @v uli
+</code></pre>
+<h2 id="updating-a-project">Updating a Project</h2>
 <p>If you've updated the Valkyrie Drush extension (i.e., via 'drush dl valkyrie'),
 you may want to update your projects to use some if the new code. Within a
 project, this will affect mostly the Vagrantfile (and associated code) and the
 Puppet code used to configure the VM. To update the Valkyrie code cached in a
-project, run 'drush valkyrie-update' (or 'vup') from the project root. This
-will copy in a fresh version of Valkyrie from the recently updated Drush
-entension.</p>
-<p>To apply any changes in VM configuration, re-run the provisioners in Vagrant:</p>
+project, run the following from the project root:</p>
+<pre><code>drush valkyrie-update # or 'drush vup'
+</code></pre>
+<p>This will copy in a fresh version of Valkyrie from the recently updated Drush
+extension. To apply any changes in VM configuration, re-run the provisioners in
+Vagrant:</p>
 <pre><code>$ vagrant provision
 </code></pre>
 <p>If there is any reason to rollback from an update, you should be able to use

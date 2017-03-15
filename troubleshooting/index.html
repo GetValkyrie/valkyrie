@@ -8,7 +8,7 @@
   
   
   
-  <title>Testing - Valkyrie</title>
+  <title>Troubleshooting - Valkyrie</title>
   
 
   <link rel="shortcut icon" href="../_images/favicon.ico">
@@ -25,9 +25,9 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Testing";
-    var mkdocs_page_input_path = "testing.md";
-    var mkdocs_page_url = "/testing/";
+    var mkdocs_page_name = "Troubleshooting";
+    var mkdocs_page_input_path = "troubleshooting.md";
+    var mkdocs_page_url = "/troubleshooting/";
   </script>
   
   <script src="../js/jquery-2.1.1.min.js"></script>
@@ -78,24 +78,22 @@
 <li>
           
             <li>
-    <li class="toctree-l1 current">
-        <a class="current" href="./">Testing</a>
-        
-            <ul>
-            
-                <li class="toctree-l3"><a href="#valkyrie">VALKYRIE</a></li>
-                
-                    <li><a class="toctree-l4" href="#testing">TESTING</a></li>
-                
-            
-            </ul>
+    <li class="toctree-l1 ">
+        <a class="" href="../testing/">Testing</a>
         
     </li>
 <li>
           
             <li>
-    <li class="toctree-l1 ">
-        <a class="" href="../troubleshooting/">Troubleshooting</a>
+    <li class="toctree-l1 current">
+        <a class="current" href="./">Troubleshooting</a>
+        
+            <ul>
+            
+                <li class="toctree-l3"><a href="#troubleshooting">Troubleshooting</a></li>
+                
+            
+            </ul>
         
     </li>
 <li>
@@ -122,7 +120,7 @@
     
       
     
-    <li>Testing</li>
+    <li>Troubleshooting</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -132,19 +130,21 @@
           <div role="main">
             <div class="section">
               
-                <h1 id="valkyrie">VALKYRIE</h1>
-<h2 id="testing">TESTING</h2>
-<p>We use Behat/Mink with the Drupal extension to run our tests.</p>
-<p>To get started, install Composer and the require-dev components:</p>
-<pre><code>$ curl http://getcomposer.org/installer | php
-$ php composer.phar install
-</code></pre>
-<p>To run the entire test suite, run:</p>
-<pre><code>$ bin/behat
-</code></pre>
-<p>Tests for each command can be run individually using tags:</p>
-<pre><code>$ bin/behat --tags @vnew
-</code></pre>
+                <h1 id="troubleshooting">Troubleshooting</h1>
+<ul>
+<li>
+<p>If Hosting Queue not running</p>
+<ul>
+<li><code>drush @vm cc drush; drush @v hosting-dispatch</code></li>
+</ul>
+</li>
+<li>
+<p>If frontend does not generate properly</p>
+<ul>
+<li><code>drush @v provision-verify</code></li>
+</ul>
+</li>
+</ul>
               
             </div>
           </div>
@@ -152,10 +152,8 @@ $ php composer.phar install
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../troubleshooting/" class="btn btn-neutral float-right" title="Troubleshooting">Next <span class="icon icon-circle-arrow-right"></span></a>
       
-      
-        <a href="../usage/" class="btn btn-neutral" title="Usage"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../testing/" class="btn btn-neutral" title="Testing"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -181,10 +179,8 @@ $ php composer.phar install
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../usage/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../testing/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
-      
-        <span style="margin-left: 15px"><a href="../troubleshooting/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
